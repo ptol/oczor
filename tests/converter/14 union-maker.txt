@@ -1,0 +1,5 @@
+type Foo a = Int | foo : a
+foo : Foo Int
+foo = 1
+-
+ObjectF [("foo",LitF (LitInt 1))]

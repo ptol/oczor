@@ -1,0 +1,46 @@
+class inc a : a => a
+class zero a : a
+foo = inc zero
+-
+TypeLabelF "foo" (TypeConstrainsF [(TypeVarF "a","zero"),(TypeVarF "a","inc")] (TypeVarF "a"))
+=
+class add a : a, a => a
+class zero a : a
+foo = add zero zero
+-
+TypeLabelF "foo" (TypeConstrainsF [(TypeVarF "a","zero"),(TypeVarF "a","add")] (TypeVarF "a"))
+=
+class add a : a, a => a
+class zero a : a
+class inc a : a => a
+foo = add zero (inc zero)
+-
+TypeLabelF "foo" (TypeConstrainsF [(TypeVarF "a","zero"),(TypeVarF "a","inc"),(TypeVarF "a","add")] (TypeVarF "a"))
+=
+class foldl f : f a => a
+foo x = foldl x
+-
+TypeLabelF "foo" (TypeFuncF (TypeApplyF (TypeConstrainsF [(TypeVarF "b","foldl")] (TypeVarF "b")) [TypeVarF "a"]) (TypeVarF "a"))
+=
+class zero a : a
+class foldl f : a, f a => Int
+foo x = foldl zero x
+-
+TypeLabelF "foo" (TypeFuncF (TypeApplyF (TypeConstrainsF [(TypeVarF "a","foldl")] (TypeVarF "a")) [TypeConstrainsF [(TypeVarF "b","zero")] (TypeVarF "b")]) (TypeIdentF "Int"))
+=
+class add a : a, a => a
+class zero a : a
+instance Int add x y = 0
+instance Int zero = 0
+
+class foldl f : (((b,a) => b), b, f a) => Int
+
+ffi arrayFoldl : (a, e => e), a, Array e => a
+
+instance Array foldl f i x = arrayFoldl f i x
+
+sum l = foldl (a e => add a e) zero l
+
+foo = sum [1]
+-
+TypeLabelF "foo" (TypeIdentF "Int")

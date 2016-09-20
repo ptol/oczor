@@ -1,0 +1,6 @@
+type Foo = Int
+pureFoo : Foo => Int
+pureFoo = cases
+ x => x
+-
+Object [("pureFoo",Call (Ident "cases") [Array [Object [("cond",Function ["x"] [Return (Lit (LitBool True))]),("func",Function ["x"] [Return (Field (Ident "x") "value")])]]])]

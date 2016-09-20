@@ -1,0 +1,74 @@
+class mempty a: a
+instance Int mempty = 0
+test : Int
+test = mempty
+-
+(function(){
+  oc.instances.mempty = {};
+  var mempty = function(x){
+    return x;
+  };
+  oc.instances.mempty.Int = 0;
+  return {
+    mempty : mempty,
+    test : mempty(oc.instances.mempty.Int)
+  }
+})()
+=
+class mempty a: a
+instance Int mempty = 0
+ffi foo : Int => Int
+foo mempty
+-
+(function(){
+  oc.instances.mempty = {};
+  var mempty = function(x){
+    return x;
+  };
+  oc.instances.mempty.Int = 0;
+  return {
+    mempty : mempty,
+    foo : foo,
+    item1 : foo(mempty(oc.instances.mempty.Int))
+  }
+})()
+=
+class mempty a: a
+instance Int mempty = 0
+ffi foo : Int => Int
+x : Int
+x = mempty
+foo x
+-
+(function(){
+  oc.instances.mempty = {};
+  var mempty = function(x){
+    return x;
+  };
+  oc.instances.mempty.Int = 0;
+  var x = mempty(oc.instances.mempty.Int);
+  return {
+    mempty : mempty,
+    foo : foo,
+    x : x,
+    item1 : foo(x)
+  }
+})()
+=
+class show a: a => String
+instance Int show x = "test"
+y = show 1
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  oc.instances.show.Int = function(x){
+    return "test";
+  };
+  return {
+    show : show,
+    y : oc.instances.show.Int(1)
+  }
+})()

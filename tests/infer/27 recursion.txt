@@ -1,0 +1,11 @@
+fst x = fst x
+-
+TypeLabelF "fst" (TypeFuncF (TypeVarF "a") (TypeVarF "b"))
+=
+fst x = fst 1
+-
+TypeLabelF "fst" (TypeFuncF (TypeIdentF "Int") (TypeVarF "a"))
+=
+fst x = fst x 1
+-
+(InfiniteType "b" (TypeRecordF [TypeVarF "b",TypeIdentF "Int"]),(1,1,""))

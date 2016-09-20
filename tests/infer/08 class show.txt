@@ -1,0 +1,16 @@
+type Foo a = foo : a
+
+class show a : a => String
+instance Int show x = "test"
+
+showFoo : (Foo a) => String
+showFoo x = show x.foo
+
+instance (Foo (a show <: a)) show = showFoo 
+
+test : Foo Int
+test = foo = 1
+
+bar = show test
+-
+TypeLabelF "bar" (TypeIdentF "String")

@@ -1,0 +1,60 @@
+import std.prelude
+import std.foldable
+
+type Maybe a = none | just : a 
+
+noneMaybe : Maybe a
+noneMaybe = none
+
+pureMaybe : a => Maybe a
+pureMaybe x = just = x
+
+maybe : b, (a => b), Maybe a => b
+maybe = case 
+ x f ^none => x
+ x f z => f z.just
+
+isNone : Maybe a => Bool
+isNone x = maybe true (cnst false) x
+
+isJust : Maybe a => Bool
+isJust x = maybe false (cnst true) x
+
+fromMaybe : x, Maybe x => x
+fromMaybe x m = maybe x id m
+
+mapMaybe : (a => b), Maybe a => Maybe b
+mapMaybe f x = maybe noneMaybe (y => just = (f y)) x
+
+bindMaybe : ((a => Maybe b), (Maybe a)) => Maybe b
+bindMaybe f x = maybe none f x
+
+applyMaybe : Maybe (a => b), Maybe a => Maybe b
+applyMaybe f x = maybe none (y => mapMaybe y x) f 
+
+showMaybe : Maybe ((a show <: a)) => String
+showMaybe x = maybe ("none", show, x)
+
+eqMaybe : a eq <: (Maybe a, Maybe a) => Bool
+eqMaybe = case
+ ^none ^none => true
+ ^none y => false
+ x ^none => false
+ x y => eq x.just y.just
+
+foldlMaybe : (b, a => b), b, Maybe a => b
+foldlMaybe f i x = maybe i (y => f i y) x
+
+/* traverseMaybe : b pure <: (a => m b), Maybe a => m (Maybe b) */
+/* traverseMaybe f x = maybe (pure none) f x */
+
+instance (Maybe (a show <: a)) show x = showMaybe x
+instance (Maybe (a eq <: a)) eq x y = eqMaybe x y
+
+instance Maybe foldl = foldlMaybe
+instance Maybe pure x = pureMaybe x
+instance Maybe map = mapMaybe
+instance Maybe apply = applyMaybe
+instance Maybe bind = bindMaybe
+instance Maybe mempty = none
+/* instance Maybe traverse = traverseMaybe */

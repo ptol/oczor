@@ -1,0 +1,18 @@
+type Foo = Int
+foo : Foo
+foo = 1
+bar = foo
+-
+ScopeF [VarF "foo" (LitF (LitInt 1))] (ObjectF [("foo",IdentF "foo"),("bar",IdentF "foo")])
+=
+type Foo a = a
+foo : Foo Int
+foo = 1
+-
+ObjectF [("foo",LitF (LitInt 1))]
+=
+type Foo = Int
+pureFoo : Int => Foo
+pureFoo x = x
+-
+ObjectF [("pureFoo",FunctionF ["x"] [ReturnF (IdentF "x")])]

@@ -1,0 +1,5 @@
+foo = case
+ (left = x) => x
+ (right = x) => x
+-
+ObjectF [("foo",FunctionF ["_a1"] [IfF (CallF (FunctionF ["_a"] [ReturnF (HasFieldF (IdentF "_a") "left")]) [IdentF "_a1"]) [ReturnF (CallF (FunctionF ["_a"] [VarF "x" (FieldF (IdentF "_a") "left"),ReturnF (IdentF "x")]) [IdentF "_a1"])] [IfF (CallF (FunctionF ["_b"] [ReturnF (HasFieldF (IdentF "_b") "right")]) [IdentF "_a1"]) [ReturnF (CallF (FunctionF ["_b"] [VarF "x" (FieldF (IdentF "_b") "right"),ReturnF (IdentF "x")]) [IdentF "_a1"])] [ThrowF "cases error"]]])]

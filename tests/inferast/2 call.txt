@@ -1,0 +1,5 @@
+ffi show: a => String
+foo x = show x
+bar = foo 1
+-
+(RecordF [(FfiF "show" (TypeFuncF (TypeVarF "a") (TypeIdentF "String")) ANN NoTypeF),(RecordLabelF "foo" (FunctionF (ParamIdentF "x" ANN TypeVarF "d") Nothing (CallF (IdentF "show" ANN TypeFuncF (TypeVarF "d") (TypeIdentF "String")) (IdentF "x" ANN TypeVarF "d") ANN TypeIdentF "String") ANN TypeFuncF (TypeVarF "d") (TypeIdentF "String")) ANN TypeLabelF "foo" (TypeFuncF (TypeVarF "d") (TypeIdentF "String"))),(RecordLabelF "bar" (CallF (IdentF "foo" ANN TypeFuncF (TypeIdentF "Int") (TypeIdentF "String")) (LitF (LitInt 1) ANN TypeIdentF "Int") ANN TypeIdentF "String") ANN TypeLabelF "bar" (TypeIdentF "String"))] ANN TypeRecordF [NoTypeF,TypeLabelF "foo" (TypeFuncF (TypeVarF "d") (TypeIdentF "String")),TypeLabelF "bar" (TypeIdentF "String")])

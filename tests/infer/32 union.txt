@@ -1,0 +1,27 @@
+ffi foo : (Int | Unit) => Int
+foo 1
+-
+TypeIdentF "Int"
+=
+ffi foo : Int => Int
+ffi x : (Int | Unit)
+foo x
+-
+(UnificationFail (TypeUnionF [TypeIdentF "Int",TypeIdentF "Unit"]) (TypeIdentF "Int"),(3,1,""))
+=
+ffi foo : (Int | Unit | String)
+bar : (Int | Unit)
+bar = foo
+-
+(UnificationFail (TypeIdentF "String") (TypeUnionF [TypeIdentF "Int",TypeIdentF "Unit"]),(2,1,""))
+=
+ffi foo : (Int | Unit)
+bar : (Int | Unit | String)
+bar = foo
+-
+TypeLabelF "bar" (TypeUnionF [TypeIdentF "Int",TypeIdentF "Unit",TypeIdentF "String"])
+=
+foo = case (\(x : Int) => 2) (_ => 3)
+foo 1
+-
+TypeIdentF "Int"

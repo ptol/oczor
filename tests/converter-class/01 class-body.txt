@@ -1,0 +1,20 @@
+class zero a: a
+-
+oc.instances.zero = {};
+var zero = function(x){
+  return x;
+};
+=
+class show a: a => String
+-
+oc.instances.show = {};
+var show = function(x,p1){
+  return x(p1);
+};
+=
+class eq a: a, a => Bool
+-
+oc.instances.eq = {};
+var eq = function(x,p1,p2){
+  return x(p1,p2);
+};

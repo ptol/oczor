@@ -1,0 +1,33 @@
+type Foo = Int
+x : Foo
+x = 1
+-
+TypeLabelF "x" (TypeIdentF "Foo")
+=
+type Foo =
+ foo : Int
+ bar : Int
+x : Foo
+x = ((foo = 1), bar = 1)
+-
+TypeLabelF "x" (TypeIdentF "Foo")
+=
+type Foo = y : Int
+x : Foo
+x = y = 1
+-
+TypeLabelF "x" (TypeIdentF "Foo")
+=
+type False = Unit
+ffi fls : False
+ffi bool : False => Int
+bool fls
+-
+TypeIdentF "Int"
+=
+type Foo a = foo : a
+
+x : Foo Int = foo = 1
+y : Foo String = foo = "foo"
+-
+TypeLabelF "y" (TypeApplyF (TypeIdentF "Foo") [TypeIdentF "String"])

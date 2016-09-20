@@ -1,0 +1,19 @@
+class eq a : (a,a) => Bool
+ffi eqInt : (Int,Int) => Bool
+ffi eqDouble : (Double, Double) => Bool
+instance Int eq = eqInt
+result = eq 1 2
+-
+(function(){
+  oc.instances.eq = {};
+  var eq = function(x,p1,p2){
+    return x(p1,p2);
+  };
+  oc.instances.eq.Int = eqInt;
+  return {
+    eq : eq,
+    eqInt : eqInt,
+    eqDouble : eqDouble,
+    result : oc.instances.eq.Int(1,2)
+  }
+})()

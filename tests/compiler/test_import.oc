@@ -1,0 +1,3 @@
+import testModule
+
+instance Int zero = 0

@@ -1,0 +1,18 @@
+_.foo
+-
+function(_a){
+  return _a.foo;
+}
+=
+x = y = 1
+z = x.y
+-
+(function(){
+  var x = {
+    y : 1
+  };
+  return {
+    x : x,
+    z : x.y
+  }
+})()

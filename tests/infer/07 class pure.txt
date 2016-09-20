@@ -1,0 +1,12 @@
+type Foo a = foo : a
+
+pureFoo : a => Foo a
+pureFoo x = foo = x
+
+class pure f : a => f a
+
+instance Foo pure x = pureFoo x
+x : Foo Int
+x = pure 1
+-
+TypeLabelF "x" (TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Int"])

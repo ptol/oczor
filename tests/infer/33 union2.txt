@@ -1,0 +1,32 @@
+type Foo = Int
+type Bar = Foo
+bar : Bar
+bar = 1
+-
+(TextError "type synonym \"Foo\" is already used",(3,1,""))
+=
+type Foo = Int
+type Bar = Int
+type FooBar = Foo | Bar
+x : FooBar
+x = 1
+-
+(UnificationFail (TypeIdentF "Int") (TypeUnionF [TypeIdentF "Foo",TypeIdentF "Bar"]),(4,1,""))
+=
+type Foo = Int | String
+type Bar = Foo | Int
+-
+(TypeUnionWithUnion "Bar",(2,1,""))
+=
+type Bar = Int
+type Foo = Int | Double
+bar : Bar
+bar = 1
+foo : Foo
+foo = bar
+-
+(UnificationFail (TypeIdentF "Bar") (TypeUnionF [TypeIdentF "Int",TypeIdentF "Double"]),(5,1,""))
+=
+type Foo a = Int | Foo a
+-
+(UnboundType "Foo",(1,1,""))

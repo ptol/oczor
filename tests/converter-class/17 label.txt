@@ -1,0 +1,30 @@
+class add a : a, a => a
+class zero a : a
+
+foo = bar = zero
+qwe = add foo.bar foo.bar
+-
+(function(){
+  oc.instances.add = {};
+  var add = function(x,p1,p2){
+    return x(p1,p2);
+  };
+  oc.instances.zero = {};
+  var zero = function(x){
+    return x;
+  };
+  var foo = {
+    bar : function(_fzero){
+      return zero(_fzero);
+    }
+  };
+  var qwe = function(_yzero,_yadd){
+    return _yadd(foo.bar(_yzero),foo.bar(_yzero));
+  };
+  return {
+    add : add,
+    zero : zero,
+    foo : foo,
+    qwe : qwe
+  }
+})()

@@ -1,0 +1,11 @@
+class eq a : (a,a) => Bool
+ffi eqInt : (Int,Int) => Bool
+ffi eqDouble : (Double,Double) => Bool
+ffi and : (Bool, Bool) => Bool
+instance Int eq = eqInt
+instance Double eq = eqDouble
+cases
+ 1 1.0 => (1, 1.0)
+ 1.0 1 => (1.0, 1)
+-
+(Int | Double), (Double | Int) => (Int | Double), (Double | Int)

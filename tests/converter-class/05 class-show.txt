@@ -1,0 +1,35 @@
+class show a: a => String
+foo = show
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var foo = function(_cshow,p1){
+    return show(_cshow,p1);
+  };
+  return {
+    show : show,
+    foo : foo
+  }
+})()
+=
+class show a: a => String
+ffi astr : (String, String) => String
+foo x y = astr (show x) (show y)
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var foo = function(_gshow,_jshow,x,y){
+    return astr(_gshow(x),_jshow(y));
+  };
+  return {
+    show : show,
+    astr : astr,
+    foo : foo
+  }
+})()

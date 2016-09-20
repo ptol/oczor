@@ -1,0 +1,37 @@
+id : a => a
+id x = x
+
+class map f : ((a => b), (f a)) => f b
+
+type Foo a = foo : a
+
+fooMap : ((a => b), Foo a) => Foo b
+fooMap f y = foo = f y.foo
+instance Foo map = fooMap
+
+y : Foo Int
+y = foo = 1
+
+test = map id y
+-
+(function () {
+        var id = function (x) {
+           return x;
+        };
+        instances.map = {};
+        var map = function (x) {
+           return x;
+        };
+        var fooMap = function (f,y) {
+           return {foo: f(y.foo)};
+        };
+        instances.map.Foo = fooMap;
+        var y = {foo: 1};
+        var test =
+        map(instances.map.Foo)(id,y);
+        return {id: id
+               ,map: map
+               ,fooMap: fooMap
+               ,y: y
+               ,test: test};
+     }());

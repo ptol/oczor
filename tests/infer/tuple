@@ -1,0 +1,20 @@
+type Foo = (Int, Int)
+x : Foo
+x = (item1 = 1), item2 = 2
+-
+x : Foo
+=
+foo (x,y) z = x
+bar = foo (1,2) 3
+-
+bar : Int
+=
+foo y = y.foo
+foo (bar = 1)
+-
+foo : c, d <> bar : Int
+=
+foo y = y.foo
+foo (foo = 1)
+-
+Int

@@ -1,0 +1,12 @@
+type Foo = Int
+foo : Foo
+foo = 1
+bar = foo
+-
+TypeLabelF "bar" (TypeIdentF "Foo")
+=
+type Foo a = a
+foo : Foo Int
+foo = 1
+-
+TypeLabelF "foo" (TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Int"])

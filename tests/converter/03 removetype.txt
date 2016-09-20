@@ -1,0 +1,11 @@
+type Foo = Int
+foo : Foo => Int
+foo x = x
+-
+ObjectF [("foo",FunctionF ["x"] [ReturnF (IdentF "x")])]
+=
+type Foo a = foo : a
+runFoo : Foo x => x
+runFoo x = x.foo
+-
+ObjectF [("runFoo",FunctionF ["x"] [ReturnF (FieldF (IdentF "x") "foo")])]

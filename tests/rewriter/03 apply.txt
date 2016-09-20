@@ -1,0 +1,5 @@
+1 # (x => x)
+-
+CallF
+  (ParensF (FunctionF [ "x" ] [ ReturnF (IdentF "x") ]))
+  [ LitF (LitInt 1) ]

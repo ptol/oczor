@@ -1,0 +1,19 @@
+x = 1
+x := 2
+-
+NoTypeF
+=
+x = 1
+x := "str"
+-
+(UnificationFail (TypeIdentF "String") (TypeIdentF "Int"),(2,1,""))
+=
+foo = 1
+bar x = foo := x
+-
+TypeLabelF "bar" (TypeFuncF (TypeIdentF "Int") NoTypeF)
+=
+foo = bar = 1
+foo.bar := 2
+-
+NoTypeF

@@ -1,0 +1,18 @@
+class show a: a => String
+
+foo : a show <: a => a
+foo x = x
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var foo = function(_eshow,x){
+    return x;
+  };
+  return {
+    show : show,
+    foo : foo
+  }
+})()

@@ -1,0 +1,11 @@
+import std.prelude
+import std.maybes
+import std.lists
+import testing
+
+l = range 1 3
+
+length l ?= 3
+l ?= l
+
+/* check ((fromMaybe 0 (head l)) == 1) */

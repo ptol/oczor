@@ -1,0 +1,57 @@
+class add a : a, a => a
+class zero a : a
+
+foo = add zero zero
+-
+(function(){
+  oc.instances.add = {};
+  var add = function(x,p1,p2){
+    return x(p1,p2);
+  };
+  oc.instances.zero = {};
+  var zero = function(x){
+    return x;
+  };
+  var foo = function(_kzero,_kadd){
+    return _kadd(zero(_kzero),zero(_kzero));
+  };
+  return {
+    add : add,
+    zero : zero,
+    foo : foo
+  }
+})()
+=
+class add a : a, a => a
+class zero a : a
+instance Int add x y = 0
+instance Int zero = 0
+
+foo = add zero zero
+
+bar : Int
+bar = foo
+-
+(function(){
+  oc.instances.add = {};
+  var add = function(x,p1,p2){
+    return x(p1,p2);
+  };
+  oc.instances.zero = {};
+  var zero = function(x){
+    return x;
+  };
+  oc.instances.add.Int = function(x,y){
+    return 0;
+  };
+  oc.instances.zero.Int = 0;
+  var foo = function(_mzero,_madd){
+    return _madd(zero(_mzero),zero(_mzero));
+  };
+  return {
+    add : add,
+    zero : zero,
+    foo : foo,
+    bar : foo(oc.instances.zero.Int,oc.instances.add.Int)
+  }
+})()

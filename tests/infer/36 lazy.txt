@@ -1,0 +1,6 @@
+type Lazy a = a
+
+foo : Lazy Int
+foo = 1
+-
+TypeLabelF "foo" (TypeApplyF (TypeIdentF "Lazy") [TypeIdentF "Int"])

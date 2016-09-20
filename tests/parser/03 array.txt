@@ -1,0 +1,24 @@
+[1 foo bar (foo bar)]
+-
+ArrayF [LitF (LitInt 1),IdentF "foo",IdentF "bar",CallF (IdentF "foo") (IdentF "bar")]
+=
+[
+ 1 
+ foo 
+ bar
+ foo bar
+]
+-
+ArrayF [LitF (LitInt 1),IdentF "foo",IdentF "bar",CallF (IdentF "foo") (IdentF "bar")]
+=
+[]
+-
+ArrayF []
+=
+[1, foo bar]
+-
+ArrayF [LitF (LitInt 1),CallF (IdentF "foo") (IdentF "bar")]
+=
+[1 _ 2]
+-
+FunctionF (ParamIdentF "_a") Nothing (ArrayF [LitF (LitInt 1),IdentF "_a",LitF (LitInt 2)])

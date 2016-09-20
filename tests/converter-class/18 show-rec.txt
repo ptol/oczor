@@ -1,0 +1,71 @@
+type Foo a = foo : a
+class show a: a => String
+
+showFoo : a show <: Foo a => String
+showFoo = case
+ x => showFoo x
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var showFoo = function(_dshow,_a1){
+    return function(x){
+      return showFoo(_dshow,x);
+    }(_a1);
+  };
+  return {
+    show : show,
+    showFoo : showFoo
+  }
+})()
+=
+ffi emptyObject : a
+ffi eqAny : a, a => Bool
+class eq a : a, a => Bool
+type NonEmptyList a = (a, List a)
+type List a = emptyList | NonEmptyList a
+
+
+eqList : a eq <: (List a, List a) => Bool
+eqList = case
+ \(h1,t1) (h2,t2) => eqList t1 t2
+-
+(function(){
+  oc.instances.eq = {};
+  var eq = function(x,p1,p2){
+    return x(p1,p2);
+  };
+  oc.instances.eq.EmptyList = eqAny;
+  var eqList = function(_ageq,_a1,_a2){
+    if(function(_a,_b){
+      return (_a.item1
+      !==
+      undefined && _a.item2
+      !==
+      undefined && _b.item1
+      !==
+      undefined && _b.item2
+      !==
+      undefined);
+    }(_a1,_a2)){
+      return function(_a,_b){
+        var h1 = _a.item1;
+        var t1 = _a.item2;
+        var h2 = _b.item1;
+        var t2 = _b.item2;
+        return eqList(_ageq,t1,t2);
+      }(_a1,_a2);
+    }else{
+      throw "cases error";
+    }
+  };
+  return {
+    emptyObject : emptyObject,
+    eqAny : eqAny,
+    eq : eq,
+    emptyList : {},
+    eqList : eqList
+  }
+})()

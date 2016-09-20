@@ -1,0 +1,36 @@
+import std.prelude
+import std.foldable
+
+arrayShow x = "array"
+
+ffi arrayEmpty : Array a
+
+ffi arrayIndex : (Int,Array a) => Maybe a
+
+ffi arrayEq : a eq <: (Array a, Array a) => Bool
+
+ffi arrayLength : (Array a) => Int
+
+ffi arrayPure : a => Array a
+
+ffi arrayAppend : Array a, Array a => Array a
+
+ffi arrayMap : (a => b), Array a => Array b
+
+ffi arrayFoldl : (a, e => e), a, Array e => a
+
+/* ffi arrayZipWith : (a, b => c), Array a, Array b => Array c */
+
+/* ffi arrayBind : (a => Array b), Array a => Array b */
+
+instance (Array (a eq <: a)) eq x y = arrayEq x y
+instance Array pure x = arrayPure x
+instance Array append x y = arrayAppend x y
+instance Array map f x = arrayMap f x
+instance Array foldl f i x = arrayFoldl f i x
+/* instance (Maybe (a show <: a)) show x = showMaybe x */
+
+arrayIsEmpty x = eq x arrayEmpty
+
+
+

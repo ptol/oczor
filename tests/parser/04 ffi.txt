@@ -1,0 +1,7 @@
+ffi foo : Int
+-
+FfiF "foo" (TypeIdentF "Int")
+=
+ffi type Array a
+-
+FfiTypeF "Array" (TypePolyF [TypeVarF "a"] (TypeIdentF "Array"))

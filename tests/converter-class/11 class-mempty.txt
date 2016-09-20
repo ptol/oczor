@@ -1,0 +1,115 @@
+class mempty a: a
+-
+oc.instances.mempty = {};
+var mempty = function(x){
+  return x;
+};
+=
+class mempty a: a
+instance Int mempty = 0
+foo : Int
+foo = mempty
+-
+(function(){
+  oc.instances.mempty = {};
+  var mempty = function(x){
+    return x;
+  };
+  oc.instances.mempty.Int = 0;
+  return {
+    mempty : mempty,
+    foo : mempty(oc.instances.mempty.Int)
+  }
+})()
+=
+class mempty a: a
+instance Int mempty = 0
+ffi foo : Int => Int
+foo mempty
+-
+(function(){
+  oc.instances.mempty = {};
+  var mempty = function(x){
+    return x;
+  };
+  oc.instances.mempty.Int = 0;
+  return {
+    mempty : mempty,
+    foo : foo,
+    item1 : foo(mempty(oc.instances.mempty.Int))
+  }
+})()
+=
+class mempty a: a
+instance Int mempty = 0
+foo = mempty
+bar : Int
+bar = foo
+-
+(function(){
+  oc.instances.mempty = {};
+  var mempty = function(x){
+    return x;
+  };
+  oc.instances.mempty.Int = 0;
+  var foo = function(_dmempty){
+    return mempty(_dmempty);
+  };
+  return {
+    mempty : mempty,
+    foo : foo,
+    bar : foo(oc.instances.mempty.Int)
+  }
+})()
+=
+class mempty a: a
+instance Int mempty = 0
+ffi foo : Int => Int
+x : Int
+x = mempty
+foo x
+-
+(function(){
+  oc.instances.mempty = {};
+  var mempty = function(x){
+    return x;
+  };
+  oc.instances.mempty.Int = 0;
+  var x = mempty(oc.instances.mempty.Int);
+  return {
+    mempty : mempty,
+    foo : foo,
+    x : x,
+    item1 : foo(x)
+  }
+})()
+=
+class mempty a: a
+instance Int mempty = 0
+ffi foo : Int => Int
+x = mempty
+foo x
+-
+(function(){
+  oc.instances.mempty = {};
+  var mempty = function(x){
+    return x;
+  };
+  oc.instances.mempty.Int = 0;
+  var x = function(_dmempty){
+    return mempty(_dmempty);
+  };
+  return {
+    mempty : mempty,
+    foo : foo,
+    x : x,
+    item1 : foo(x(oc.instances.mempty.Int))
+  }
+})()
+=
+/* class mempty a: a */
+/* instance Int mempty = 0 */
+/* foo = bar = mempty */
+1 
+-
+1

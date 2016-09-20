@@ -1,0 +1,6 @@
+type Foo a = foo : a
+class show a : a => String
+foo : Foo a => String
+foo x = show x.foo
+bar x = foo x
+

@@ -1,0 +1,20 @@
+type Foo a = foo : a
+class show a: a => String
+showFoo : Foo (a show <: a) => String
+showFoo x = show x.foo
+-
+TypeLabelF "showFoo" (TypeFuncF (TypeApplyF (TypeIdentF "Foo") [TypeConstrainsF [(TypeVarF "a","show")] (TypeVarF "a")]) (TypeIdentF "String"))
+=
+type Foo a = foo : a
+class show a: a => String
+showFoo : Foo (a show <: a) => String
+showFoo x = show x.foo
+bar = showFoo (foo = 1)
+-
+(NoInstance (TypeIdentF "Int") "show",(5,7,""))
+=
+type Foo a = foo : a
+class show a: a => String
+showFoo x = show x.foo
+-
+TypeLabelF "showFoo" (TypeFuncF (TypeRowF (TypeVarF "a") [TypeLabelF "foo" (TypeConstrainsF [(TypeVarF "b","show")] (TypeVarF "b"))]) (TypeIdentF "String"))

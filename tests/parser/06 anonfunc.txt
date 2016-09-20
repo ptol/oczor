@@ -1,0 +1,15 @@
+x => 1
+-
+FunctionF (ParamIdentF "x") Nothing (LitF (LitInt 1))
+=
+x y => 1
+-
+FunctionF (RecordF [ParamIdentF "x",ParamIdentF "y"]) Nothing (LitF (LitInt 1))
+=
+\ (x : Int) => x
+-
+FunctionF (ExprTypeF (TypeLabelF "x" (TypeIdentF "Int"))) Nothing (IdentF "x")
+=
+x | 1 => x
+-
+FunctionF (ParamIdentF "x") (Just (LitF (LitInt 1))) (IdentF "x")

@@ -1,0 +1,40 @@
+import std.prelude
+import testing
+import std.foldable
+import std.maybes
+
+
+m : Maybe Int
+m = pure 2
+
+m2 : Maybe Int
+m2 = pure 3
+
+testNone : Maybe Int
+testNone = none
+
+maybeBindFunc : Int => Maybe Int
+maybeBindFunc = case
+ x | (eqInt x 1) => none
+ x | (eqInt x 2) => just = 3
+
+isJust m ?= true
+isNone testNone ?= true
+
+check ((maybe 1 (cnst 2) none) == 1)
+check ((maybe 1 (x => x + 1) m2) == 4)
+
+check ((fromMaybe 0 none) == 0)
+check ((fromMaybe 0 (pureMaybe 2)) == 2)
+
+check ((fromMaybe 0 m) == 2)
+check ((fromMaybe 0 (map (x => x + 1) m)) == 3)
+
+check ((fromMaybe 0 (bind maybeBindFunc m)) == 3)
+check ((foldl (\a e => a + e) 1 m) == 3)
+
+check ((showMaybe testNone) == "none")
+check ((show m) == "2")
+
+check (eq m m)
+

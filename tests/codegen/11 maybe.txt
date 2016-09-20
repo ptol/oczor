@@ -1,0 +1,37 @@
+ffi unit : Unit
+type None = Unit
+none : None
+none = unit
+type Maybe a = None | just : a 
+
+pureMaybe : a => Maybe a
+pureMaybe x = just = x
+
+class pure f : a => f a
+
+instance Maybe pure x = pureMaybe x
+
+foo : Maybe Int
+foo = pure 1
+-
+(function(){
+  var pureMaybe = function(x){
+    return {
+      just : x
+    };
+  };
+  oc.instances.pure = {};
+  var pure = function(x,p1){
+    return x(p1);
+  };
+  oc.instances.pure.Maybe = function(x){
+    return pureMaybe(x);
+  };
+  return {
+    unit : unit,
+    none : unit,
+    pureMaybe : pureMaybe,
+    pure : pure,
+    foo : oc.instances.pure.Maybe(1)
+  }
+})()

@@ -1,0 +1,13 @@
+class mempty a: a
+instance Int mempty = 0
+foo = bar = mempty
+-
+Scope [StmtList [Set (Field (Ident "instances") "mempty") (Object []),Var "mempty" (Function ["x"] [Return (Ident "x")])],Set (Field (Field (Ident "instances") "mempty") "Int") (Lit (LitInt 0)),Var "foo" (Object [("bar",Function ["$eInstancemempty"] [Return (Call (Ident "mempty") [Ident "$eInstancemempty"])])]),Return (Object [("mempty",Ident "mempty"),("foo",Ident "foo")])]
+=
+ffi test : Int => Int
+class mempty a: a
+instance Int mempty = 0
+foo = bar = mempty
+t = test foo.bar
+-
+???

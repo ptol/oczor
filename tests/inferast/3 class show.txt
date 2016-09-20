@@ -1,0 +1,5 @@
+class show a: a => String
+instance Int show x = "test"
+y = show 1
+-
+(RecordF [(ClassFnF "show" (TypePolyF [TypeVarF "a"] (TypeFuncF (TypeVarF "a") (TypeIdentF "String"))) ANN NoTypeF),(InstanceFnF (TypeIdentF "Int") "show" (FunctionF (ParamIdentF "x" ANN TypeVarF "b") Nothing (LitF (LitString "test") ANN TypeIdentF "String") ANN TypeFuncF (TypeVarF "b") (TypeIdentF "String")) ANN TypeFuncF (TypeVarF "b") (TypeIdentF "String")),(RecordLabelF "y" (CallF (IdentF "show" ANN TypeFuncF (TypeIdentF "Int") (TypeIdentF "String")) (LitF (LitInt 1) ANN TypeIdentF "Int") ANN TypeIdentF "String") ANN TypeLabelF "y" (TypeIdentF "String"))] ANN TypeRecordF [NoTypeF,TypeFuncF (TypeVarF "b") (TypeIdentF "String"),TypeLabelF "y" (TypeIdentF "String")])

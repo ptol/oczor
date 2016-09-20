@@ -1,0 +1,29 @@
+id x = x
+id 1.0
+id 1
+-
+TypeIdentF "Int"
+=
+foo(x) = x
+-
+TypeLabelF "foo" (TypeFuncF (TypeVarF "a") (TypeVarF "a"))
+=
+ffi foo : (a,a) => Unit
+foo 1 1.1
+-
+(UnificationFail (TypeIdentF "Double") (TypeIdentF "Int"),(2,1,""))
+=
+id : a => a
+id x = x
+-
+TypeLabelF "id" (TypeFuncF (TypeVarF "a") (TypeVarF "a"))
+=
+ffi foo : x => Unit
+foo 1
+-
+TypeIdentF "Unit"
+=
+ffi foo : x => x
+foo 1
+-
+TypeIdentF "Int"

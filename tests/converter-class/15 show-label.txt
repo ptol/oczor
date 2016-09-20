@@ -1,0 +1,23 @@
+class show a: a => String
+
+bar x = 
+ y = x.foo
+ show y
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var bar = function(_jshow,x){
+    var y = x.foo;
+    return {
+      y : y,
+      item1 : _jshow(y)
+    };
+  };
+  return {
+    show : show,
+    bar : bar
+  }
+})()

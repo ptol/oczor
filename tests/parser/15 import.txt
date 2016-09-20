@@ -1,0 +1,15 @@
+import list
+-
+StmtF (StmtImport ["list"] Nothing)
+=
+import list as l
+-
+StmtF (StmtImport ["list"] (Just "l"))
+=
+include list
+-
+StmtF (StmtInclude ["list"])
+=
+import foo.bar as l
+-
+StmtF (StmtImport ["foo","bar"] (Just "l"))

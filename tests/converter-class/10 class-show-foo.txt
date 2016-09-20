@@ -1,0 +1,106 @@
+type Foo a = foo : a
+class show a: a => String
+showFoo : Foo ((a show <: a)) => String
+showFoo x = show x.foo
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var showFoo = function(_lshow,x){
+    return _lshow(x.foo);
+  };
+  return {
+    show : show,
+    showFoo : showFoo
+  }
+})()
+=
+type Foo a = foo : a
+class show a: a => String
+instance Int show x = "int"
+showFoo : Foo ((a show <: a)) => String
+showFoo x = show x.foo
+bar = showFoo (foo = 1)
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  oc.instances.show.Int = function(x){
+    return "int";
+  };
+  var showFoo = function(_mshow,x){
+    return _mshow(x.foo);
+  };
+  return {
+    show : show,
+    showFoo : showFoo,
+    bar : showFoo(oc.instances.show.Int,{
+      foo : 1
+    })
+  }
+})()
+=
+type Foo a = foo : a
+class show a: a => String
+showFoo : Foo ((a show <: a)) => String
+showFoo x = show x.foo
+instance (Foo (a show <: a)) show x = showFoo x
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var showFoo = function(_lshow,x){
+    return _lshow(x.foo);
+  };
+  oc.instances.show.Foo = function(_nshow,x){
+    return showFoo(_nshow,x);
+  };
+  return {
+    show : show,
+    showFoo : showFoo
+  }
+})()
+=
+type Foo a = foo : a
+class show a: a => String
+showFoo : Foo ((a show <: a)) => String
+showFoo x = show x.foo
+instance (Foo (a show <: a)) show x = showFoo x
+instance Int show x = "int"
+foo : Foo Int
+foo = foo = 2
+
+bar = show foo
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var showFoo = function(_lshow,x){
+    return _lshow(x.foo);
+  };
+  oc.instances.show.Foo = function(_nshow,x){
+    return showFoo(_nshow,x);
+  };
+  oc.instances.show.Int = function(x){
+    return "int";
+  };
+  var foo = {
+    foo : 2
+  };
+  return {
+    show : show,
+    showFoo : showFoo,
+    foo : foo,
+    bar : function(p1){
+      return oc.instances.show.Foo(oc.instances.show.Int,p1);
+    }(foo)
+  }
+})()

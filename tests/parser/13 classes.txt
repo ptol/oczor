@@ -1,0 +1,7 @@
+class eq a: (a,a) => Unit
+-
+ClassFnF "eq" (TypePolyF [TypeVarF "a"] (TypeFuncF (TypeRecordF [TypeVarF "a",TypeVarF "a"]) (TypeIdentF "Unit")))
+=
+foo : a show <: a
+-
+ExprTypeF (TypeLabelF "foo" (TypeConstrainsF [(TypeVarF "a","show")] (TypeVarF "a")))

@@ -1,0 +1,8 @@
+bar x = x
+foo x = bar x
+-
+ScopeF
+  [ VarF "bar" (FunctionF [ "x" ] [ ReturnF (IdentF "x") ])
+  , VarF "foo" (IdentF "bar")
+  ]
+  (ObjectF [ ( "bar" , IdentF "bar" ) , ( "foo" , IdentF "foo" ) ])

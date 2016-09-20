@@ -1,0 +1,6 @@
+ffi foo : Array
+
+bar : Array a
+bar = foo
+-
+TypeLabelF "bar" (TypeApplyF (TypeIdentF "Array") [TypeVarF "a"])

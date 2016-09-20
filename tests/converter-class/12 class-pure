@@ -1,0 +1,12 @@
+type Foo a = foo : a
+
+pureFoo : a => Foo a
+pureFoo x = foo = x
+
+class pure f : a => f a
+
+instance Foo pure x = pureFoo x
+x : Foo Int
+x = pure 1
+-
+Scope [Var "pureFoo" (Function ["x"] [Return (Object [("foo",Call (Ident "cloneWithNewType") [Ident "x",Lit (LitString "e")])])]),StmtList [Set (Field (Ident "instances") "pure") (Object []),Var "pure" (Function ["x"] [Return (Ident "x")])],Set (Field (Field (Ident "instances") "pure") "Foo") (Function ["x"] [Return (Call (Ident "pureFoo") [Call (Ident "cloneWithNewType") [Ident "x",Lit (LitString "j")]])]),Var "x" (Call (Call (Ident "pure") [Field (Field (Ident "instances") "pure") "Foo"]) [Lit (LitInt 1)]),Return (Object [("pureFoo",Ident "pureFoo"),("pure",Ident "pure"),("x",Ident "x")])]

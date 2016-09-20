@@ -1,0 +1,59 @@
+x y => 1
+-
+FunctionF (RecordF [ParamIdentF "x",ParamIdentF "y"]) Nothing (LitF (LitInt 1))
+=
+x, y => 1
+-
+FunctionF (ParamIdentF "_a") Nothing (LetF (RecordF [RecordLabelF "x" (CallF (LabelAccessF "item1") (IdentF "_a")),RecordLabelF "y" (CallF (LabelAccessF "item2") (IdentF "_a"))]) (LitF (LitInt 1)))
+=
+\(x, y) => 1
+-
+FunctionF (ParamIdentF "_a") Nothing (LetF (RecordF [RecordLabelF "x" (CallF (LabelAccessF "item1") (IdentF "_a")),RecordLabelF "y" (CallF (LabelAccessF "item2") (IdentF "_a"))]) (LitF (LitInt 1)))
+=
+x, y z => 1
+-
+FunctionF (RecordF [ParamIdentF "_a",ParamIdentF "z"]) Nothing (LetF (RecordF [RecordLabelF "x" (CallF (LabelAccessF "item1") (IdentF "_a")),RecordLabelF "y" (CallF (LabelAccessF "item2") (IdentF "_a"))]) (LitF (LitInt 1)))
+=
+\(x,y) (l,m) => m
+-
+FunctionF (RecordF [ParamIdentF "_a",ParamIdentF "_b"]) Nothing (LetF (RecordF [RecordLabelF "x" (CallF (LabelAccessF "item1") (IdentF "_a")),RecordLabelF "y" (CallF (LabelAccessF "item2") (IdentF "_a")),RecordLabelF "l" (CallF (LabelAccessF "item1") (IdentF "_b")),RecordLabelF "m" (CallF (LabelAccessF "item2") (IdentF "_b"))]) (IdentF "m"))
+=
+_ => 1
+-
+FunctionF (ParamIdentF "_a") Nothing (LitF (LitInt 1))
+=
+1 => 1
+-
+FunctionF (ParamIdentF "_a") (Just (CallF (IdentF "eq") (RecordF [IdentF "_a",LitF (LitInt 1)]))) (LitF (LitInt 1))
+=
+1 2 => 1
+-
+FunctionF (RecordF [ParamIdentF "_a",ParamIdentF "_b"]) (Just (CallF (IdentF "andBool") (RecordF [CallF (IdentF "eq") (RecordF [IdentF "_a",LitF (LitInt 1)]),CallF (IdentF "eq") (RecordF [IdentF "_b",LitF (LitInt 2)])]))) (LitF (LitInt 1))
+=
+\(x = 1) => 1
+-
+FunctionF (ParamIdentF "_a") (Just (CallF (IdentF "eq") (RecordF [CallF (LabelAccessF "x") (IdentF "_a"),LitF (LitInt 1)]))) (LitF (LitInt 1))
+=
+\(foo = 1, bar = 1) => 1
+-
+FunctionF (RecordF [ParamIdentF "_a",ParamIdentF "_b"]) (Just (CallF (IdentF "andBool") (RecordF [CallF (IdentF "eq") (RecordF [CallF (LabelAccessF "foo") (IdentF "_a"),LitF (LitInt 1)]),CallF (IdentF "eq") (RecordF [CallF (LabelAccessF "bar") (IdentF "_b"),LitF (LitInt 1)])]))) (LitF (LitInt 1))
+=
+\(x = y) => 1
+-
+FunctionF (ParamIdentF "_a") Nothing (LetF (RecordLabelF "y" (CallF (LabelAccessF "x") (IdentF "_a"))) (LitF (LitInt 1)))
+=
+\(foo = x, bar = y) => 1
+-
+FunctionF (RecordF [ParamIdentF "_a",ParamIdentF "_b"]) Nothing (LetF (RecordF [RecordLabelF "x" (CallF (LabelAccessF "foo") (IdentF "_a")),RecordLabelF "y" (CallF (LabelAccessF "bar") (IdentF "_b"))]) (LitF (LitInt 1)))
+=
+^qwe => 1
+-
+FunctionF (ParamIdentF "_a") (Just (CallF (IdentF "eq") (RecordF [IdentF "_a",IdentF "qwe"]))) (LitF (LitInt 1))
+=
+\(x = 1) 2 => 3
+-
+FunctionF (RecordF [ParamIdentF "_a",ParamIdentF "_b"]) (Just (CallF (IdentF "andBool") (RecordF [CallF (IdentF "eq") (RecordF [CallF (LabelAccessF "x") (IdentF "_a"),LitF (LitInt 1)]),CallF (IdentF "eq") (RecordF [IdentF "_b",LitF (LitInt 2)])]))) (LitF (LitInt 3))
+=
+\(x = 1), 2 => 3
+-
+FunctionF (ParamIdentF "_a") (Just (CallF (IdentF "andBool") (RecordF [CallF (IdentF "eq") (RecordF [CallF (LabelAccessF "x") (IdentF "_a"),LitF (LitInt 1)]),CallF (IdentF "eq") (RecordF [CallF (LabelAccessF "item2") (IdentF "_a"),LitF (LitInt 2)])]))) (LitF (LitInt 3))

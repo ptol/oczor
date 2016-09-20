@@ -1,0 +1,32 @@
+import std.ff
+
+class
+	add a : a, a => a
+	zero a : a
+	mul a : a, a => a
+	one a : a
+	sub a : a, a => a
+	div a : a, a => a
+
+infixl + 6 add
+infixl - 6 sub
+infixl * 7 mul
+infixl / 7 div
+
+instance 
+	Int add = addInt
+	Int mul = mulInt
+	Int zero = 0
+	Int one = 1
+	Int sub = subInt
+	Int div = divInt
+
+instance 
+	Double add = addDouble
+	Double mul = mulDouble
+	Double zero = 0.0
+	Double one = 1.0
+	Double sub = subDouble
+	Double div = divDouble
+
+negate x = zero - x

@@ -1,0 +1,45 @@
+ffi unit : Unit
+type None = Unit
+none : None
+none = unit
+type Maybe a = None | a 
+
+maybe : (b, (a => b), (Maybe a)) => b
+maybe x f m = m # case 
+ (z : None) => x
+ z => f z
+
+foo = maybe 1 (x => 2) none
+-
+TypeLabelF "foo" (TypeIdentF "Int")
+=
+ffi emptyObject : a
+ffi eqAny : a, a => Bool
+ffi andBool : Bool, Bool => Bool
+class eq a : a, a => Bool
+type Maybe a = none | just : a 
+eqMaybe : (a eq <: (Maybe a, Maybe a)) => Bool
+eqMaybe = case
+ ^none ^none => true
+ x y => eq x.just y.just
+-
+TypeLabelF "eqMaybe" (TypeFuncF (TypeConstrainsF [(TypeVarF "a","eq")] (TypeRecordF [TypeApplyF (TypeIdentF "Maybe") [TypeVarF "a"],TypeApplyF (TypeIdentF "Maybe") [TypeVarF "a"]])) (TypeIdentF "Bool"))
+=
+ffi emptyObject : a
+ffi eqAny : a, a => Bool
+ffi andBool : Bool, Bool => Bool
+class eq a : a, a => Bool
+type Maybe a = none | just : a 
+
+maybe : b, (a => b), (Maybe a) => b
+maybe x f m = m # case 
+ ^none => x
+ z => f z.just
+
+noneMaybe : Maybe a
+noneMaybe = none
+
+mapMaybe : (a => b, (Maybe a)) => Maybe b
+mapMaybe f x = maybe noneMaybe (y => just = (f y)) x
+-
+TypeLabelF "mapMaybe" (TypeFuncF (TypeRecordF [TypeFuncF (TypeVarF "a") (TypeVarF "b"),TypeApplyF (TypeIdentF "Maybe") [TypeVarF "a"]]) (TypeApplyF (TypeIdentF "Maybe") [TypeVarF "b"]))

@@ -1,0 +1,12 @@
+type Foo = Int
+foo : Foo
+foo = 1
+bar = foo
+-
+(function(){
+  var foo = 1;
+  return {
+    foo : foo,
+    bar : foo
+  }
+})()

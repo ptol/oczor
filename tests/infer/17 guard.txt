@@ -1,0 +1,8 @@
+x | (1) => x
+-
+(UnificationFail (TypeIdentF "Int") (TypeIdentF "Bool"),(1,1,""))
+=
+ffi foo : Int => Bool
+x | (foo x) => x
+-
+TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")

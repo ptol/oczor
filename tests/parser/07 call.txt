@@ -1,0 +1,31 @@
+foo x
+-
+CallF (IdentF "foo") (IdentF "x")
+=
+foo x y
+-
+CallF (IdentF "foo") (RecordF [IdentF "x",IdentF "y"])
+=
+foo (bar y)
+-
+CallF (IdentF "foo") (CallF (IdentF "bar") (IdentF "y"))
+=
+foo (x = 1)
+-
+CallF (IdentF "foo") (RecordLabelF "x" (LitF (LitInt 1)))
+=
+foo (x = 1) (y = 1)
+-
+CallF (IdentF "foo") (RecordF [RecordLabelF "x" (LitF (LitInt 1)),RecordLabelF "y" (LitF (LitInt 1))])
+=
+foo (x => x)
+-
+CallF (IdentF "foo") (FunctionF (ParamIdentF "x") Nothing (IdentF "x"))
+=
+x | (foo x) => x
+-
+FunctionF (ParamIdentF "x") (Just (CallF (IdentF "foo") (IdentF "x"))) (IdentF "x")
+=
+foo case (x => x)
+-
+CallF (IdentF "foo") (CasesF [FunctionF (ParamIdentF "x") Nothing (IdentF "x")])

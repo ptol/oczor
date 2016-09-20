@@ -1,0 +1,54 @@
+import 
+  std.ff
+  std.numbers
+include 
+  std.ff
+  std.numbers
+
+flip f = \a b => f b a
+
+cnst x = y => x
+
+id x = x
+
+fst x y = x
+snd x y = y
+
+class show a : a => String
+
+class eq a : a, a => Bool
+infix == 4 eq
+
+class 
+  mempty a : a
+  append a : a, a => a
+
+infixr ++ 5 append
+
+class 
+  map f : (a => b, (f a)) => f b
+  apply f : ((f (a => b)), (f a)) => f b
+  pure f : a => f a
+  bind f : ((a => f b), (f a)) => f b
+  traverse t : ((a => m b), t a) => m (t b)
+
+instance 
+	Int show = showInt
+	Double show = showDouble
+	String show = showString
+	Char show = showChar
+	Bool show = showBool
+
+instance 
+	Int eq = eqInt
+	Double eq = eqDouble
+	String eq = eqString
+	Char eq = eqChar
+	Bool eq = eqBool
+
+instance 
+  String mempty = ""
+  String append x y = appendString x y
+
+infixr && 3 andBool
+infixr || 2 orBool

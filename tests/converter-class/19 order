@@ -1,0 +1,7 @@
+class add a : a, b, c => Int
+class zero1 a : a
+class zero2 a : a
+class zero3 a : a
+
+foo = add zero1 zero2 zero3
+bar = add zero1 zero2 zero3

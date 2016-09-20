@@ -1,0 +1,44 @@
+class eq a : a,a => Int
+
+ffi arrayEq : a eq <: (Array a, Array a) => Int
+
+instance (Array (a eq <: a)) eq x y = arrayEq x y
+
+instance Int eq x y = 0
+
+ffi unit : Unit
+
+checkEq : (a eq <: (a,a)) => Unit
+checkEq x y = unit
+
+
+arr = [1 2 3]
+
+checkEq arr arr
+-
+(function(){
+  oc.instances.eq = {};
+  var eq = function(x,p1,p2){
+    return x(p1,p2);
+  };
+  oc.instances.eq.Array = function(_eeq,x,y){
+    return arrayEq(_eeq,x,y);
+  };
+  oc.instances.eq.Int = function(x,y){
+    return 0;
+  };
+  var checkEq = function(_oeq,x,y){
+    return unit;
+  };
+  var arr = [1,2,3];
+  return {
+    eq : eq,
+    arrayEq : arrayEq,
+    unit : unit,
+    checkEq : checkEq,
+    arr : arr,
+    item1 : checkEq(function(p1,p2){
+      return oc.instances.eq.Array(oc.instances.eq.Int,p1,p2);
+    },arr,arr)
+  }
+})()

@@ -1,0 +1,53 @@
+class pure f : a => f a
+type Either a b = left : a | right : b
+
+pureEither : b => Either a b
+pureEither x = right = x
+
+instance (Either a) pure x = pureEither x
+
+x : Either String Int
+x = pure 2
+-
+TypeLabelF "x" (TypeApplyF (TypeIdentF "Either") [TypeIdentF "String",TypeIdentF "Int"])
+=
+type Either a b = left : a | right : b
+
+foo : Either String Int
+foo = right = 1
+
+fromEither : b, Either a b => b
+fromEither = case
+ def (left = x) => def
+ _ (right = x) => x
+
+bar = fromEither 3 foo
+-
+TypeLabelF "bar" (TypeIdentF "Int")
+=
+type Either a b = left : a | right : b
+
+either : (a => c), (b => c), (Either a b) => c
+either fl fr m = m # case 
+ (left = x) => fl x
+ (right = x) => fr x
+-
+TypeLabelF "either" (TypeFuncF (TypeRecordF [TypeFuncF (TypeVarF "a") (TypeVarF "c"),TypeFuncF (TypeVarF "b") (TypeVarF "c"),TypeApplyF (TypeIdentF "Either") [TypeVarF "a",TypeVarF "b"]]) (TypeVarF "c"))
+=
+type Either a b = left : a | right : b
+
+mapEither : (b => c, (Either a b)) => Either a c
+mapEither f z = z # case
+ (left = x) => left = x
+ (right = x) => right = f x
+
+class map f : (a => b, (f a)) => f b
+
+instance (Either a) map = mapEither
+
+foo : Either String Int
+foo = left = "foo"
+
+bar = map (x => x) foo
+-
+TypeLabelF "bar" (TypeApplyF (TypeIdentF "Either") [TypeIdentF "String",TypeIdentF "Int"])

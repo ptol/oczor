@@ -1,0 +1,16 @@
+type Foo a = foo : a
+
+class show a : a => String
+instance Int show x = "test"
+
+showFoo : (Foo a) => String
+showFoo x = show x.foo
+
+instance (Foo forall (a show) a) show x = showFoo x
+
+test : Foo Int
+test = foo = 1
+
+bar = show test
+-
+Scope [StmtList [Set (Field (Ident "instances") "show") (Object []),Var "show" (Function ["x"] [Return (Ident "x")])],Set (Field (Field (Ident "instances") "show") "Int") (Function ["x"] [Return (Lit (LitString "test"))]),Var "showFoo" (Function ["$hInstanceshow"] [Return (Function ["x"] [Return (Call (Call (Ident "show") [Ident "$hInstanceshow"]) [Field (Ident "x") "foo"])])]),Set (Field (Field (Ident "instances") "show") "Foo") (Function ["x"] [Return (Call (Call (Ident "showFoo") [Ident "$nInstanceshow"]) [Ident "x"])]),Var "test" (Object [("foo",Lit (LitInt 1))]),Var "bar" (Call (Call (Ident "show") [Field (Field (Ident "instances") "show") "Foo"]) [Ident "test"]),Return (Object [("show",Ident "show"),("showFoo",Ident "showFoo"),("test",Ident "test"),("bar",Ident "bar")])]

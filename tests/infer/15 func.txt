@@ -1,0 +1,79 @@
+type Foo a = a
+foo : ((Foo a) => (Foo a))
+foo x = x
+foo 1
+foo 1.0
+-
+TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Double"]
+=
+compose f g x = f (g x)
+-
+TypeLabelF "compose" (TypeFuncF (TypeRecordF [TypeFuncF (TypeVarF "b") (TypeVarF "c"),TypeFuncF (TypeVarF "a") (TypeVarF "b"),TypeVarF "a"]) (TypeVarF "c"))
+=
+ffi eq : (Int, Int) => Bool
+foo x = x # case (1 => 2)
+-
+TypeLabelF "foo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int"))
+=
+foo : Int => Int
+foo x = x
+-
+TypeLabelF "foo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int"))
+=
+ffi bar : Int => Int
+foo x = bar x
+-
+TypeLabelF "foo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int"))
+=
+ffi eq : (Int, Int) => Bool
+1 => 2
+-
+TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")
+=
+ffi eq : (Int, Int) => Bool
+1 => 2
+2 => 3
+-
+TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")
+=
+x = 1
+y => y x
+-
+TypeFuncF (TypeFuncF (TypeIdentF "Int") (TypeVarF "a")) (TypeVarF "a")
+=
+x y => x
+-
+TypeFuncF (TypeRecordF [TypeVarF "a",TypeVarF "b"]) (TypeVarF "a")
+=
+equal x y => equal x y
+-
+TypeFuncF (TypeRecordF [TypeFuncF (TypeRecordF [TypeVarF "a",TypeVarF "b"]) (TypeVarF "c"),TypeVarF "a",TypeVarF "b"]) (TypeVarF "c")
+=
+\(equal : (a, a => Int), x, y) => equal x y
+-
+TypeFuncF (TypeRecordF [TypeFuncF (TypeRecordF [TypeVarF "a",TypeVarF "a"]) (TypeIdentF "Int"),TypeVarF "a",TypeVarF "a"]) (TypeIdentF "Int")
+=
+\(x : Int) => x
+-
+TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")
+=
+ffi foo : Int => Int
+\(x : Unit) => foo x
+-
+(UnificationFail (TypeIdentF "Unit") (TypeIdentF "Int"),(2,16,""))
+=
+ffi foo : (x : xType) => xType
+ffi bar : (y : yType) => yType
+\x => foo (bar x)
+-
+TypeFuncF (TypeLabelF "y" (TypeLabelF "x" (TypeVarF "a"))) (TypeVarF "a")
+=
+ffi eq : (a,a) => Int
+test x = eq x 1
+-
+TypeLabelF "test" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int"))
+=
+ffi foo : Int => Bool
+x | (foo x) => x
+-
+TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")

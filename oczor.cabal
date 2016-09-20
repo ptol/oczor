@@ -1,0 +1,104 @@
+name:                oczor
+version:             0.0.0.1
+synopsis:            Oczor compiler
+description:         Please see README.md
+homepage:            https://github.com/ptol/oczor#readme
+license:             MIT
+license-file:        LICENSE
+category:            Language
+build-type:          Simple
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  ghc-options:         -O2
+  exposed-modules:
+    Oczor.CodeGen.Utl
+    Oczor.CodeGen.CodeGenElisp
+    Oczor.CodeGen.CodeGenJs
+    Oczor.CodeGen.CodeGenLua
+    Oczor.CodeGen.CodeGenRuby
+    Oczor.Compiler.CommandLine
+    Oczor.Compiler.Compiler
+    Oczor.Compiler.Files
+    Oczor.Compiler.State
+    Oczor.Compiler.Utl
+    Oczor.Converter.CodeGenAst
+    Oczor.Converter.CodeGenAstF
+    Oczor.Converter.Converter
+    Oczor.Converter.Rewriter
+    Oczor.Desugar.Desugar
+    Oczor.Infer.Infer
+    Oczor.Infer.InferAst
+    Oczor.Infer.InferContext
+    Oczor.Infer.Module
+    Oczor.Infer.State
+    Oczor.Infer.Substitutable
+    Oczor.Infer.Unify
+    Oczor.Infer.UnifyState
+    Oczor.Parser.Expr
+    Oczor.Parser.Lexer
+    Oczor.Parser.Parser
+    Oczor.Parser.ParserState
+    Oczor.Parser.Statements
+    Oczor.Parser.Types
+    Oczor.Parser.Utl
+    Oczor.Pretty.Errors
+    Oczor.Pretty.Pretty
+    Oczor.Pretty.Types
+    Oczor.Syntax.Ast
+    Oczor.Syntax.AstF
+    Oczor.Syntax.Errors
+    Oczor.Syntax.Operators
+    Oczor.Syntax.Syntax
+    Oczor.Syntax.Types
+    Oczor.Syntax.TypesF
+    Oczor.Test.Files
+    Oczor.Test.TestEngine
+    Oczor.Test.TestCompiler
+    Oczor.Test.Tests
+    Oczor.Utl
+  build-depends:
+    base == 4.*,
+    hspec == 2.2.*,
+    classy-prelude == 0.12.*,
+    mono-traversable == 0.10.*,
+    lens == 4.*,
+    mtl == 2.2.*,
+    transformers == 0.4.*,
+    megaparsec == 5.*,
+    containers == 0.5.*,
+    strict == 0.3.*,
+    wl-pprint == 1.*,
+    directory == 1.2.*,
+    filepath == 1.4.*,
+    split == 0.2.*,
+    pretty-show == 1.*,
+    recursion-schemes == 4.*,
+    optparse-applicative == 0.12.*
+  default-extensions:  NoImplicitPrelude, TupleSections, PartialTypeSignatures, TypeSynonymInstances, FlexibleInstances, DeriveFunctor, DeriveFoldable, DeriveTraversable, LambdaCase, ViewPatterns, PatternGuards
+  default-language:    Haskell2010
+
+executable occ
+  hs-source-dirs:      occ
+  main-is:             Main.hs
+  ghc-options:         -O2 -fno-warn-type-defaults -fno-warn-missing-signatures -fwarn-unused-imports
+  build-depends:
+      base,
+      classy-prelude,
+      oczor
+  default-language:    Haskell2010
+  default-extensions:  NoImplicitPrelude, TupleSections, PartialTypeSignatures, TypeSynonymInstances, FlexibleInstances, DeriveFunctor, DeriveFoldable, DeriveTraversable, LambdaCase, ViewPatterns, PatternGuards
+
+test-suite oczor-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base, oczor
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+  default-extensions:  NoImplicitPrelude, TupleSections, PartialTypeSignatures, TypeSynonymInstances, FlexibleInstances, DeriveFunctor, DeriveFoldable, DeriveTraversable, LambdaCase, ViewPatterns, PatternGuards
+
+source-repository head
+  type:     git
+  location: https://github.com/ptol/oczor

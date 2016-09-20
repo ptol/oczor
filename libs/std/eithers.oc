@@ -1,0 +1,54 @@
+import std.prelude
+
+type Either a b = left : a | right : b
+
+pureEither : b => Either a b
+pureEither x = right = x
+
+either : (a => c), (b => c), (Either a b) => c
+either fl fr m = m # case 
+ (left = x) => fl x
+ (right = x) => fr x
+
+isLeft : Either a b => Bool
+isLeft x = either (cnst true) (cnst false) x
+
+isRight : Either a b => Bool
+isRight x = either (cnst false) (cnst true) x
+
+fromEither : b, Either a b => b
+fromEither x m = either (cnst x) id m
+
+mapEither : (b => c, (Either a b)) => Either a c
+mapEither f z = z # case
+ (left = x) => left = x
+ (right = x) => right = f x
+
+bindEither : ((b => Either a b), (Either a b)) => Either a b
+bindEither f z = z # case
+ (left = x) => left = x
+ (right = x) => f x
+
+showEither : Either ((a show <: a)) ((b show <: b)) => String
+showEither x = either show show x
+
+/* eqEither : a eq <: Either (((Either a b), (Either a b))) => Bool */
+eqEither : (a eq, b eq <: ((Either a b), (Either a b))) => Bool
+eqEither = case
+ \(left = x) (left = y) => eq x y
+ \(right = x) (right = y) => eq x y
+ \_ _ => false
+
+/* foldlMaybe : ((b,a) => b, b, (Maybe a)) => b */
+/* foldlMaybe f i x = maybe i (y => f i y) x */
+/*  */
+/*  */
+/*  */
+/* instance Maybe foldl = foldlMaybe */
+instance (Either a) pure x = pureEither x
+instance (Either a) map = mapEither
+instance (Either a) bind = bindEither
+
+/* instance (a show, b show <: Either a b) show x = showEither x */
+instance (a show, b show <: Either a b) show x = showEither x
+instance (a eq, b eq <: Either a b) eq x y = eqEither x y

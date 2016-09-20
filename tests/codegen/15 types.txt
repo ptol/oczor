@@ -1,0 +1,7 @@
+ffi type Int
+x : Int
+x = 1
+-
+{
+  x : 1
+}

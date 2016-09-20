@@ -1,0 +1,50 @@
+class zero a: a
+foo = zero
+-
+(function(){
+  oc.instances.zero = {};
+  var zero = function(x){
+    return x;
+  };
+  var foo = function(_dzero){
+    return zero(_dzero);
+  };
+  return {
+    zero : zero,
+    foo : foo
+  }
+})()
+=
+class show a: a => String
+foo x = show x
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var foo = function(_fshow,x){
+    return _fshow(x);
+  };
+  return {
+    show : show,
+    foo : foo
+  }
+})()
+=
+class eq a: a, a => Bool
+foo x y = eq x y
+-
+(function(){
+  oc.instances.eq = {};
+  var eq = function(x,p1,p2){
+    return x(p1,p2);
+  };
+  var foo = function(_heq,x,y){
+    return _heq(x,y);
+  };
+  return {
+    eq : eq,
+    foo : foo
+  }
+})()

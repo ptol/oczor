@@ -1,0 +1,113 @@
+ffi unit : Unit
+
+type None = Unit
+none : None
+none = unit
+type Maybe a = None | just : a 
+
+class show a : a => String
+
+showMaybe : Maybe ((a show <: a)) => String
+showMaybe = case
+ (z : None) => "none"
+ z => show z.just
+
+instance Int show x = "int"
+instance (Maybe (a show <: a)) show x = showMaybe x
+foo : Maybe Int
+foo = just = 1
+bar = show foo
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var showMaybe = function(_mshow,_a1){
+    return function(z){
+      return "none";
+    }(_a1);
+  };
+  oc.instances.show.Int = function(x){
+    return "int";
+  };
+  oc.instances.show.Maybe = function(_pshow,x){
+    return showMaybe(_pshow,x);
+  };
+  var foo = {
+    just : 1
+  };
+  return {
+    unit : unit,
+    none : unit,
+    show : show,
+    showMaybe : showMaybe,
+    foo : foo,
+    bar : function(p1){
+      return oc.instances.show.Maybe(oc.instances.show.Int,p1);
+    }(foo)
+  }
+})()
+=
+ffi emptyObject : a
+ffi eqAny : a, a => Bool
+class eq a : a, a => Bool
+type Maybe a = none | just : a 
+
+class show a : a => String
+
+maybe : b, (a => b), Maybe a => b
+maybe x f m = m # case 
+ ^none => x
+ z => f z.just
+
+showMaybe : Maybe ((a show <: a)) => String
+showMaybe x = maybe ("none", show, x)
+-
+(function(){
+  oc.instances.eq = {};
+  var eq = function(x,p1,p2){
+    return x(p1,p2);
+  };
+  var none = {};
+  oc.instances.eq.None = eqAny;
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  var maybe = function(x,f,m){
+    return function(_a1){
+      if(function(_a){
+        return oc.instances.eq.None(_a,none);
+      }(_a1)){
+        return function(_a){
+          return x;
+        }(_a1);
+      }else{
+        if(function(z){
+          return z.just !== undefined;
+        }(_a1)){
+          return function(z){
+            return f(z.just);
+          }(_a1);
+        }else{
+          throw "cases error";
+        }
+      }
+    }(m);
+  };
+  var showMaybe = function(_agshow,x){
+    return maybe("none",function(p1){
+      return show(_agshow,p1);
+    },x);
+  };
+  return {
+    emptyObject : emptyObject,
+    eqAny : eqAny,
+    eq : eq,
+    none : none,
+    show : show,
+    maybe : maybe,
+    showMaybe : showMaybe
+  }
+})()

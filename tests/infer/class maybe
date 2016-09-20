@@ -1,0 +1,41 @@
+ffi unit : Unit
+type None = Unit
+none : None
+none = unit
+type Maybe a = None | a
+mapMaybe f = cases (\(z : None) => none), (\z => f z)
+-
+mapMaybe : (a => b => (None | a) => (None | b))
+=
+ffi unit : Unit
+type None = Unit
+none : None
+none = unit
+type Maybe a = None | a
+pureMaybe : a => Maybe a
+pureMaybe x = x
+-
+pureMaybe : (a => Maybe(a))
+=
+ffi unit : Unit
+type None = Unit
+none : None
+none = unit
+type Maybe a = None | a
+mapMaybe : (a => b) => ((Maybe a) => Maybe b)
+mapMaybe f = cases (\(z : None) => none), (\z => f z)
+-
+mapMaybe : (a => b => Maybe(a) => Maybe(b))
+=
+ffi unit : Unit
+type None = Unit
+none : None
+none = unit
+type Maybe a = None | a
+class map f : (a => b), f a => f b
+mapMaybe : ((a => b), (Maybe a)) => Maybe b
+mapMaybe f x = x # cases (\(z : None) => none), (\z => f z)
+instance Maybe map = mapMaybe
+-
+NoType
+

@@ -1,0 +1,8 @@
+type Bar = Int
+type Foo = Bar | Double
+bar : Bar
+bar = 1
+foo : Foo
+foo = bar
+-
+ScopeF [VarF "bar" (LitF (LitInt 1))] (ObjectF [("bar",IdentF "bar"),("foo",IdentF "bar")])

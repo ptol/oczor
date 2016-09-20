@@ -1,0 +1,27 @@
+ffi addInt : (Int,Int) => Int
+
+class add a : a, a => a
+
+instance Int add x y = addInt x y
+
+foo = add 1 2
+-
+ScopeF
+  [ SetF
+      (FieldF (FieldF (IdentF "oc") "instances") "add") (ObjectF [])
+  , VarF
+      "add"
+      (FunctionF
+         [ "x" , "p1" , "p2" ]
+         [ ReturnF (CallF (IdentF "x") [ IdentF "p1" , IdentF "p2" ]) ])
+  , SetF
+      (FieldF (FieldF (FieldF (IdentF "oc") "instances") "add") "Int")
+      (IdentF "addInt")
+  ]
+  (ObjectF
+     [ ( "addInt" , IdentF "addInt" )
+     , ( "add" , IdentF "add" )
+     , ( "foo"
+       , ParensF (OperatorF "+" [ LitF (LitInt 1) , LitF (LitInt 2) ])
+       )
+     ])

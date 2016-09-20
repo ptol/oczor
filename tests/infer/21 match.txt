@@ -1,0 +1,23 @@
+ffi eq : (Int, Int) => Bool
+case (1 => 2) (2 => 3)
+-
+TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")
+=
+case (\(z : Int) => 1) (\(z : Unit) => 2)
+-
+TypeFuncF (TypeUnionF [TypeIdentF "Int",TypeIdentF "Unit"]) (TypeIdentF "Int")
+=
+ffi eq : (Int, Int) => Bool
+foo = case (\1 => 2) (\2 => 3)
+foo 1
+-
+TypeIdentF "Int"
+=
+ffi eq : (Int, Int) => Bool
+foo = case (\1 => 2) (\2 => 3)
+-
+TypeLabelF "foo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int"))
+=
+foo = case (\(x : Int) => 1) (\(y : Unit) => 2)
+-
+TypeLabelF "foo" (TypeFuncF (TypeUnionF [TypeIdentF "Int",TypeIdentF "Unit"]) (TypeIdentF "Int"))

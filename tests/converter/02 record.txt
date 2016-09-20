@@ -1,0 +1,17 @@
+x = 1
+-
+ObjectF [("x",LitF (LitInt 1))]
+=
+x = y = 1
+-
+ObjectF [("x",ObjectF [("y",LitF (LitInt 1))])]
+=
+x = 1
+y = 1
+-
+ObjectF [("x",LitF (LitInt 1)),("y",LitF (LitInt 1))]
+=
+x = 1
+y = x
+-
+ScopeF [VarF "x" (LitF (LitInt 1))] (ObjectF [("x",IdentF "x"),("y",IdentF "x")])

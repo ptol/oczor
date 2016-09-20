@@ -1,0 +1,12 @@
+import std.prelude
+import testing
+
+type Maybe a = none | just : a
+
+maybe : b, (a => b), (Maybe a) => b
+maybe x f m = m # case 
+ ^none => x
+ z => f z.just
+
+maybe 2 (x => 3) none ?= 2
+maybe 2 (x => 3) (just = 1) ?= 3

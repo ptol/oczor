@@ -1,0 +1,22 @@
+import 
+  std.prelude
+  std.foldable
+  std.maybes
+  std.arrays
+  testing
+
+arr = [1 2 3]
+
+arr ?= [1 2 3]
+
+pure 1 ?= [1]
+
+[1 2] ++ [3 4] ?= [1 2 3 4] 
+
+map (x => x + 1) arr ?= [2 3 4]
+
+foldl (\a e => a + e) 0 arr ?= 6
+
+arrayLength arr ?= 3
+
+/* check $ arrayIsEmpty arrEmpty */

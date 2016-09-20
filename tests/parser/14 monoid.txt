@@ -1,0 +1,7 @@
+class mempty a: a
+-
+ClassFnF "mempty" (TypePolyF [TypeVarF "a"] (TypeVarF "a"))
+=
+instance Int mempty = 0
+-
+InstanceFnF (TypeIdentF "Int") "mempty" (LitF (LitInt 0))

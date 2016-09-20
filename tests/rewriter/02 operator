@@ -1,0 +1,10 @@
+ffi and : Bool, Bool => Bool
+ff = addBool = 1
+foo = ff.andBool true false
+-
+ObjectF
+  [ ( "andBool" , IdentF "andBool" )
+  , ( "foo"
+    , OperatorF "&&" [ LitF (LitBool True) , LitF (LitBool False) ]
+    )
+  ]

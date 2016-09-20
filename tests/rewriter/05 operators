@@ -1,0 +1,9 @@
+ffi addInt : (Int,Int) => Int
+
+class add a : a, a => a
+class mul a : a, a => a
+
+instance Int add x y = addInt x y
+instance Int mul x y = mulInt x y
+
+foo = mul 3 (add 1 2)

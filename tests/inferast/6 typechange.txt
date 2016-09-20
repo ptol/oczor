@@ -1,0 +1,5 @@
+type Foo = Int
+pureFoo : Int => Foo
+pureFoo x = x
+-
+(RecordF [(TypeDeclF "Foo" (TypeIdentF "Int") ANN NoTypeF),(RecordLabelF "pureFoo" (FunctionF (ParamIdentF "x" ANN TypeIdentF "Int") Nothing (IdentF "x" ANN TypeIdentF "Int") ANN TypeFuncF (TypeIdentF "Int") (TypeIdentF "Foo")) ANN TypeLabelF "pureFoo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Foo")))] ANN TypeRecordF [NoTypeF,TypeLabelF "pureFoo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Foo"))])

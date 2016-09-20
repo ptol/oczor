@@ -1,0 +1,6 @@
+class show a : a => String
+ffi foo : (a show <: a) => Int
+instance Int show x = "int"
+bar = foo 1 
+-
+CallF (ParensF (FunctionF [] [SetF (FieldF (IdentF "instances") "show") (ObjectF []),VarF "show" (FunctionF ["x"] [ReturnF (IdentF "x")]),SetF (FieldF (FieldF (IdentF "instances") "show") "Int") (FunctionF ["x"] [ReturnF (LitF (LitString "int"))]),ReturnF (ObjectF [("show",IdentF "show"),("foo",IdentF "foo"),("bar",CallF (CallF (IdentF "foo") [FieldF (FieldF (IdentF "instances") "show") "Int"]) [LitF (LitInt 1)])])])) []

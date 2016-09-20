@@ -1,0 +1,29 @@
+import std.prelude
+
+class foldl f : (b, a => b), b, f a => b
+
+any : (a => Bool), f a => Bool
+any f l = foldl (a e => a || f e) false l
+
+all : (a => Bool), f a => Bool
+all f l = foldl (a e => a && f e) true l
+
+or : f Bool => Bool
+or l = any id l
+
+and : f Bool => Bool
+and l = all id l
+
+sum l = foldl (a e => a + e) zero l
+product l = foldl (a e => a * e) one l
+
+contains : a, f a => Bool
+contains x l = any (y => x == y) l
+
+count l = foldl (a e => a + 1) 0 l
+
+foldMap f l = foldl (a e => a ++ f e) mempty l
+
+concat l = foldMap id l 
+
+/* find */

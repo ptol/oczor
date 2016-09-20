@@ -1,0 +1,41 @@
+ffi type Int 
+ffi type Double 
+ffi type String 
+ffi type Char 
+ffi type Bool
+ffi type Unit
+ffi type Array a
+
+ffi unit : Unit
+
+ffi showInt : Int => String
+ffi showDouble : Double => String
+ffi showString : String => String
+ffi showChar : Char => String
+ffi showBool : Bool => String
+
+ffi eqAny : a, a => Bool
+
+ffi eqInt : Int, Int => Bool
+ffi eqDouble : Double, Double => Bool
+ffi eqString : String, String => Bool
+ffi eqChar : Char, Char => Bool
+ffi eqBool : Bool, Bool => Bool
+
+ffi not : Bool => Bool
+ffi andBool : Bool, Bool => Bool
+ffi orBool : Bool, Bool => Bool
+
+ffi addInt : Int, Int => Int
+ffi mulInt : Int, Int => Int
+ffi subInt : Int, Int => Int
+ffi divInt : Int, Int => Int
+
+ffi addDouble : Double, Double => Double
+ffi mulDouble : Double, Double => Double
+ffi subDouble : Double, Double => Double
+ffi divDouble : Double, Double => Double
+
+ffi appendString : String, String => String
+
+ffi print : a => Unit

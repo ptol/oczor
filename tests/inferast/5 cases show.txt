@@ -1,0 +1,5 @@
+class show a : a => String
+foo = case
+ x => show x
+-
+(RecordF [(ClassFnF "show" (TypePolyF [TypeVarF "a"] (TypeFuncF (TypeVarF "a") (TypeIdentF "String"))) ANN NoTypeF),(RecordLabelF "foo" (CasesF [(FunctionF (ParamIdentF "x" ANN TypeConstrainsF [(TypeVarF "f","show")] (TypeVarF "f")) Nothing (CallF (IdentF "show" ANN TypeConstrainsF [(TypeVarF "f","show")] (TypeFuncF (TypeVarF "f") (TypeIdentF "String"))) (IdentF "x" ANN TypeConstrainsF [(TypeVarF "f","show")] (TypeVarF "f")) ANN TypeIdentF "String") ANN TypeFuncF (TypeConstrainsF [(TypeVarF "f","show")] (TypeVarF "f")) (TypeIdentF "String"))] ANN TypeFuncF (TypeConstrainsF [(TypeVarF "f","show")] (TypeVarF "f")) (TypeIdentF "String")) ANN TypeLabelF "foo" (TypeFuncF (TypeConstrainsF [(TypeVarF "f","show")] (TypeVarF "f")) (TypeIdentF "String")))] ANN TypeRecordF [NoTypeF,TypeLabelF "foo" (TypeFuncF (TypeConstrainsF [(TypeVarF "f","show")] (TypeVarF "f")) (TypeIdentF "String"))])

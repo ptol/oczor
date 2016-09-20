@@ -1,0 +1,12 @@
+type Foo a = foo : a
+bar : Foo Int
+bar = foo = 1
+-
+bar : Foo Int
+=
+type Foo a = foo : a
+ffi mempty : a
+bar : Foo a
+bar = foo = mempty
+-
+bar : Foo a

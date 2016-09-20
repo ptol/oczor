@@ -1,0 +1,17 @@
+[1 2 3]
+-
+TypeApplyF (TypeIdentF "Array") [TypeIdentF "Int"]
+=
+ffi eqInt : (Int, Int) => Bool
+eqInt [1 2 3] 1
+-
+(UnificationFail (TypeApplyF (TypeIdentF "Array") [TypeIdentF "Int"]) (TypeIdentF "Int"),(2,1,""))
+=
+[]
+-
+TypeApplyF (TypeIdentF "Array") [TypeVarF "a"]
+=
+x : Array Int
+x = []
+-
+TypeLabelF "x" (TypeApplyF (TypeIdentF "Array") [TypeIdentF "Int"])

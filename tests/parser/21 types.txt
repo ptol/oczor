@@ -1,0 +1,33 @@
+type Foo = y : Int
+x : Foo
+x = y = 1
+-
+RecordF [TypeDeclF "Foo" (TypeLabelF "y" (TypeIdentF "Int")),RecordLabelF "x" (WithTypeF (RecordLabelF "y" (LitF (LitInt 1))) (TypeIdentF "Foo"))]
+=
+type Foo = Int
+-
+TypeDeclF "Foo" (TypeIdentF "Int")
+=
+type Foo = Foo | Bar
+-
+TypeDeclF "Foo" (TypeUnionF [TypeIdentF "Foo",TypeIdentF "Bar"])
+=
+foo : x
+-
+ExprTypeF (TypeLabelF "foo" (TypeVarF "x"))
+=
+foo : x => x
+-
+ExprTypeF (TypeLabelF "foo" (TypeFuncF (TypeVarF "x") (TypeVarF "x")))
+=
+foo : Int => Int
+-
+ExprTypeF (TypeLabelF "foo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")))
+=
+foo : (foo : Int, bar : Int)
+-
+ExprTypeF (TypeLabelF "foo" (TypeRecordF [TypeLabelF "foo" (TypeIdentF "Int"),TypeLabelF "bar" (TypeIdentF "Int")]))
+=
+foo : Int, Int => Int
+-
+ExprTypeF (TypeLabelF "foo" (TypeFuncF (TypeRecordF [TypeIdentF "Int",TypeIdentF "Int"]) (TypeIdentF "Int")))

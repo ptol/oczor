@@ -1,0 +1,4 @@
+x = 1
+x := 2
+-
+RecordF [RecordLabelF "x" (LitF (LitInt 1)),SetStmtF (IdentF "x") (LitF (LitInt 2))]

@@ -1,0 +1,4 @@
+ffi f : foo : Int => Int | bar : Int
+bar = f
+-
+bar : foo : (Int => Int | bar : Int)

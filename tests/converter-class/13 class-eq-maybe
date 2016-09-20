@@ -1,0 +1,45 @@
+type Foo a = foo : a
+
+class eq a : (a, a) => Int
+
+eqFoo : (a eq <: ((Foo a), (Foo a))) => Int
+eqFoo x y = eq x.foo y .foo
+
+m : Foo Int
+m = foo = 2
+
+instance Int eq x y = 1
+
+instance (Foo (a eq <: a)) eq x y = eqFoo x y
+
+bar = eq m m
+-
+=
+ffi unit : Unit
+ffi true : Bool
+ffi false : Bool
+
+type None = Unit
+none : None
+none = unit
+type Maybe a = None | just : a 
+
+class eq a : (a, a) => Bool
+
+eqMaybe : (a eq <: ((Maybe a), (Maybe a))) => Bool
+eqMaybe = cases
+ \(x : None) (y : None) => true
+ \(x : None) y => false
+ \x (y : None) => false
+ \x y => eq x.just y.just
+
+m : Maybe Int
+m = just = 2
+
+instance Int eq x y = true
+
+instance (Maybe (a eq <: a)) eq x y = eqMaybe x y
+
+foo = eq m m
+-
+

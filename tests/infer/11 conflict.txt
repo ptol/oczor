@@ -1,0 +1,4 @@
+ffi foo : a
+bar x = foo
+-
+TypeLabelF "bar" (TypeFuncF (TypeVarF "a") (TypeVarF "b"))

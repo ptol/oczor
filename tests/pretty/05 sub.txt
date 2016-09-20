@@ -1,0 +1,3 @@
+foo x = x.foo
+-
+foo : (b@(foo : a) => a)

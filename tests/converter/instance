@@ -1,0 +1,4 @@
+ffi foo : Int
+class show a : a => Int
+bar = 1
+instance Int show x = bar

@@ -1,0 +1,11 @@
+import std.prelude
+import testing
+
+not false ?= true
+true && false ?= false
+true || false ?= true
+
+show 1 ?= "1"
+
+"123" ++ "456" ?= "123456"
+

@@ -1,0 +1,79 @@
+class mempty a: a
+foo = mempty
+-
+TypeLabelF "foo" (TypeConstrainsF [(TypeVarF "a","mempty")] (TypeVarF "a"))
+=
+class mempty a: a
+instance Int mempty = 0
+test : Int
+test = mempty
+-
+TypeLabelF "test" (TypeIdentF "Int")
+=
+class mempty a: a
+x : Int
+ x = mempty
+-
+(NoInstance (TypeIdentF "Int") "mempty",(2,1,""))
+=
+class mempty a: a
+instance Int mempty = 0
+type Foo = Int
+x : Foo
+ x = mempty
+-
+TypeLabelF "x" (TypeIdentF "Foo")
+=
+class show s: s => Unit
+-
+NoTypeF
+=
+class show s: s => Unit
+foo x = show x
+-
+TypeLabelF "foo" (TypeFuncF (TypeConstrainsF [(TypeVarF "a","show")] (TypeVarF "a")) (TypeIdentF "Unit"))
+=
+class show s: s => Unit
+show 1
+-
+(NoInstance (TypeIdentF "Int") "show",(2,1,""))
+=
+class show s: s => Unit
+ffi showInt : Int => Unit
+instance Int show x = showInt x
+show(1)
+-
+TypeIdentF "Unit"
+=
+type Foo a = Int
+class bar f : (f a) => Int
+instance Foo bar (x : Foo a) = 1
+x : Foo Int
+x = 1
+test = bar x
+-
+TypeLabelF "test" (TypeIdentF "Int")
+=
+class mempty a: a
+instance Int mempty = 0
+type Foo a = foo : a
+instance (Foo (a mempty <: a)) mempty = (foo = mempty)
+x : Foo Int
+x = mempty
+-
+TypeLabelF "x" (TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Int"])
+=
+class mempty a: a
+instance Int mempty = 0
+type Foo a = foo : a
+instance (Foo (a mempty <: a)) mempty = (foo = mempty)
+x : Foo Double
+x = mempty
+-
+(NoInstance (TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Double"]) "mempty",(5,1,""))
+=
+type Foo a = (foo : a)
+fooMap : ((a => b), Foo a) => Foo b
+fooMap f x = foo = f (x.foo)
+-
+TypeLabelF "fooMap" (TypeFuncF (TypeRecordF [TypeFuncF (TypeVarF "a") (TypeVarF "b"),TypeApplyF (TypeIdentF "Foo") [TypeVarF "a"]]) (TypeApplyF (TypeIdentF "Foo") [TypeVarF "b"]))

@@ -1,0 +1,23 @@
+class
+  foo a : a
+  bar a : a
+-
+RecordF [ClassFnF "foo" (TypePolyF [TypeVarF "a"] (TypeVarF "a")),ClassFnF "bar" (TypePolyF [TypeVarF "a"] (TypeVarF "a"))]
+=
+instance
+  Int foo = 1
+  Int bar = 1
+-
+RecordF [InstanceFnF (TypeIdentF "Int") "foo" (LitF (LitInt 1)),InstanceFnF (TypeIdentF "Int") "bar" (LitF (LitInt 1))]
+=
+import
+  foo
+  bar
+-
+RecordF [StmtF (StmtImport ["foo"] Nothing),StmtF (StmtImport ["bar"] Nothing)]
+=
+include
+  foo
+  bar
+-
+RecordF [StmtF (StmtInclude ["foo"]),StmtF (StmtInclude ["bar"])]

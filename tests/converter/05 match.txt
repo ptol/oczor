@@ -1,0 +1,3 @@
+\(x,y) z => x
+-
+FunctionF ["_a","z"] [VarF "x" (FieldF (IdentF "_a") "item1"),VarF "y" (FieldF (IdentF "_a") "item2"),ReturnF (IdentF "x")]

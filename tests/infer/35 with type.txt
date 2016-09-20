@@ -1,0 +1,4 @@
+ffi foo : Int
+foo = 1
+-
+TypeLabelF "foo" (TypeIdentF "Int")

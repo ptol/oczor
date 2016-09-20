@@ -1,0 +1,126 @@
+case (x => x)
+-
+function(_a1){
+  return function(x){
+    return x;
+  }(_a1);
+}
+=
+ffi eq : (a,a) => Bool
+bar = case (x | (eq x 1) => 2)
+foo = bar
+-
+(function(){
+  var bar = function(_a1){
+    if(function(x){
+      return eq(x,1);
+    }(_a1)){
+      return function(x){
+        return 2;
+      }(_a1);
+    }else{
+      throw "cases error";
+    }
+  };
+  return {
+    eq : eq,
+    bar : bar,
+    foo : bar
+  }
+})()
+=
+ffi eq : (a,a) => Bool
+bar = case 
+ x | (eq x 1) => 2
+ x | (eq x 2) => 3
+foo = bar
+-
+(function(){
+  var bar = function(_a1){
+    if(function(x){
+      return eq(x,1);
+    }(_a1)){
+      return function(x){
+        return 2;
+      }(_a1);
+    }else{
+      if(function(x){
+        return eq(x,2);
+      }(_a1)){
+        return function(x){
+          return 3;
+        }(_a1);
+      }else{
+        throw "cases error";
+      }
+    }
+  };
+  return {
+    eq : eq,
+    bar : bar,
+    foo : bar
+  }
+})()
+=
+ffi eq : (a,a) => Bool
+bar = case (x | (eq x (1,2)) => 3)
+foo = bar
+-
+(function(){
+  var bar = function(_a1){
+    if(function(x){
+      return eq(x,{
+        item1 : 1,
+        item2 : 2
+      });
+    }(_a1)){
+      return function(x){
+        return 3;
+      }(_a1);
+    }else{
+      throw "cases error";
+    }
+  };
+  return {
+    eq : eq,
+    bar : bar,
+    foo : bar
+  }
+})()
+=
+ffi eqInt : (Int, Int) => Bool
+foo = case
+ x y | (eqInt x 1) => 2
+ z => 1
+bar = foo
+-
+(function(){
+  var foo = function(_a1){
+    if(function(_a){
+      return (_a.item1
+      !==
+      undefined && _a.item2
+      !==
+      undefined && (function(){
+        var x = _a.item1;
+        var y = _a.item2;
+        return eqInt(x,1)
+      })());
+    }(_a1)){
+      return function(_a){
+        var x = _a.item1;
+        var y = _a.item2;
+        return 2;
+      }(_a1);
+    }else{
+      return function(z){
+        return 1;
+      }(_a1);
+    }
+  };
+  return {
+    eqInt : eqInt,
+    foo : foo,
+    bar : foo
+  }
+})()

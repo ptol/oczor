@@ -1,0 +1,4 @@
+foo x = x
+bar = 1
+-
+foo : (a => a), bar : Int

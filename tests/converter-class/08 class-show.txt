@@ -1,0 +1,24 @@
+class show a: a => String
+instance Int show x = "test"
+ffi astr : (String, String) => String
+foo x y = astr (show x) (show y)
+bar = foo 1 2
+-
+(function(){
+  oc.instances.show = {};
+  var show = function(x,p1){
+    return x(p1);
+  };
+  oc.instances.show.Int = function(x){
+    return "test";
+  };
+  var foo = function(_hshow,_kshow,x,y){
+    return astr(_hshow(x),_kshow(y));
+  };
+  return {
+    show : show,
+    astr : astr,
+    foo : foo,
+    bar : foo(oc.instances.show.Int,oc.instances.show.Int,1,2)
+  }
+})()

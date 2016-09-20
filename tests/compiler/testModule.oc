@@ -1,0 +1,6 @@
+import std.numbers
+
+class zero a : a
+x = 1
+include std.numbers
+

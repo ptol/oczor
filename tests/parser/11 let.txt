@@ -1,0 +1,19 @@
+x = 1 in 2
+-
+LetF (RecordLabelF "x" (LitF (LitInt 1))) (LitF (LitInt 2))
+=
+x = 1
+in 2
+-
+LetF (RecordLabelF "x" (LitF (LitInt 1))) (LitF (LitInt 2))
+=
+x = 1
+in 
+ x
+ x
+-
+LetF (RecordLabelF "x" (LitF (LitInt 1))) (RecordF [IdentF "x",IdentF "x"])
+=
+foo x = y = bar z in y
+-
+RecordLabelF "foo" (FunctionF (ParamIdentF "x") Nothing (LetF (RecordLabelF "y" (CallF (IdentF "bar") (IdentF "z"))) (IdentF "y")))

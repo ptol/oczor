@@ -1,0 +1,13 @@
+ffi foo : Int => Int
+y = foo 1.0
+-
+(UnificationFail (TypeIdentF "Double") (TypeIdentF "Int"),(2,5,""))
+=
+foo = bar
+-
+(UnboundVariable "bar",(1,7,""))
+=
+x : Unit
+x = 1
+-
+(UnificationFail (TypeIdentF "Int") (TypeIdentF "Unit"),(1,1,""))

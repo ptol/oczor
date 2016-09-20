@@ -1,0 +1,8 @@
+import std.prelude
+
+check b = print (if b then "Pass" else "FAIL!!!")
+
+checkEq : (a eq <: (a,a)) => Unit
+checkEq x y = check (x == y)
+
+infix ?= 0 checkEq

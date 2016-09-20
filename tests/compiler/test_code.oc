@@ -1,0 +1,18 @@
+import std.prelude
+
+x1 = 1
+x2 = 
+  foo = 1
+  bar = 1
+
+func x y = x + y + 1
+
+x3 = func 1 2
+
+func2 x = 
+  temp = x == 1
+  in not (temp && false)
+
+temp1 = x1
+temp2 = x2
+temp3 = x3

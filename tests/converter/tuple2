@@ -1,0 +1,13 @@
+ffi foo : (Int, Int) => Int
+x = (1,1)
+foo x
+-
+Scope [Object [("foo",Ident "foo")],Var "x" (Object [("item1",Lit (LitInt 1)),("item2",Lit (LitInt 1))]),Call (Ident "foo") [Field (Ident "x") "item1",Field (Ident "x") "item2"],Return (Object [("foo",Ident "foo"),("x",Ident "x")])]
+=
+foo = cases
+ x y => 2
+ z => 2
+
+foo 1 2
+-
+Scope [Var "foo" (Function ["_a"] [Return (Call (Function ["_a1"] [Var "result" (Lit LitNull),Var "func" (Lit LitNull),Set (Ident "func") (Function ["_b"] [If (BoolAnds [HasField (Ident "_b") "item1",HasField (Ident "_b") "item2"]) [Return (Scope [Var "x" (Field (Ident "_b") "item1"),Var "y" (Field (Ident "_b") "item2"),Return (Lit (LitInt 2))])] [Return (Lit LitNull)]]),Set (Ident "result") (Call (Ident "func") [Ident "_a1"]),If (NotEqual (Ident "result") (Lit LitNull)) [Return (Ident "result")] [],Set (Ident "func") (Function ["z"] [Return (Lit (LitInt 2))]),Set (Ident "result") (Call (Ident "func") [Ident "_a1"]),If (NotEqual (Ident "result") (Lit LitNull)) [Return (Ident "result")] []]) [Ident "_a"])]),Call (Ident "foo") [Object [("item1",Lit (LitInt 1)),("item2",Lit (LitInt 2))]],Return (Object [("foo",Ident "foo")])]

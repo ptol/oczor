@@ -1,0 +1,11 @@
+foo = x = 1
+open foo
+bar = x
+-
+ScopeF [VarF "foo" (ObjectF [("x",LitF (LitInt 1))])] (ObjectF [("foo",IdentF "foo"),("bar",FieldF (IdentF "foo") "x")])
+=
+foo = (qwe x = x)
+open foo
+bar = qwe 1
+-
+ScopeF [VarF "foo" (ObjectF [("qwe",FunctionF ["x"] [ReturnF (IdentF "x")])])] (ObjectF [("foo",IdentF "foo"),("bar",CallF (FieldF (IdentF "foo") "qwe") [LitF (LitInt 1)])])

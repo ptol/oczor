@@ -1,0 +1,32 @@
+\(x,y) z => 1
+-
+TypeFuncF (TypeRecordF [TypeRowF (TypeVarF "d") [TypeLabelF "item1" (TypeVarF "b"),TypeLabelF "item2" (TypeVarF "c")],TypeVarF "a"]) (TypeIdentF "Int")
+=
+\(x,y) (l,m) => m
+-
+TypeFuncF (TypeRecordF [TypeRowF (TypeVarF "c") [TypeLabelF "item1" (TypeVarF "a"),TypeLabelF "item2" (TypeVarF "b")],TypeRowF (TypeVarF "f") [TypeLabelF "item1" (TypeVarF "d"),TypeLabelF "item2" (TypeVarF "e")]]) (TypeVarF "e")
+=
+_ => 1
+-
+TypeFuncF (TypeVarF "a") (TypeIdentF "Int")
+=
+ffi eq : Int, Int => Bool
+1 => 1
+-
+TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")
+=
+ffi eq : Int, Int => Bool
+ffi andBool : Bool, Bool => Bool
+1 2 => 1
+-
+TypeFuncF (TypeRecordF [TypeIdentF "Int",TypeIdentF "Int"]) (TypeIdentF "Int")
+=
+ffi eq : Int, Int => Bool
+\(x = 1) => 1
+-
+TypeFuncF (TypeRowF (TypeVarF "a") [TypeLabelF "x" (TypeIdentF "Int")]) (TypeIdentF "Int")
+=
+ffi eq : a, a => Bool
+\(x = y) => y
+-
+TypeFuncF (TypeRowF (TypeVarF "b") [TypeLabelF "x" (TypeVarF "a")]) (TypeVarF "a")

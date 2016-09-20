@@ -1,0 +1,27 @@
+import std.prelude
+import std.eithers
+import testing
+
+
+m : Either String Int
+m = pure 2
+
+m2 : Either String Int
+m2 = pure 3
+
+ml : Either String Int
+ml = left = "foo"
+
+fromEither 3 m ?= 2
+fromEither 3 ml ?= 3
+
+isLeft ml ?= true
+isRight m ?= true
+
+map (x => x + 1) m ?= m2
+
+m ?= m
+ml ?= ml
+eq m m2 ?= false
+
+show ml ?= "foo"

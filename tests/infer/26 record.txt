@@ -1,0 +1,22 @@
+1
+-
+TypeIdentF "Int"
+=
+x = 1
+-
+TypeLabelF "x" (TypeIdentF "Int")
+=
+x = 1
+y = x
+-
+TypeLabelF "y" (TypeIdentF "Int")
+=
+x = 1
+y = z = x
+-
+TypeLabelF "y" (TypeLabelF "z" (TypeIdentF "Int"))
+=
+foo : ((x : Int), y : Int)
+foo = ((x = 1), y = 1)
+-
+TypeLabelF "foo" (TypeRecordF [TypeLabelF "x" (TypeIdentF "Int"),TypeLabelF "y" (TypeIdentF "Int")])

@@ -1,0 +1,13 @@
+import std.prelude
+import testing
+
+testCases = case 
+ x | (eqInt x 1) => 2
+ x | (eqInt x 2) => 3
+ x | (eqInt x 3) => 4
+
+testCases 2 ?= 3
+
+x = foo = 1
+y = x with foo = 2
+y.foo ?= 2

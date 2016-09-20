@@ -1,0 +1,85 @@
+import std.prelude
+import std.maybes
+
+type NonEmptyList a = (a, List a)
+type List a = emptyList | NonEmptyList a
+
+pureList : a => List a
+pureList x = x, emptyList
+
+range : Int, Int => List Int
+range = case
+ x y | x == y => pureList x
+ x y => z = range (x + 1) y in (x, z)
+
+ifEmpty : a, (NonEmptyList b => a), List b => a
+ifEmpty def f l = l # case 
+ ^emptyList => def
+ x => f x
+
+isEmpty : List a => Bool
+isEmpty l = ifEmpty true (x => false) l
+
+length : List a => Int
+length = case 
+ ^emptyList => 0
+ h t => length t + 1
+
+/* head : List a => Maybe a  */
+/* head = case */
+/*   ^emptyList => none */
+/*   h t => just = h */
+
+/* uncons : List a => Maybe (NonEmptyList a)  */
+/* uncons = case */
+/*   ^emptyList => none */
+/*   x => just = x */
+
+/* last : (List a) => (Maybe a)  */
+/* last = case */
+/*   ^emptyList => none */
+/*   \x y | (isEmpty y) => just = x */
+/*   \x y => last y */
+
+/* index : ((List a), Int) => Maybe a */
+/* index = case  */
+/*  \(l : EmptyList) i => none */
+/*  \(h,t) i | (eq i 0) => just = h */
+/*  \(h,t) i => index t (subInt i 1) */
+
+eqList : a eq <: (List a, List a) => Bool
+eqList = case
+ ^emptyList ^emptyList => true
+ ^emptyList y => false
+ x ^emptyList => false
+ \(h1,t1) (h2,t2) => h1 == h2 && eqList t1 t2
+
+appendList : List a, List a => List a
+appendList = case
+ ^emptyList y => y
+ \(h,t) y => h, appendList t y
+
+foldlList : (b, a => b), b, List a => b
+foldlList f i l = ifEmpty i (\h t => foldlList f (f i h) t) l
+
+mapList : (a => b), List a => List b
+mapList f l = ifEmpty emptyList (h t => (f h, mapList f t)) l
+
+/* applyList : ((List (a => b)), (List a)) => List b */
+/* applyList f l = ifEmpty emptyList (\h t => appendList (mapList h l) (applyList t l)) f */
+
+/* bindList : ((a => List b), (List a)) => List b */
+/* bindList = case */
+/*  \f (x : EmptyList) => emptyList */
+/*  \f (h,t) => appendList (f h) (bindList f t) */
+
+/* lift2 : (((a,b) => c), (m a), (m b)) => m c */
+/* lift2 f x y = apply (map (\xx => (\z => f xx z)) x) y */
+/*f (m a, m a) -> m (f a)   */
+/* traverseList : ((a => m b), List a) => m (List b) */
+/* traverseList f l = isEmpty (pure emptyList) (\h t => lift2 id (f h) t) l */
+/*  \f (x : EmptyList) => pure emptyList */
+/*  \f (h,t) => ( */
+
+instance (List (a eq <: a)) eq x y = eqList x y
+

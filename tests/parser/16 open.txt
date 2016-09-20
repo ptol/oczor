@@ -1,0 +1,3 @@
+open foo
+-
+StmtF (StmtOpen "foo")

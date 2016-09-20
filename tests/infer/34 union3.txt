@@ -1,0 +1,7 @@
+ffi type None
+ffi none : None
+type Maybe a = None
+foo : Maybe
+foo = none
+-
+TypeLabelF "foo" (TypeIdentF "Maybe")

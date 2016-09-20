@@ -1,0 +1,16 @@
+import std
+import testing
+
+and [true false] ?= false
+or [true false] ?= true
+
+sum [1 2 3 4] ?= 10
+product [1 2 3 4] ?= 24
+
+contains 3 [1 2 3 4] ?= true
+contains 5 [1 2 3 4] ?= false
+
+count [1 4 5] ?= 3
+
+concat ["123" "456" "789"] ?= "123456789"
+

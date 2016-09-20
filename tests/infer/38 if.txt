@@ -1,0 +1,15 @@
+if true then 1 else 2
+-
+TypeIdentF "Int"
+=
+foo x y = if x then x else y
+-
+TypeLabelF "foo" (TypeFuncF (TypeRecordF [TypeIdentF "Bool",TypeIdentF "Bool"]) (TypeIdentF "Bool"))
+=
+if true then 1 else "str"
+-
+(UnificationFail (TypeIdentF "Int") (TypeIdentF "String"),(1,1,""))
+=
+if 0 then 1 else 2
+-
+(UnificationFail (TypeIdentF "Int") (TypeIdentF "Bool"),(1,1,""))

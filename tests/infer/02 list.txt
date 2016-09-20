@@ -1,0 +1,16 @@
+ffi unit : Unit
+type EmptyList = Unit
+type NonEmptyList a = (a, List a) 
+emptyList : EmptyList
+emptyList = unit
+type List a = EmptyList | NonEmptyList a
+
+foo : List Int
+foo = emptyList
+
+range : Int => List Int
+range = case
+ \x => foo
+ \y => (y, (range y))
+-
+TypeLabelF "range" (TypeFuncF (TypeIdentF "Int") (TypeApplyF (TypeIdentF "List") [TypeIdentF "Int"]))

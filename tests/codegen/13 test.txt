@@ -1,0 +1,26 @@
+type Foo = 
+  foo : Int
+  bar : Int
+z : Foo 
+z = 
+  foo = 1
+  bar = 1
+ffi add : (Int, Int) => Int
+func1 x y = add x y
+t = z
+-
+(function(){
+  var z = {
+    foo : 1,
+    bar : 1
+  };
+  var func1 = function(x,y){
+    return add(x,y);
+  };
+  return {
+    z : z,
+    add : add,
+    func1 : func1,
+    t : z
+  }
+})()
