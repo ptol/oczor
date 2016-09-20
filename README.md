@@ -24,6 +24,7 @@ For example, many languages has these entites
 	```
 	(1,2)
 	```
+
 Oczor uses records instead of all these entities
 
 # Example of generated JavaScript code #
@@ -156,9 +157,9 @@ print y
 x y => (x,y) or \x y => (x,y) -- \ is optional
 ```
 
-#### a definition ####
+#### function definition ####
 
-a function definition is a syntax sugar for label with anonymouse function
+function definition is a syntax sugar for a label with anonymouse function
 ```haskell
 foo x y = (x,y)
 ```
@@ -169,7 +170,7 @@ foo = \x y => (x,y)
 ```haskell
 z = foo 1 2
 ```
-For example, it's possible to group functions like this
+For example, it is possible to group functions like this
 ```haskell
 bar = 
   foo x y = (x,y)
