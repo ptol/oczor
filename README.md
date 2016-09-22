@@ -151,7 +151,7 @@ print y
 
 # Functions #
 
-#### anonymouse ####
+#### anonymous ####
 
 ```haskell
 x y => (x,y) or \x y => (x,y) -- \ is optional
@@ -159,7 +159,7 @@ x y => (x,y) or \x y => (x,y) -- \ is optional
 
 #### function definition ####
 
-function definition is a syntax sugar for a label with anonymouse function
+function definition is a syntax sugar for a label with anonymous function
 ```haskell
 foo x y = (x,y)
 ```
