@@ -6,15 +6,14 @@ import ClassyPrelude as C
 import Control.Arrow
 import Data.Function ((&))
 import Text.Show.Pretty as PP
-import Data.Functor.Foldable hiding (Foldable)
+import Data.Functor.Foldable
 import Data.Char as Char
 import Control.Monad.Reader
-import qualified Data.Functor.Foldable as FF
 import qualified Data.Foldable as F
 import Control.Lens hiding (para, (&))
 
 cataM
-  :: (Monad f, Traversable (Base a), FF.Foldable a) =>
+  :: (Monad f, Traversable (Base a), Recursive a) =>
      (Base a b -> f b) -> a -> f b
 cataM f = (>>= f) . cata (traverse (>>= f))
 
