@@ -18,9 +18,6 @@ instance Show a => Show (Ann ExprF a) where
 
 type Ann f a = Fix (AnnF f a)
 
-unfix :: Fix f -> f (Fix f)
-unfix (Fix f) = f
-
 -- ann :: Expr -> TypeExpr -> InferExpr
 -- ann :: f (Fix (AnnF f a)) -> a -> Fix (AnnF f a)
 -- ann x y = Fix (AnnF x y)

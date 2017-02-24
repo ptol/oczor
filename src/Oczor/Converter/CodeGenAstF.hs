@@ -3,8 +3,8 @@
 {-# LANGUAGE PatternSynonyms       #-}
 module Oczor.Converter.CodeGenAstF where
 import ClassyPrelude
-
-import Data.Functor.Foldable hiding (Foldable)
+import Data.Functor.Classes
+import Data.Functor.Foldable
 
 type Name = String
 data Lits =
@@ -44,6 +44,10 @@ data AstF e =
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
 
 
+instance Ord1 AstF where
+  compare1 = compare
+instance Eq1 AstF where
+  eq1 = (==)
 instance Show (Fix AstF) where showsPrec p (Fix x) = showsPrec p x
   -- show (Fix f) = show f
 
