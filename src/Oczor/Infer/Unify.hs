@@ -20,10 +20,10 @@ unify arg param = do
   state <- ask
   case (arg,param) of
     _ | arg == param -> return emptySubst
-    (arg, TypeConstrains list expr) ->
-      let newContext = state &addConstrains list in addConstrainsToSubst newContext <$> localPut newContext (unify arg expr)
-    (TypeConstrains list expr, param) ->
-      let newContext = state &addConstrains list in addConstrainsToSubst newContext <$> localPut newContext (unify expr param)
+    (arg, TypeConstraints list expr) ->
+      let newContext = state &addConstraints list in addConstraintsToSubst newContext <$> localPut newContext (unify arg expr)
+    (TypeConstraints list expr, param) ->
+      let newContext = state &addConstraints list in addConstraintsToSubst newContext <$> localPut newContext (unify expr param)
 
     (TypeApply argType@(TypeIdent argIdent) argBody, TypeApply paramType@(TypeIdent paramIdent) paramBody) |
       argIdent == paramIdent && isFfiType argType context && isFfiType paramType context -> unifyList argBody paramBody
@@ -59,8 +59,8 @@ unify arg param = do
 
     (TypeFunc in1 out1, TypeFunc in2 out2) -> unifyList [in1, out1] [in2, out2]
 
-    (TypeVar var, param) | notNull $ getConstrains var state -> bindWithConstrains var param
-    (arg, TypeVar var) | notNull $ getConstrains var state -> bindWithConstrains var arg
+    (TypeVar var, param) | notNull $ getConstraints var state -> bindWithConstraints var param
+    (arg, TypeVar var) | notNull $ getConstraints var state -> bindWithConstraints var arg
 
     (TypeApply x arga, TypeApply y argp) -> do
       let (newArg, newParam) = curryTypeApply2 arg param
@@ -104,21 +104,21 @@ getTupleType = \case
   (TypeRow _ x) | length x > 1 -> x <&> getTupleLabelType & sequence
   _ -> Nothing
 
-addConstrainToExpr :: ConstrainSet -> TypeExpr -> TypeExpr
-addConstrainToExpr set = cata $ \case
+addConstraintToExpr :: ConstraintSet -> TypeExpr -> TypeExpr
+addConstraintToExpr set = cata $ \case
   ast@(TypeVarF var) ->
     let a = Fix ast in
-      if onull constrains then a
-      else TypeConstrains (constrainListToSet var constrains) a
+      if onull constraints then a
+      else TypeConstraints (constraintListToSet var constraints) a
     where
-      constrains = setGetConstrains var set
+      constraints = setGetConstraints var set
   x -> Fix x
 
-addConstrainsToSubst context s@(Subst subst) =
+addConstraintsToSubst context s@(Subst subst) =
   if null cList then s
-  else Subst $ map (addConstrainToExpr cList) subst
+  else Subst $ map (addConstraintToExpr cList) subst
   where
-    cList = context ^. constrains
+    cList = context ^. constraints
 
 -- hasInstance context x varConstrain | traceArgs ["hasInstance", show x, show varConstrain, show $ context ^. instances] = undefined
 hasInstance x varConstrain = do
@@ -126,35 +126,35 @@ hasInstance x varConstrain = do
   let instances = getInstancesForConstrain context varConstrain
   r <- orNothing $ unify x (TypeUnion instances)
   maybe (typeErrorLift $ NoInstance x varConstrain) (return . return) r
-hasInstances x varConstrains  = do
-  x <- varConstrains &traverse (hasInstance x)
+hasInstances x varConstraints  = do
+  x <- varConstraints &traverse (hasInstance x)
   return $ composeSubstList <$> x
 
-constrainListToSet :: String -> [String] -> ConstrainSet
-constrainListToSet var all = all & map (\x -> (TypeVar var,x))
+constraintListToSet :: String -> [String] -> ConstraintSet
+constraintListToSet var all = all & map (\x -> (TypeVar var,x))
 
-newTypeConstrains var all =
+newTypeConstraints var all =
   let tv = TypeVar var in
-    if onull all then tv else TypeConstrains (constrainListToSet var all) tv
+    if onull all then tv else TypeConstraints (constraintListToSet var all) tv
 
-combineTypeVarConstrains context var1 var2 = all
+combineTypeVarConstraints context var1 var2 = all
   where
-    var1Constrains = getConstrains var1 context
-    var2Constrains = getConstrains var2 context
-    all = var1Constrains ++ var2Constrains & ordNub
+    var1Constraints = getConstraints var1 context
+    var2Constraints = getConstraints var2 context
+    all = var1Constraints ++ var2Constraints & ordNub
 
-bindWithConstrains :: TVar -> TypeExpr -> Unify Subst
--- bindWithConstrains context var x | traceArgs ["bindWithConstrains", show $ context ^. constrains, show var, show x] = undefined
-bindWithConstrains var x@(TypeVar vx) = do
+bindWithConstraints :: TVar -> TypeExpr -> Unify Subst
+-- bindWithConstraints context var x | traceArgs ["bindWithConstraints", show $ context ^. constraints, show var, show x] = undefined
+bindWithConstraints var x@(TypeVar vx) = do
   state <- ask
   fv <- lift freshVar
-  let allConst = combineTypeVarConstrains state var vx
-  let newTypeVar = newTypeConstrains fv allConst
+  let allConst = combineTypeVarConstraints state var vx
+  let newTypeVar = newTypeConstraints fv allConst
   return $ Subst $ mapFromList [(var, newTypeVar), (vx, newTypeVar)] 
-bindWithConstrains var x = do
+bindWithConstraints var x = do
   state <- ask
-  let varConstrains = getConstrains var state
-  hasInstances x varConstrains *> bind var x --TODO check *>
+  let varConstraints = getConstraints var state
+  hasInstances x varConstraints *> bind var x --TODO check *>
 
 bind ::TVar -> TypeExpr -> Unify Subst
 -- bind context var x | traceArgs ["bind", show var, show x] = undefined

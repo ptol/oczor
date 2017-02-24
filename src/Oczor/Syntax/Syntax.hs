@@ -22,32 +22,32 @@ lastType = \case
   (TypeRecord list) | Just l <- lastMay list -> l
   x -> x
 
-constrainSetToMap :: ConstrainSet -> Map String [String]
-constrainSetToMap set = set & groupMapBy fst & map (\(TypeVar x,y) -> (x,map snd y)) & mapFromList
+constraintSetToMap :: ConstraintSet -> Map String [String]
+constraintSetToMap set = set & groupMapBy fst & map (\(TypeVar x,y) -> (x,map snd y)) & mapFromList
 
-collectConstrainFromTypeExpr :: TypeExpr -> ConstrainSet
-collectConstrainFromTypeExpr x = removeAllConstrains x & snd
+collectConstrainFromTypeExpr :: TypeExpr -> ConstraintSet
+collectConstrainFromTypeExpr x = removeAllConstraints x & snd
 
-removeAllConstrains :: TypeExpr -> (TypeExpr, ConstrainSet)
-removeAllConstrains x = cataM alg x & W.runWriter & (_2 %~ ordNub) where
+removeAllConstraints :: TypeExpr -> (TypeExpr, ConstraintSet)
+removeAllConstraints x = cataM alg x & W.runWriter & (_2 %~ ordNub) where
   alg = \case
-    TypeConstrainsF list x -> do
+    TypeConstraintsF list x -> do
       W.tell list
       return x
     x -> return $ Fix x
 
-moveConstrainsOnTop x =
+moveConstraintsOnTop x =
   if onull set then x
-  else TypeConstrains set ast
+  else TypeConstraints set ast
   where
-    (ast, set) = removeAllConstrains x
+    (ast, set) = removeAllConstraints x
 
-renameTypeVarsInConstrains m = map (\(x,l) -> (Map.findWithDefault x x m, l))
+renameTypeVarsInConstraints m = map (\(x,l) -> (Map.findWithDefault x x m, l))
 
 renameTypeVars :: Map String String -> TypeExpr -> TypeExpr
 renameTypeVars f = cata $ \case
   (TypeVarF x) -> TypeVar $ Map.findWithDefault x x f
-  -- (TypeConstrainsF c y) -> TypeConstrains (renameTypeVarsInConstrains f c) y
+  -- (TypeConstraintsF c y) -> TypeConstraints (renameTypeVarsInConstraints f c) y
   x -> Fix x
 
 
@@ -147,7 +147,7 @@ hasTypeVar = getAny . cata (\case
 
 instanceTypeName = \case
   (TypeIdent x) -> x
-  (TypeConstrains _ x) -> instanceTypeName x
+  (TypeConstraints _ x) -> instanceTypeName x
   (TypeApply x _) -> instanceTypeName x
   x -> error $ "instanceTypeName " ++ show x
 
@@ -189,7 +189,7 @@ casesArity list = list & map funcArity & ordNub
 getLabelType label = \case
   TypeLabel lbl tp | lbl == label -> Just tp
   TypeRecord list -> list <&> getLabelType label & catMaybes & headMay
-  TypeConstrains c x -> getLabelType label x <&> TypeConstrains c -- TODO filter constrains in c
+  TypeConstraints c x -> getLabelType label x <&> TypeConstraints c -- TODO filter constraints in c
   TypeRow x y -> getLabelType label (TypeRecord y)
   _ -> Nothing
 

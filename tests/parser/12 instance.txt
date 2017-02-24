@@ -4,8 +4,8 @@ InstanceFnF (TypeIdentF "Int") "eq" (FunctionF (RecordF [ParamIdentF "x",ParamId
 =
 instance (Foo (a eq <: a)) eq = eqFoo
 -
-InstanceFnF (TypeApplyF (TypeIdentF "Foo") [TypeConstrainsF [(TypeVarF "a","eq")] (TypeVarF "a")]) "eq" (IdentF "eqFoo")
+InstanceFnF (TypeApplyF (TypeIdentF "Foo") [TypeConstraintsF [(TypeVarF "a","eq")] (TypeVarF "a")]) "eq" (IdentF "eqFoo")
 =
 instance (a eq <: Foo a) eq = eqFoo
 -
-InstanceFnF (TypeConstrainsF [(TypeVarF "a","eq")] (TypeApplyF (TypeIdentF "Foo") [TypeVarF "a"])) "eq" (IdentF "eqFoo")
+InstanceFnF (TypeConstraintsF [(TypeVarF "a","eq")] (TypeApplyF (TypeIdentF "Foo") [TypeVarF "a"])) "eq" (IdentF "eqFoo")

@@ -4,4 +4,4 @@ ClassFnF "eq" (TypePolyF [TypeVarF "a"] (TypeFuncF (TypeRecordF [TypeVarF "a",Ty
 =
 foo : a show <: a
 -
-ExprTypeF (TypeLabelF "foo" (TypeConstrainsF [(TypeVarF "a","show")] (TypeVarF "a")))
+ExprTypeF (TypeLabelF "foo" (TypeConstraintsF [(TypeVarF "a","show")] (TypeVarF "a")))

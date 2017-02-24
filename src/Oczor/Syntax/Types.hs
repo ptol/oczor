@@ -15,13 +15,13 @@ type TVar = String
 data Scheme = Forall [TVar] TypeExpr
   deriving (Show, Eq, Ord, Read)
 
-type ConstrainSet = [(TypeExpr, ClassName)]
+type ConstraintSet = [(TypeExpr, ClassName)]
 
 pattern TypeUnion x = Fix (TypeUnionF x)
 pattern TypeIdent x = Fix (TypeIdentF x)
 pattern TypePoly x y = Fix (TypePolyF x y)
 pattern TypeVar x = Fix (TypeVarF x)
-pattern TypeConstrains x y = Fix (TypeConstrainsF x y)
+pattern TypeConstraints x y = Fix (TypeConstraintsF x y)
 pattern TypeFunc x y = Fix (TypeFuncF x y)
 pattern TypeLabel x y = Fix (TypeLabelF x y)
 pattern TypeApply x y = Fix (TypeApplyF x y)

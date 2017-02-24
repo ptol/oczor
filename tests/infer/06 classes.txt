@@ -1,7 +1,7 @@
 class mempty a: a
 foo = mempty
 -
-TypeLabelF "foo" (TypeConstrainsF [(TypeVarF "a","mempty")] (TypeVarF "a"))
+TypeLabelF "foo" (TypeConstraintsF [(TypeVarF "a","mempty")] (TypeVarF "a"))
 =
 class mempty a: a
 instance Int mempty = 0
@@ -31,7 +31,7 @@ NoTypeF
 class show s: s => Unit
 foo x = show x
 -
-TypeLabelF "foo" (TypeFuncF (TypeConstrainsF [(TypeVarF "a","show")] (TypeVarF "a")) (TypeIdentF "Unit"))
+TypeLabelF "foo" (TypeFuncF (TypeConstraintsF [(TypeVarF "a","show")] (TypeVarF "a")) (TypeIdentF "Unit"))
 =
 class show s: s => Unit
 show 1

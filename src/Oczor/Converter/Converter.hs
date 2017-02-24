@@ -13,7 +13,7 @@ import qualified Data.List as L
 -- typeFuncArity x | traceArgs ["typeFuncArity", show x] = undefined
 typeFuncArity x = x & \case
   (TypeFunc x _) -> typeArity x
-  (TypeConstrains _ y) -> typeFuncArity y
+  (TypeConstraints _ y) -> typeFuncArity y
   TypePoly _ (TypeFunc x _) -> typeArity x
   _ -> 0
 
@@ -55,12 +55,12 @@ findInstances context l1 l2 = go mempty l1 l2 & ordNub & map (\(_, x, y) -> (x, 
   goList vars l1 l2 = zip l1 l2 >>= (uncurry $ go vars)
   go :: Map String [String] -> TypeExpr -> TypeExpr -> [(String, String, TypeExpr)]
   -- go var x y | traceArgs ["findInstances go", show var, show x, show y] = undefined
-  go var x (TypeConstrains _ y) = go var x y
+  go var x (TypeConstraints _ y) = go var x y
   go var (TypeVar x) tp = (var &lookup x) & maybe [] (\clist -> clist &map (\cls -> (x, cls, tp)))
   go var (TypeRecord l1) (TypeRecord l2) = goList var l1 l2
   go var (TypeRecord [x]) y = go var x y
   go var (TypeRow x l1) (TypeRow y l2) = goList var (l1 ++ [x]) (l2 ++ [y])
-  go var (TypeConstrains list x) y = go (unionWith (++) var (constrainSetToMap list)) x y
+  go var (TypeConstraints list x) y = go (unionWith (++) var (constraintSetToMap list)) x y
   go var (TypeFunc x y) (TypeFunc x2 y2) = goList var [x,y] [x2,y2]
   go var (TypeApply x y) (TypeApply x2 y2) = goList var (x:y) (x2:y2)
   go var (TypeLabel x t1) (TypeLabel y t2) | x == y = go var t1 t2
@@ -76,9 +76,9 @@ instanceIdent cls tp exprTp = do
   let (_, classType) = context & lookupClass cls & unsafeHead
   let instanceTypeIdent = (instanceTypeName tp)
   let instanceType = context & T.lookupInstanceType instanceTypeIdent cls & fromMaybe (error "instanceIdent") -- & trac "instaceType"
-  let typeConstrains = getTypeConstrains instanceType -- & trac "typeconstrains"
+  let typeConstraints = getTypeConstraints instanceType -- & trac "typeconstraints"
   let expr = A.Field (instancesObject cls) instanceTypeIdent
-  if onull typeConstrains then return expr
+  if onull typeConstraints then return expr
   else addInstancesArgs (typeFuncArity classType) expr instanceType exprTp
 
 -- addInstancesArgs arity expr contextTp exprTp | traceArgs ["addInstacesArgs", show arity, show expr, show contextTp, show exprTp] = undefined
@@ -91,7 +91,7 @@ addInstancesArgs arity expr contextTp exprTp =
 addInstancesParams :: InferExpr -> Converter A.Ast
 -- addInstancesParams context expr | traceArgs ["addInstacesParams", show expr] = undefined
 addInstancesParams expr = do
-  let clist =  collectAllConstrains expr -- & trac "constrains"
+  let clist =  collectAllConstraints expr -- & trac "constraints"
   let clistParam = clist & map (\(TypeVar p, cl) -> paramInstancesName p cl)
   targetExpr <- convert expr
   return $ if onull clistParam then targetExpr else
@@ -103,7 +103,7 @@ addInstancesParams expr = do
 instancesToArgs contextTp exprTp =
   -- if contextTp == exprTp then return []
   -- else 
-  let classes = getTypeConstrains contextTp in
+  let classes = getTypeConstraints contextTp in
   if onull classes then return []
   else do
     context <- ask
@@ -164,7 +164,7 @@ getIdentInstancesArgs ident exprTp = do
 
 
 -- getTypeInstancesArgs contextTp exprTp = do
---   let classes = getTypeConstrains contextTp
+--   let classes = getTypeConstraints contextTp
 --   if onull classes then return []
 --   else instancesToArgs contextTp exprTp
 
@@ -183,10 +183,10 @@ identType x = do
   context <- ask
   return $ T.getIdentType context x & map (\(Forall _ x) -> x) & fromMaybe NoType
 
-getTypeConstrains :: TypeExpr -> ConstrainSet
-getTypeConstrains = para $ \case
-    TypeConstrainsF list (TypeLabel x y, _) -> []
-    TypeConstrainsF list x -> list <&> (\(x,y) -> (fst x,y))
+getTypeConstraints :: TypeExpr -> ConstraintSet
+getTypeConstraints = para $ \case
+    TypeConstraintsF list (TypeLabel x y, _) -> []
+    TypeConstraintsF list x -> list <&> (\(x,y) -> (fst x,y))
     x -> ffold $ getResults x
 
 getResults :: TypeExprF (a, b) -> TypeExprF b
@@ -200,14 +200,14 @@ newIdent ident = do
   context <- ask
   return $ identWithNamespace False ((context ^. openModules . identsNs &lookup ident & fromMaybe []) ++ [ident])
 
-collectAllConstrains :: InferExpr -> [(TypeExpr, String)]
--- collectAllConstrains x | traceArgs ["collectAllConstrains", pshow x] = undefined
-collectAllConstrains (UnAnn RecordF {}) = []
-collectAllConstrains (UnAnn RecordLabelF {}) = []
--- collectAllConstrains (UnAnn IdentF {}) = []
-collectAllConstrains (UnAnn (CallF (UnAnn LabelAccessF {}) _)) = [] -- TODO why?
--- collectAllConstrains (UnAnn (LabelAccessCallF {})) = []
-collectAllConstrains x = y x & ordNub
+collectAllConstraints :: InferExpr -> [(TypeExpr, String)]
+-- collectAllConstraints x | traceArgs ["collectAllConstraints", pshow x] = undefined
+collectAllConstraints (UnAnn RecordF {}) = []
+collectAllConstraints (UnAnn RecordLabelF {}) = []
+-- collectAllConstraints (UnAnn IdentF {}) = []
+collectAllConstraints (UnAnn (CallF (UnAnn LabelAccessF {}) _)) = [] -- TODO why?
+-- collectAllConstraints (UnAnn (LabelAccessCallF {})) = []
+collectAllConstraints x = y x & ordNub
   where
   y = cata $ \case
     -- x | traceArgs ["collect alg", show x] -> undefined

@@ -5,14 +5,14 @@ import ClassyPrelude
 import Data.Functor.Foldable hiding (Foldable)
 
 type ClassName = String
-type ConstrainSetF e = [(e, ClassName)]
+type ConstraintSetF e = [(e, ClassName)]
 
 data TypeExprF e =
   TypeIdentF String |
   TypeVarF String |
   TypeUnionF [e] |
   TypePolyF [e] e |
-  TypeConstrainsF (ConstrainSetF e) e |
+  TypeConstraintsF (ConstraintSetF e) e |
   TypeFuncF e e |
   TypeLabelF String e |
   TypeApplyF e [e] |
