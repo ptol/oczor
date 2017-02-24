@@ -44,8 +44,8 @@ normalizeTypeRow t@(TypeRowF x y) =
     TypeVar {} -> TypeRow x (ordNub y)
     _ -> x
 
-normalizeTypeConstrains x@(TypeConstrains clist t) = 
-  if onull newClist then t else TypeConstrains newClist t 
+normalizeTypeConstraints x@(TypeConstraints clist t) = 
+  if onull newClist then t else TypeConstraints newClist t 
   where
   vars = ftv t & setToList <&> TypeVar
   newClist = clist & filter (\(var,_) -> oelem var vars)
@@ -56,7 +56,7 @@ instance Substitutable TypeExpr where
   apply (Subst s) x = cata alg x -- TODO add typepoly case
     where
       alg = \case
-        x@TypeConstrainsF {} -> normalizeTypeConstrains $ moveConstrainsOnTop (Fix x)
+        x@TypeConstraintsF {} -> normalizeTypeConstraints $ moveConstraintsOnTop (Fix x)
         TypeApplyF (TypeApply body param1) param2 -> TypeApply body (param1 ++ param2)
         t@TypeRowF {} -> normalizeTypeRow t
         t@(TypeVarF x) -> findWithDefault (Fix t) x s

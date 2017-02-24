@@ -8,26 +8,26 @@ import ClassyPrelude as C
 import Oczor.Infer.State
 
 data UnifyState = UnifyState {
-  _constrains :: ConstrainSet,
+  _constraints :: ConstraintSet,
   _openTypes :: Set String
 } deriving (Eq, Show)
 
 makeLenses ''UnifyState
 
 initState = UnifyState {
-  _constrains = mempty,
+  _constraints = mempty,
   _openTypes = mempty
 }
 
 type Unify = ReaderT UnifyState Infer
 
-setGetConstrains :: String -> ConstrainSet -> [String]
-setGetConstrains var x = x & filter (\(x,y) -> x == TypeVar var) & map snd
+setGetConstraints :: String -> ConstraintSet -> [String]
+setGetConstraints var x = x & filter (\(x,y) -> x == TypeVar var) & map snd
 
-getConstrains :: String -> UnifyState -> [String]
-getConstrains var state = state ^. constrains & setGetConstrains var
+getConstraints :: String -> UnifyState -> [String]
+getConstraints var state = state ^. constraints & setGetConstraints var
 
-addConstrains list state  = state & constrains %~ concatNub list
+addConstraints list state  = state & constraints %~ concatNub list
 
-removeConstrains :: String -> UnifyState -> UnifyState
-removeConstrains var state = state & constrains %~ filter (\(x,y) -> x /= TypeVar var)
+removeConstraints :: String -> UnifyState -> UnifyState
+removeConstraints var state = state & constraints %~ filter (\(x,y) -> x /= TypeVar var)

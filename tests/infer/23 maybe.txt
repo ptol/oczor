@@ -23,7 +23,7 @@ eqMaybe = case
  ^none ^none => true
  x y => eq x.just y.just
 -
-TypeLabelF "eqMaybe" (TypeFuncF (TypeConstrainsF [(TypeVarF "a","eq")] (TypeRecordF [TypeApplyF (TypeIdentF "Maybe") [TypeVarF "a"],TypeApplyF (TypeIdentF "Maybe") [TypeVarF "a"]])) (TypeIdentF "Bool"))
+TypeLabelF "eqMaybe" (TypeFuncF (TypeConstraintsF [(TypeVarF "a","eq")] (TypeRecordF [TypeApplyF (TypeIdentF "Maybe") [TypeVarF "a"],TypeApplyF (TypeIdentF "Maybe") [TypeVarF "a"]])) (TypeIdentF "Bool"))
 =
 ffi emptyObject : a
 ffi eqAny : a, a => Bool

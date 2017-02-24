@@ -18,7 +18,7 @@ instance Pretty TypeExpr where
       (TypeUnionF list) -> hcat (punctuate (text " | ") (list <&> ($ prec)))
       (TypeFuncF inType outType) -> hsep [inType prec, text "=>", outType prec]
       (TypeApplyF expr arg) -> hsep $ expr prec : (arg <&> ($ prec))
-      (TypeConstrainsF list expr) -> hsep [commaSep (list &map (\(x,y) -> x prec <+> text y)), text "<:", expr prec ]
+      (TypeConstraintsF list expr) -> hsep [commaSep (list &map (\(x,y) -> x prec <+> text y)), text "<:", expr prec ]
       (TypePolyF x y ) -> y prec
       NoTypeF -> empty
       where
@@ -30,7 +30,7 @@ getPrec = \case
   TypeRecordF {} -> 60
   TypeUnionF {} -> 70
   TypeLabelF {} -> 80
-  TypeConstrainsF {} -> 90
+  TypeConstraintsF {} -> 90
   _ -> 100
 
 

@@ -235,8 +235,8 @@ findClassType :: String -> TypeExpr -> TypeExpr -> Maybe TypeExpr
 -- findClassType var x y | traceArgs ["findClassType", show var, show x, show y] = undefined
 findClassType var (TypeVar x) tp = if x == var then Just tp else Nothing
 findClassType var (TypeRecord l1) (TypeRecord l2) = findClassTypeList var l1 l2
-findClassType var (TypeConstrains _ x) y = findClassType var x y
-findClassType var x (TypeConstrains _ y) = findClassType var x y
+findClassType var (TypeConstraints _ x) y = findClassType var x y
+findClassType var x (TypeConstraints _ y) = findClassType var x y
 findClassType var (TypeFunc x y) (TypeFunc x2 y2) = findClassTypeList var [x,y] [x2,y2]
 findClassType var (TypeApply x y) ast@(TypeApply {}) =
   let TypeApply x2 y2 = curryTypeApply (olength y) ast in findClassTypeList var (x : y) (x2 : y2)
@@ -323,7 +323,7 @@ updateContext expr = do
     (TypeDecl name tp) -> addTypeDeclCheck context name tp -- TODO add type decl schema
     (ClassFn name tp) -> do
       let (TypePoly [TypeVar var] t) = tp
-      identType <- renameVarsInType (TypeConstrains [(TypeVar var, name)] t)
+      identType <- renameVarsInType (TypeConstraints [(TypeVar var, name)] t)
       context & cmodule . classes %~ insertMap name (var, t) & addIdentTypeGen name identType
     (InstanceFn tp name _) ->
       return $ context
@@ -338,7 +338,7 @@ inferRecordPart (c, accExpr) expr = do
   newContext <- applyContext2 c (updateContext expr)
   newContext2 <-
         case attrType ast of
-          (TypeLabel name eType) -> newContext & addIdentTypeGen name (moveConstrainsOnTop eType)
+          (TypeLabel name eType) -> newContext & addIdentTypeGen name (moveConstraintsOnTop eType)
           _ -> return newContext
   return (newContext2,  accExpr ++ [ast])
 

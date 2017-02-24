@@ -26,13 +26,13 @@ typeConstrain = do
   list <- try (some L.ident)
   return $ C.uncons list & unsafeHead
 
-typeConstrains :: Parser TypeExpr
-typeConstrains = do
+typeConstraints :: Parser TypeExpr
+typeConstraints = do
   list <- try (L.commaSep1 typeConstrain <* L.rop "<:")
   tp <- typeItem
-  return $ TypeConstrains (separateVarConstrains list) tp
+  return $ TypeConstraints (separateVarConstraints list) tp
   where
-    separateVarConstrains list = list >>= (\(x, y) -> y &map (\y -> (TypeVar x,y)))
+    separateVarConstraints list = list >>= (\(x, y) -> y &map (\y -> (TypeVar x,y)))
 
 typeVar :: Parser TypeExpr
 typeVar = TypeVar <$> L.ident
@@ -51,7 +51,7 @@ typeApplyParam = do
 
 typeUnionItem = 
   L.parens typeRecord <|>
-  typeConstrains <|>
+  typeConstraints <|>
   try typeApplyParam <|>
   typeLabel <|>
   typeVar <|>
@@ -61,7 +61,7 @@ typeItem = typeUnion <|> typeUnionItem
 
 typeArg =
   L.parens typeRecord <|>
-  typeConstrains <|>
+  typeConstraints <|>
   typeLabel <|>
   typeVar <|>
   typeIdent

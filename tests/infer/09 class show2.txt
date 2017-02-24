@@ -3,7 +3,7 @@ class show a: a => String
 showFoo : Foo (a show <: a) => String
 showFoo x = show x.foo
 -
-TypeLabelF "showFoo" (TypeFuncF (TypeApplyF (TypeIdentF "Foo") [TypeConstrainsF [(TypeVarF "a","show")] (TypeVarF "a")]) (TypeIdentF "String"))
+TypeLabelF "showFoo" (TypeFuncF (TypeApplyF (TypeIdentF "Foo") [TypeConstraintsF [(TypeVarF "a","show")] (TypeVarF "a")]) (TypeIdentF "String"))
 =
 type Foo a = foo : a
 class show a: a => String
@@ -17,4 +17,4 @@ type Foo a = foo : a
 class show a: a => String
 showFoo x = show x.foo
 -
-TypeLabelF "showFoo" (TypeFuncF (TypeRowF (TypeVarF "a") [TypeLabelF "foo" (TypeConstrainsF [(TypeVarF "b","show")] (TypeVarF "b"))]) (TypeIdentF "String"))
+TypeLabelF "showFoo" (TypeFuncF (TypeRowF (TypeVarF "a") [TypeLabelF "foo" (TypeConstraintsF [(TypeVarF "b","show")] (TypeVarF "b"))]) (TypeIdentF "String"))
