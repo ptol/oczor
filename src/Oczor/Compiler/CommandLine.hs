@@ -1,5 +1,5 @@
 module Oczor.Compiler.CommandLine where
-import ClassyPrelude hiding ((<>))
+import ClassyPrelude
 import Options.Applicative
 import Oczor.Compiler.Compiler
 import Oczor.Compiler.State

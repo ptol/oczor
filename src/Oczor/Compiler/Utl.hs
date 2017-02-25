@@ -31,7 +31,7 @@ io = liftIO
 writeFileCreateDir path txt = do
   let dir = Fp.takeDirectory path
   createDirectoryIfMissing True dir
-  writeFile path txt
+  writeFileUtf8 path $ pack txt
 
 
 inferAllTxtWith :: InferContext -> ModuleName -> String -> Either Error (InferContext, InferExpr)
