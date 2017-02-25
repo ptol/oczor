@@ -96,5 +96,5 @@ isFfiType _ _ = False
 
 
 instance Substitutable InferContext where
-  apply s context = (context) & cmodule . idents %~ (map (apply s))
-  ftv context = (ftv $ (context ^. cmodule . idents) & mapToList <&> snd)
+  apply s context = context & cmodule . idents %~ map (apply s)
+  ftv context = ftv $ (context ^. cmodule . idents) & mapToList <&> snd

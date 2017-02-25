@@ -35,7 +35,7 @@ unify arg param = do
       return $ ys & composeSubstList
 
     (arg, TypeUnion paramList) -> do
-      ys <- fmap catMaybes $ mapM (\x -> orNothing $ unify arg x) paramList
+      ys <- catMaybes <$> mapM (orNothing . unify arg) paramList
       let r = ys & sortOn (\(Subst x) -> length x) & headMay
       maybe (typeErrorLift $ UnificationFail arg param) return r
 
@@ -168,7 +168,7 @@ bind a t | t == TypeVar a     = return emptySubst
 orNothing :: MonadError e m => m a -> m (Maybe a)
 orNothing p = catchError (fmap return p) (\e -> return Nothing)
 orEither :: MonadError a1 m => m a -> m (Either a1 a)
-orEither p = catchError (fmap return p) (\e -> return $ Left e)
+orEither p = catchError (return <$> p) (return . Left)
 
 
 unifySubTypes context argList paramList = (,l) <$> unifyList x1 x2 where
@@ -196,7 +196,7 @@ unifyApply switch x y = error $ unwords ["unifyApply", show x, show y]
 
 unifyList :: [TypeExpr] -> [TypeExpr] -> Unify Subst
 -- unifyList x y | traceArgs ["unifyList", show x, show y] = undefined
-unifyList [(TypeVar _)] [] = return emptySubst
+unifyList [TypeVar _] [] = return emptySubst
 unifyList [] [] = return emptySubst
 unifyList (t1 : ts1) (t2 : ts2) =
   do su1 <- unify t1 t2

@@ -1,6 +1,6 @@
-{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 module Oczor.Utl (module Oczor.Utl, module Control.Arrow, module Control.Lens,  Fix(..), cata, para, (&)) where
 import ClassyPrelude as C
 import Control.Arrow
@@ -30,25 +30,25 @@ toTitleCase :: String -> String
 toTitleCase [] = []
 toTitleCase (x : xs) = Char.toUpper x : xs
 
-notNull x = not $ onull x
+notNull = not . onull
 
 trace2 x y = C.trace x y
 trace2 x y = y
 
-ffold x = F.fold x
+ffold = F.fold
 
 trac y x = trace2 ("\n\n" ++ y ++ ":\n " ++ show x ++ "\n") x
 tracep y x = trace2 ("\n\n" ++ y ++ ":\n " ++ pshow x ++ "\n") x
 
-traceArgs list = trace2 ("\n\n" ++ (unlines (zip [0..] list &map (\(i,x) -> ((if i > 0 then "  " ++ show i ++ ": " else "") ++ x))))) False
-traceResult list = trace2 ("\n\n" ++ (unlines (zip [0..] list &map (\(i,x) -> ((if i > 0 then "  " ++ show i ++ ": " else "") ++ x))))) True
+traceArgs list = trace2 ("\n\n" ++ unlines (zip [0..] list &map (\(i,x) -> ((if i > 0 then "  " ++ show i ++ ": " else "") ++ x)))) False
+traceResult list = trace2 ("\n\n" ++ unlines (zip [0..] list &map (\(i,x) -> ((if i > 0 then "  " ++ show i ++ ": " else "") ++ x)))) True
 joinLines :: [String] -> String
 joinLines = intercalate "\n"
 
 pshow :: Show a => a -> String
 pshow = PP.ppShow
 
-unionMaps list = unionsWith (\_ y -> y) list
+unionMaps = unionsWith (\_ y -> y)
 
 unsafeUnconsLast l = (unsafeInit l, unsafeLast l)
 

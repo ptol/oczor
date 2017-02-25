@@ -32,7 +32,7 @@ commonInstancRules = [
 intDivRule = [(("Int", "div"), "/")]
 
 instanceSymbols :: String -> Bool -> Map (String, String) String
-instanceSymbols eqOp hasIntDiv = mapFromList $ commonInstancRules ++ (bool [] intDivRule hasIntDiv) ++ (allTypes <&> (\x -> ((x,"eq"), eqOp))) where
+instanceSymbols eqOp hasIntDiv = mapFromList $ commonInstancRules ++ bool [] intDivRule hasIntDiv ++ (allTypes <&> (\x -> ((x,"eq"), eqOp))) where
   allTypes = ["Int", "Double", "Char", "Bool", "String"]
 
 instanceNames :: Map (String, String) String

@@ -23,18 +23,18 @@ class Substitutable a where
 
 
 instance (Substitutable a) => Substitutable (ExprF a) where
-  apply s x = map (apply s) x
+  apply = map . apply
 
 makeType :: TypeExpr -> [TypeExpr] -> TypeExpr
 -- makeType x y | traceArgs ["makeType", show x, show y] = undefined
-makeType (TypePoly param body) arg = 
-  if al > pl then error "makeType la > pl"
-  else if al == pl then r
-  else TypePoly (param & drop al) r
+makeType (TypePoly param body) arg
+  | al > pl = error "makeType la > pl"
+  | al == pl = r
+  | otherwise = TypePoly (param & drop al) r
   where
     pl = length param
     al = length arg
-    x = zip param arg & map (\((TypeVar x), y) -> (x,y))
+    x = zip param arg & map (\(TypeVar x, y) -> (x,y))
     subst = Subst (x & mapFromList)
     r = apply subst body
 makeType x arg = error $ unwords ["makeType", show x, show arg]

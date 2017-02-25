@@ -50,7 +50,7 @@ funcParam (MD md x) = do
 funcParam (Record list) = do
   list <- traverse desugarFuncParam list
   let (x, guard, body) = unzip3 list
-  return $ (recordIfSome x, concat guard, concat body)
+  return (recordIfSome x, concat guard, concat body)
 funcParam x = funcParam (Record [x])
 
 addToExpr x (Record list) = Record $ x ++ list
@@ -59,7 +59,7 @@ addToBody [] x = x
 addToBody x (Let y r) = Let (addToExpr x y) r
 addToBody x y = Let (recordIfSome x) y
 
-addToGuard x guard = go $ x ++ (maybeToList guard)
+addToGuard x guard = go $ x ++ maybeToList guard
   where
     go [] = Nothing
     go [x] = Just x
@@ -73,8 +73,8 @@ func (Function param guard body) = do
 funcSingleParam (Function param guard body) = do
   cleanAsName
   (newParam, addGuard, addBody) <- desugarFuncParam param
-  let newGuard = (addToGuard addGuard guard)
-  let newGuard2 = if onull addBody then newGuard else (\x -> Let (recordIfSome addBody) x) <$> newGuard
+  let newGuard = addToGuard addGuard guard
+  let newGuard2 = if onull addBody then newGuard else Let (recordIfSome addBody) <$> newGuard
   return $ Function newParam newGuard2 (addToBody addBody body)
 
 destruct (Destruct x y) = do
@@ -84,7 +84,7 @@ destruct (Destruct x y) = do
 
 generateEmptyType name = let typeName = toTitleCase name in [
   FfiType typeName (TypeIdent typeName),
-  (RecordLabel name (WithType (UniqObject name) (TypeIdent typeName))) ,
+  RecordLabel name (WithType (UniqObject name) (TypeIdent typeName)),
   -- Ffi name (TypeIdent typeName),
   InstanceFn (TypeIdent typeName) "eq" (Ident "eqAny")
   ]

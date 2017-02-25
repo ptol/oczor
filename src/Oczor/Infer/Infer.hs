@@ -88,7 +88,7 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
           return (Just ast)
         newAst <- applyContext2 newContext $ infer body
         inTypeApp <- applySubst inType
-        let fTp = (TypeFunc inTypeApp (attrType newAst))
+        let fTp = TypeFunc inTypeApp (attrType newAst)
         return (annType (FunctionF newParam newGuard newAst) fTp)
         where
           fromMaybeT x = map (fromMaybe x) . runMaybeT
@@ -238,7 +238,7 @@ findClassType var (TypeRecord l1) (TypeRecord l2) = findClassTypeList var l1 l2
 findClassType var (TypeConstraints _ x) y = findClassType var x y
 findClassType var x (TypeConstraints _ y) = findClassType var x y
 findClassType var (TypeFunc x y) (TypeFunc x2 y2) = findClassTypeList var [x,y] [x2,y2]
-findClassType var (TypeApply x y) ast@(TypeApply {}) =
+findClassType var (TypeApply x y) ast@TypeApply {} =
   let TypeApply x2 y2 = curryTypeApply (olength y) ast in findClassTypeList var (x : y) (x2 : y2)
 -- findClassType var (TypeApply x y) z = findClassType var x z
 findClassType var x y = error $ unwords ["findClassType", var, show x, show y]
@@ -284,7 +284,7 @@ getTypeDecl name context = fromMaybe (typeError $ UnboundType name) $ do
 -- addTypeDeclCheck context name tp | traceArgs ["addTypeDeclCheck", show name, show tp] = undefined
 addTypeDeclCheck context name tp = do
   hasUnionType <- isUnionWithUnion tp
-  if hasUnionType then (typeError $ TypeUnionWithUnion name) else context & addTypeDeclRename name tp False
+  if hasUnionType then typeError $ TypeUnionWithUnion name else context & addTypeDeclRename name tp False
   where
     isUnionWithUnion (TypePoly _ (TypeUnion list)) = or <$> (list & traverse typeIdentIsUnion)
     isUnionWithUnion (TypeUnion list) = or <$> (list & traverse typeIdentIsUnion)
@@ -351,7 +351,7 @@ putInUnion (TypeUnion list) tp  = TypeUnion (list ++ [tp])
 unionRecordToRecordUnion tp@(TypeUnion x) = C.foldM go (TypeRecord []) x & fromMaybe tp
   where
     go (TypeRecord []) (TypeRecord list) = Just $ TypeRecord (list &map (\x -> TypeUnion [x]))
-    go (TypeRecord list) (TypeRecord uList) | length list == length uList = Just $ TypeRecord $ zipWith (putInUnion) list uList
+    go (TypeRecord list) (TypeRecord uList) | length list == length uList = Just $ TypeRecord $ zipWith putInUnion list uList
     go x y = Nothing
 unionRecordToRecordUnion tp = tp
 
@@ -360,11 +360,11 @@ joinFuncTypes list =
   TypeFunc (unionRecordToRecordUnion $ typeUnionIfSome $ ordNub inTypes) (unionRecordToRecordUnion $ typeUnionIfSome $ ordNub outTypes) --TODO add union unification
   where
     go (inTypes, outTypes) (TypeFunc inType outType) =
-                  ((joinTypes inTypes inType), (joinTypes outTypes outType))
+                  (joinTypes inTypes inType, joinTypes outTypes outType)
     go x y = error $ unwords ["joinFuncType", show y]
     (inTypes, outTypes) = list &foldl' go ([], [])
 
-normalizeModule context = context & idents %~ (map normalize)
+normalizeModule context = context & idents %~ map normalize
 normalizeType t = renameTypeVars m t
   where
     m = zip (ordNub $ setToList $ ftv t) letters & mapFromList

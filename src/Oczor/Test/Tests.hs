@@ -20,13 +20,13 @@ a = p >> i >> t >> c >> cc >> g
 af = a >> f
 
 mp = ("parser", \x -> (show +++ show) (removeMD <$> parseExpr x))
-mi = ("infer", \x -> either (Right . show) Right $ (map show) (lastType <$> inferTxt x))
-my = ("pretty", \x -> either (Right . show) Right $ (map prettyShow) (inferTxt x))
+mi = ("infer", either (Right . show) Right . map show . fmap lastType . inferTxt)
+my = ("pretty", either (Right . show) Right . map prettyShow . inferTxt)
 mt = ("inferast", \x -> (show +++ show) $ (removeContext . snd) <$> inferAllTxt x)
 mc = ("converter", (show +++ show) . convertTxt2)
-mcc = ("converter-class", \x -> either (Right . show) (Right . show)  $ compileJsPartTxt (pack x))
+mcc = ("converter-class", either (Right . show) (Right . show) . compileJsPartTxt . pack)
 mr = ("rewriter", (show +++ (pshow . Rewriter.rewrite "js")) . convertTxt2)
-mg = ("codegen", \x -> either (Right . show) (Right . show)  $ compileJsPartTxt (pack x))
+mg = ("codegen", either (Right . show) (Right . show) . compileJsPartTxt . pack)
 
 p = checkDir mp
 refreshp = refreshFile mp
