@@ -126,8 +126,8 @@ update = do
 ifExpr :: Parser Expr
 ifExpr = do
   b <- try (L.rword "if" *> record)
-  t <- (L.rword "then" *> record)
-  f <- (L.rword "else" *> record)
+  t <- L.rword "then" *> record
+  f <- L.rword "else" *> record
   return $ If b t f
 
 array :: Parser Expr

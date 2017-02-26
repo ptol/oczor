@@ -2,7 +2,7 @@ module Oczor.Converter.Converter where
 import Oczor.Utl
 import Control.Monad.State
 import Control.Monad.Reader
-import ClassyPrelude
+import ClassyPrelude hiding (first)
 import Oczor.Infer.Substitutable
 import Oczor.Syntax.Syntax as S
 import qualified Oczor.Converter.CodeGenAst as A
@@ -29,13 +29,13 @@ identWithNamespace isModule = \case
 initObjectIfNull :: A.Ast -> A.Ast
 initObjectIfNull x = A.If (A.Equal x (A.Lit A.LitNull)) [A.Set x A.emptyObject] []
 
-initModuleIfNull moduleName = (L.init moduleName) & L.inits & L.tail <&> identWithNamespace True <&> initObjectIfNull
+initModuleIfNull moduleName = L.init moduleName & L.inits & L.tail <&> identWithNamespace True <&> initObjectIfNull
 
 typeNormalizeEq t1 t2 = normalizeType t1 == normalizeType t2
 
 curryApply :: [A.Ast] -> Int -> A.Ast -> A.Ast
 curryApply args arity func =
-  if hasParams then (A.Function (params) [A.Return (A.Call func (args ++ (params <&> A.Ident)))])
+  if hasParams then A.Function params [A.Return (A.Call func (args ++ (params <&> A.Ident)))]
   else A.Call func args
   where
     hasParams = arity > 0
@@ -52,7 +52,7 @@ applyParam context (TypeApply (TypeIdent ident) y) = makeType t y
 -- findInstances context l1 l2 | traceArgs ["findInstaces", show l1, show l2] = undefined
 findInstances context l1 l2 = go mempty l1 l2 & ordNub & map (\(_, x, y) -> (x, y))
   where
-  goList vars l1 l2 = zip l1 l2 >>= (uncurry $ go vars)
+  goList vars l1 l2 = zip l1 l2 >>= uncurry (go vars)
   go :: Map String [String] -> TypeExpr -> TypeExpr -> [(String, String, TypeExpr)]
   -- go var x y | traceArgs ["findInstances go", show var, show x, show y] = undefined
   go var x (TypeConstraints _ y) = go var x y
@@ -74,7 +74,7 @@ instanceIdent :: _ -> _ -> _ -> Converter A.Ast
 instanceIdent cls tp exprTp = do
   context <- ask
   let (_, classType) = context & lookupClass cls & unsafeHead
-  let instanceTypeIdent = (instanceTypeName tp)
+  let instanceTypeIdent = instanceTypeName tp
   let instanceType = context & T.lookupInstanceType instanceTypeIdent cls & fromMaybe (error "instanceIdent") -- & trac "instaceType"
   let typeConstraints = getTypeConstraints instanceType -- & trac "typeconstraints"
   let expr = A.Field (instancesObject cls) instanceTypeIdent
@@ -97,7 +97,7 @@ addInstancesParams expr = do
   return $ if onull clistParam then targetExpr else
     case targetExpr of
       A.Function x y -> A.Function (clistParam ++ x) y
-      _ -> A.Function clistParam $ [A.Return $ targetExpr]
+      _ -> A.Function clistParam [A.Return targetExpr]
 
 -- instancesToArgs context contextTp exprTp | traceArgs ["instancesToArgs", show contextTp, show exprTp] = undefined
 instancesToArgs contextTp exprTp =
@@ -129,8 +129,8 @@ convertExprWithTypeChange tp exprTp expr
 convertExprWithNewTypeMaybe tp exprTp expr = maybe expr (\x -> convertExprWithTypeChange tp x expr) exprTp
 
 -- isUnionSubtype context identTp t | traceArgs ["isUnionSubtype", show identTp, show t] = undefined
-isUnionSubtype context identTp t | (getTypeIdent t & isJust) && (not $ T.isFfiType t context) =
-  case (context & T.lookupType (getTypeIdent t & unsafeHead) & unsafeHead & fst) of
+isUnionSubtype context identTp t | (getTypeIdent t & isJust) && not (T.isFfiType t context) =
+  case context & T.lookupType (getTypeIdent t & unsafeHead) & unsafeHead & fst of
     (TypeUnion list) -> list & any (typeNormalizeEq identTp)
     (TypePoly _ (TypeUnion list)) -> list & any (typeNormalizeEq identTp)
     _ -> False
@@ -150,7 +150,7 @@ checkExprTypeChange tp exprTp expr = do
     if exprTp == NoType || typeNormalizeEq tp exprTp || typeIdentIsUnion exprTp || hasTypeVar tp then expr
     else convertExprWithTypeChange tp exprTp expr
 
-paramInstancesName ident cls = (sysPrefix ++ ident ++ cls)
+paramInstancesName ident cls = sysPrefix ++ ident ++ cls
 
 -- getIdentInstancesArgs ident exprTp |traceArgs ["getIdentInstancesArgs", show ident, show exprTp] = undefined
 getIdentInstancesArgs ident exprTp = do
@@ -186,7 +186,7 @@ identType x = do
 getTypeConstraints :: TypeExpr -> ConstraintSet
 getTypeConstraints = para $ \case
     TypeConstraintsF list (TypeLabel x y, _) -> []
-    TypeConstraintsF list x -> list <&> (\(x,y) -> (fst x,y))
+    TypeConstraintsF list x -> list <&> first fst
     x -> ffold $ getResults x
 
 getResults :: TypeExprF (a, b) -> TypeExprF b
@@ -215,7 +215,7 @@ collectAllConstraints x = y x & ordNub
 
 
 convertModule ctx expr moduleName ffiCode =
-  A.StmtList $ (initModuleIfNull moduleName) ++
+  A.StmtList $ initModuleIfNull moduleName ++
     [A.Set (identWithNamespace True moduleName) newModuleAst]
   where
     moduleAst = case convert2 ctx expr of {A.None -> A.emptyObject; x -> x}
@@ -291,7 +291,7 @@ convertFunction (FunctionF params guard body) newOutType =
 -- convertCall (Ann (CallF (UnAnn (LabelAccessF label)) (UnAnn (IdentF ident))) (exprTp,ctx)) | traceArgs ["convertCall", label, show exprTp] = undefined
 convertCall (Ann (CallF (UnAnn (LabelAccessF label)) (UnAnn (IdentF ident))) (exprTp,ctx)) = do
   expr <- A.Field <$> newIdent ident <*> return label
-  let arity = typeFuncArity (exprTp)
+  let arity = typeFuncArity exprTp
   contextTp <- identType ident <&> getLabelType label
   maybe (return expr ) (\contextTp -> addInstancesArgs arity expr contextTp exprTp) contextTp
 convertCall (UnAnn (CallF expr args)) = do
@@ -317,7 +317,7 @@ convertClass (ClassFnF name body) =
     params = if hasParams then [1..clsArity] & map (show >>> ("p" ++)) else []
     codeBody =
       if hasParams then A.Function ("x" : params) [A.Return (A.Call (A.Ident "x") (params <&> A.Ident))]
-      else (A.Function ["x"] [A.Return (A.Ident "x")]) 
+      else A.Function ["x"] [A.Return (A.Ident "x")]
 
 -- newScope (x,y) = if onull x then y else (A.Call (A.Parens (A.Function [] $ x ++ [A.Return y])) [])
 newScope (x,y) = if onull x then y else A.Scope x y
@@ -346,7 +346,7 @@ convertAstList list = do
   let labels = parts & map fst & catMaybes & filter (snd >>> not) & map fst
   let asts = parts & partsToAsts
   let funcLabels = parts & filter (snd >>> A.isFunction) & map fst & catMaybes & map fst
-  let labelsWithIdents = (asts >>= A.containsIdents labels)
+  let labelsWithIdents = asts >>= A.containsIdents labels
   let labelsInScope = if notNull labelsWithIdents || hasStmts then labelsWithIdents ++ funcLabels else []
   let returnObject = parts & filter (fst >>> isJust) & map (\(Just (x, _), y) -> if elem x labelsInScope then (x, A.Ident x) else (x, y)) & A.Object
   return (parts & filter (fst >>> maybe True (fst >>> (`elem` labelsInScope))) & map partToAst, returnObject)
@@ -362,7 +362,7 @@ astToPart = \case
 
 convertRecordToVarsList :: [InferExpr] -> StateT Int Converter [RecordParts]
 convertRecordToVarsList list =
-  (list & traverse convertRecordToVars & map (concat >>> filter (snd >>> (/= A.None))))
+  list & traverse convertRecordToVars & map (concat >>> filter (snd >>> (/= A.None)))
 convertRecordToVars :: InferExpr -> StateT Int Converter [RecordParts]
 convertRecordToVars ast@(Ann ex (tp, ctx)) = case ex of
   RecordF list -> list & traverse convertRecordToVars & map concat
@@ -398,14 +398,14 @@ newBoolAnds list = if olength list > 1 then A.BoolAnds list else list & unsafeHe
 
 funcParamCond = \case
   Ann (ParamIdentF x) (tp, cxt) | notNull typeLabels ->
-    map (\label -> A.HasField (A.Ident x) label) typeLabels
+   map (A.HasField (A.Ident x)) typeLabels
     where typeLabels = getTypeLabels tp
   UnAnn (RecordF list) -> list >>= funcParamCond
   _ -> []
 
 casesFuncs newOutType (UnAnn f@(FunctionF params guard _)) = do
   temp1 <- maybe (return []) (\x -> (:[]) <$> convert x) guard
-  let conds = (funcParamCond params ++ temp1)
+  let conds = funcParamCond params ++ temp1
   func@(A.Function aparams body) <- convertFunction f newOutType
   if onull conds then return (func, Nothing)
   else return (A.Function aparams body, Just $ A.Function aparams [A.Return $ newBoolAnds conds])

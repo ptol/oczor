@@ -59,7 +59,7 @@ exprAppend x y = Record [x,y]
 isIdent (Ident _) = True
 isIdent _ = False
 
-isRecordField (RecordLabel {}) = True
+isRecordField RecordLabel {} = True
 isRecordField _ = False
 
 isTypeIdent (TypeIdent _) = True
@@ -68,7 +68,7 @@ isTypeIdent _ = False
 isTypeUnion (TypeUnion _) = True
 isTypeUnion _ = False
 
-isTypeLabel (TypeLabel {}) = True
+isTypeLabel TypeLabel {} = True
 isTypeLabel _ = False
 
 unwrapMD = \case

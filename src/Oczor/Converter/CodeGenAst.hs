@@ -34,7 +34,7 @@ pattern Parens x = Fix (ParensF x)
 pattern Code x = Fix (CodeF x)
 
 
-scopeToFunc (ScopeF x y) = if onull x then y else (CallF (Parens (Function [] $ (x ++ [ReturnF (Fix y)] <&> Fix))) [])
+scopeToFunc (ScopeF x y) = if onull x then y else CallF (Parens (Function [] (x ++ [ReturnF (Fix y)] <&> Fix))) []
   
 -- pattern Scope x <- Function _ x
 

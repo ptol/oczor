@@ -36,7 +36,7 @@ addOperators opGroups state = state & ops .~ operators & opTable .~ table
     table = opGroupsToTable operators
 
 anyOperatorParser = do
-  L.ros & traverse_ (\x -> notFollowedBy (L.rop x))
+  L.ros & traverse_ (notFollowedBy . L.rop)
   x <- L.identOp
   fail $ "operator (" ++ x ++ ") is not defined"
 
@@ -59,4 +59,4 @@ applyWithType (RecordLabel rl body) (TypeLabel tl tp) | rl == tl = return $ Reco
 -- applyWithType (Function p g b) (TypeFunc tp tb) = Function (applyWithType p tp) g (applyWithType b tb)
 -- applyWithType (Let x y) tp = Let x (WithType y tp)
 -- applyWithType x t = (WithType x t)
-applyWithType x y = fail $ "cannot apply type " ++ (show y) ++ " to " ++ (show x)
+applyWithType x y = fail $ "cannot apply type " ++ show y ++ " to " ++ show x

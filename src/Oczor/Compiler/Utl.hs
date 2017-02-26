@@ -60,9 +60,9 @@ inferContext context fileName x = fst <$> inferAllTxtWith context fileName x
 
 inferAllTxt :: String -> Either Error (InferContext, InferExpr)
 -- inferAllTxt x | traceArgs ["inferAllTxt", x] = undefined
-inferAllTxt x = (Parser.parseExpr x >>= inferAllExpr baseTypeContext)
+inferAllTxt x = Parser.parseExpr x >>= inferAllExpr baseTypeContext
 
 inferAllTxt2 x = do
-  let Right (c, ast) = (Parser.parseExpr x >>= inferAllExpr emptyContext)
+  let Right (c, ast) = Parser.parseExpr x >>= inferAllExpr emptyContext
   putStrLn $ pack (unlines ["ast", show ast])
   return ""
