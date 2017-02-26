@@ -65,7 +65,7 @@ getTestFiles dir = do
 createTestFileTxt :: [(String, String)] -> String
 createTestFileTxt list = list &map (\(input, output) -> [input, "-", output] & intercalate "\n") &intercalate "\n=\n"
 
-writeTestFile fileName list = writeFile fileName (createTestFileTxt list)
+writeTestFile fileName list = writeFileUtf8 fileName (pack $ createTestFileTxt list)
 
 refreshFile (d,f) testsName = do
   file <- findTestSetFilePath d testsName

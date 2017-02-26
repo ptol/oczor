@@ -1,8 +1,10 @@
 {-# LANGUAGE OverlappingInstances       #-}
 {-# LANGUAGE FlexibleInstances       #-}
 {-# LANGUAGE PatternSynonyms       #-}
+{-# LANGUAGE TemplateHaskell #-}
 module Oczor.Converter.CodeGenAstF where
 import ClassyPrelude
+import Data.Deriving
 import Data.Functor.Classes
 import Data.Functor.Foldable
 
@@ -44,10 +46,10 @@ data AstF e =
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
 
 
-instance Ord1 AstF where
-  compare1 = compare
-instance Eq1 AstF where
-  eq1 = (==)
+deriveEq1 ''AstF
+deriveOrd1 ''AstF
+deriveShow1 ''AstF
+
 instance Show (Fix AstF) where showsPrec p (Fix x) = showsPrec p x
   -- show (Fix f) = show f
 

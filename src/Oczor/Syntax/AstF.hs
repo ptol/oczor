@@ -1,10 +1,11 @@
 {-# LANGUAGE OverlappingInstances       #-}
 {-# LANGUAGE FlexibleInstances       #-}
 {-# LANGUAGE PatternSynonyms       #-}
+{-# LANGUAGE TemplateHaskell #-}
 module Oczor.Syntax.AstF (module Oczor.Syntax.AstF) where
 
 import ClassyPrelude
-import Data.Functor.Classes
+import Data.Deriving
 import Data.Functor.Foldable
 import Oczor.Syntax.Types
 
@@ -59,9 +60,9 @@ data ExprF e =
   MDF AstPosition e
   deriving (Eq, Ord, Show, Read, Functor, Foldable, Traversable)
 
-instance Eq1 ExprF where
-  eq1 = (==)
-instance Ord1 ExprF where
-  compare1 = compare
-instance Read1 ExprF
+deriveEq1 ''ExprF
+deriveOrd1 ''ExprF
+deriveRead1 ''ExprF
+deriveShow1 ''ExprF
+
 instance Show (Fix ExprF) where showsPrec p (Fix x) = showsPrec p x
