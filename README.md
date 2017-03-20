@@ -31,7 +31,9 @@ Oczor uses records instead of all these entities
 
 <table> 
 <thead><tr><th>Oczor</th><th>JavaScript</th></tr></thead>
-<tbody> <tr> <td><pre lang='haskell'><code>
+<tbody> <tr> <td>
+
+```haskell
 
 x1 = 1
 
@@ -51,7 +53,11 @@ func2 x =
   in not (temp && false)
 
 
-</code></pre></td><td ><pre lang='javascript'><code>
+```
+
+</td><td >
+
+```javascript
   var x1 = 1;
 
   var x2 = {
@@ -69,7 +75,9 @@ func2 x =
     var temp = x === 1;
     return !(temp && false);
   };
-</code></pre></td></tr></tbody></table>
+```
+
+</td></tr></tbody></table>
 
 
 # Other languages #
@@ -83,7 +91,9 @@ Most syntax constructions have two options - comma or indent separation
 
 <table>
 <thead><tr><th>Comma</th><th>Indentation</th></tr></thead>
-<tbody> <tr> <td ><pre lang='haskell'><code>
+<tbody> <tr> <td >
+
+```haskell
 x = (foo = 1, bar = 2)
 
 
@@ -93,7 +103,11 @@ type Cat = name : String, age : Int
 
 
 
-</code></pre></td><td ><pre lang='haskell'><code>
+```
+
+</td><td >
+
+```haskell
 x = 
   foo = 1
   bar = 2
@@ -102,7 +116,9 @@ type Cat =
   name : String
   age : Int
   
-</code></pre></td></tr></tbody></table>
+```
+
+</td></tr></tbody></table>
 
 
 # Records #
