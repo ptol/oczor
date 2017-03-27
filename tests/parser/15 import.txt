@@ -1,15 +1,15 @@
 import list
 -
-StmtF (StmtImport ["list"] Nothing)
+Stmt (StmtImport ["list"] Nothing)
 =
 import list as l
 -
-StmtF (StmtImport ["list"] (Just "l"))
+Stmt (StmtImport ["list"] (Just "l"))
 =
 include list
 -
-StmtF (StmtInclude ["list"])
+Stmt (StmtInclude ["list"])
 =
 import foo.bar as l
 -
-StmtF (StmtImport ["foo","bar"] (Just "l"))
+Stmt (StmtImport ["foo","bar"] (Just "l"))

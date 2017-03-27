@@ -1,44 +1,44 @@
 foo = 1
 -
-RecordLabelF "foo" (LitF (LitInt 1))
+RecordLabel "foo" (Lit (LitInt 1))
 =
 foo = bar = 1
 -
-RecordLabelF "foo" (RecordLabelF "bar" (LitF (LitInt 1)))
+RecordLabel "foo" (RecordLabel "bar" (Lit (LitInt 1)))
 =
 y = foo 1.0
 -
-RecordLabelF "y" (CallF (IdentF "foo") (LitF (LitDouble 1.0)))
+RecordLabel "y" (Call (Ident "foo") (Lit (LitDouble 1.0)))
 =
 x = 1
 y = 2
 -
-RecordF [RecordLabelF "x" (LitF (LitInt 1)),RecordLabelF "y" (LitF (LitInt 2))]
+Record [RecordLabel "x" (Lit (LitInt 1)),RecordLabel "y" (Lit (LitInt 2))]
 =
 x = 1, y = 2
 -
-RecordF [RecordLabelF "x" (LitF (LitInt 1)),RecordLabelF "y" (LitF (LitInt 2))]
+Record [RecordLabel "x" (Lit (LitInt 1)),RecordLabel "y" (Lit (LitInt 2))]
 =
 x = y = 1, z = 2
 -
-RecordF [RecordLabelF "x" (RecordLabelF "y" (LitF (LitInt 1))),RecordLabelF "z" (LitF (LitInt 2))]
+Record [RecordLabel "x" (RecordLabel "y" (Lit (LitInt 1))),RecordLabel "z" (Lit (LitInt 2))]
 =
 x = (1, y = 2)
 -
-RecordLabelF "x" (RecordF [LitF (LitInt 1),RecordLabelF "y" (LitF (LitInt 2))])
+RecordLabel "x" (Record [Lit (LitInt 1),RecordLabel "y" (Lit (LitInt 2))])
 =
 foo (_.foo)
 -
-CallF (IdentF "foo") (FunctionF (ParamIdentF "_a") Nothing (CallF (LabelAccessF "foo") (IdentF "_a")))
+Call (Ident "foo") (Function (ParamIdent "_a") Nothing (Call (LabelAccess "foo") (Ident "_a")))
 =
 x.foo
 -
-CallF (LabelAccessF "foo") (IdentF "x")
+Call (LabelAccess "foo") (Ident "x")
 =
 x.foo.bar
 -
-CallF (LabelAccessF "bar") (CallF (LabelAccessF "foo") (IdentF "x"))
+Call (LabelAccess "bar") (Call (LabelAccess "foo") (Ident "x"))
 =
 x = y.foo
 -
-RecordLabelF "x" (CallF (LabelAccessF "foo") (IdentF "y"))
+RecordLabel "x" (Call (LabelAccess "foo") (Ident "y"))

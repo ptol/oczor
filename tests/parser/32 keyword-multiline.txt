@@ -2,22 +2,22 @@ class
   foo a : a
   bar a : a
 -
-RecordF [ClassFnF "foo" (TypePoly [TypeVar "a"] (TypeVar "a")),ClassFnF "bar" (TypePoly [TypeVar "a"] (TypeVar "a"))]
+Record [ClassFn "foo" (TypePoly [TypeVar "a"] (TypeVar "a")),ClassFn "bar" (TypePoly [TypeVar "a"] (TypeVar "a"))]
 =
 instance
   Int foo = 1
   Int bar = 1
 -
-RecordF [InstanceFnF (TypeIdent "Int") "foo" (LitF (LitInt 1)),InstanceFnF (TypeIdent "Int") "bar" (LitF (LitInt 1))]
+Record [InstanceFn (TypeIdent "Int") "foo" (Lit (LitInt 1)),InstanceFn (TypeIdent "Int") "bar" (Lit (LitInt 1))]
 =
 import
   foo
   bar
 -
-RecordF [StmtF (StmtImport ["foo"] Nothing),StmtF (StmtImport ["bar"] Nothing)]
+Record [Stmt (StmtImport ["foo"] Nothing),Stmt (StmtImport ["bar"] Nothing)]
 =
 include
   foo
   bar
 -
-RecordF [StmtF (StmtInclude ["foo"]),StmtF (StmtInclude ["bar"])]
+Record [Stmt (StmtInclude ["foo"]),Stmt (StmtInclude ["bar"])]

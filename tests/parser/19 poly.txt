@@ -1,11 +1,11 @@
 type Bar a = List a
 -
-TypeDeclF "Bar" (TypePoly [TypeVar "a"] (TypeApply (TypeIdent "List") [TypeVar "a"]))
+TypeDecl "Bar" (TypePoly [TypeVar "a"] (TypeApply (TypeIdent "List") [TypeVar "a"]))
 =
 foo: (List a) => a
 -
-ExprTypeF (TypeLabel "foo" (TypeFunc (TypeApply (TypeIdent "List") [TypeVar "a"]) (TypeVar "a")))
+ExprType (TypeLabel "foo" (TypeFunc (TypeApply (TypeIdent "List") [TypeVar "a"]) (TypeVar "a")))
 =
 foo: a b
 -
-ExprTypeF (TypeLabel "foo" (TypeApply (TypeVar "a") [TypeVar "b"]))
+ExprType (TypeLabel "foo" (TypeApply (TypeVar "a") [TypeVar "b"]))

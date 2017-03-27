@@ -1,7 +1,7 @@
 ffi foo : Int
 -
-FfiF "foo" (TypeIdent "Int")
+Ffi "foo" (TypeIdent "Int")
 =
 ffi type Array a
 -
-FfiTypeF "Array" (TypePoly [TypeVar "a"] (TypeIdent "Array"))
+FfiType "Array" (TypePoly [TypeVar "a"] (TypeIdent "Array"))

@@ -1,78 +1,103 @@
 {-# LANGUAGE PatternSynonyms       #-}
 {-# LANGUAGE ViewPatterns       #-}
 {-# LANGUAGE OverlappingInstances       #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE StandaloneDeriving #-}
+
 module Oczor.Syntax.Ast (module Oczor.Syntax.Ast, module Oczor.Syntax.Types, Lits(..), Stmts(..)) where
 
 import ClassyPrelude
-import Data.Functor.Foldable hiding (Foldable)
-import Oczor.Syntax.AstF
+import Data.Functor.Foldable
+import Data.Functor.Foldable.TH
 import Oczor.Syntax.Types
 
-type Expr = Fix ExprF
+type ModuleName  = [String]
 
+data Lits =
+  LitChar Char |
+  LitBool Bool |
+  LitDouble Double |
+  LitInt Int |
+  LitString String
+  deriving (Eq, Ord, Show, Read)
 
-data AnnF f a r = AnnF (f r) a deriving (Show, Functor, Foldable)
+data Stmts =
+  StmtImport ModuleName (Maybe String) |
+  StmtOpen String |
+  StmtInclude ModuleName |
+  StmtOperator
+  deriving (Eq, Ord, Show, Read)
+
+type AstPosition = (Word, Word, FilePath)
+
+type Name = String
+
+data Expr =
+  Lit Lits |
+  UniqObject String |
+  WildCard |
+  Ident Name |
+  ParamIdent Name |
+  As (Maybe Name) Expr |
+  Cases [Expr] |
+  Let Expr Expr |
+  SetStmt Expr Expr |
+  RecordLabel Name Expr |
+  Destruct Expr Expr |
+  LabelAccess Name |
+  Call Expr Expr |
+  Update Expr [Expr] |
+  ExprList [Expr] |
+  Record [Expr] |
+  Function Expr (Maybe Expr) Expr |
+  TypeDecl Name TypeExpr |
+  ClassFn Name TypeExpr |
+  InstanceFn TypeExpr String Expr |
+  Ffi Name TypeExpr |
+  FfiType Name TypeExpr |
+  ExprType TypeExpr |
+  GetInstance Name TypeExpr |
+  Array [Expr] |
+  WithType Expr TypeExpr |
+  In Bool Expr |
+  Stmt Stmts |
+  If Expr Expr Expr |
+  MD AstPosition Expr
+  deriving (Eq, Ord, Show, Read)
+
+makeBaseFunctor ''Expr
+
+deriving instance Show a => Show (ExprF a)
+
+data Ann f a = Ann (f (Ann f a)) a deriving (Functor, Foldable, Traversable)
+data AnnF f a r = AnnF (f r) a deriving (Functor, Foldable, Traversable)
+
+type instance Base (Ann f a) = AnnF f a
+
+instance Functor f => Recursive (Ann f a) where
+	project = \case Ann f a -> AnnF f a
+
+instance Functor f => Corecursive (Ann f a) where
+	embed = \case AnnF f a -> Ann f a
 
 instance Show a => Show (Ann ExprF a) where
-  show (Fix (AnnF x y)) = "(" ++ show x ++ " ANN " ++ show y ++ ")"
-
-type Ann f a = Fix (AnnF f a)
-
--- ann :: Expr -> TypeExpr -> InferExpr
--- ann :: f (Fix (AnnF f a)) -> a -> Fix (AnnF f a)
--- ann x y = Fix (AnnF x y)
-
-ann x y = Fix $ AnnF x y
+  show (Ann x y) = "(" ++ show x ++ " ANN " ++ show y ++ ")"
 
 stripAnns :: Functor f => Ann f a -> Fix f
 stripAnns = cata $ \case
   (AnnF x _) -> Fix x
 
-
 attr :: Ann f a -> a
-attr (unfix -> AnnF _ a) = a
-
+attr (Ann _ a) = a
 
 unAnn :: Ann f a -> f (Ann f a)
-unAnn (unfix -> AnnF a y) = a
+unAnn (Ann a _) = a
 
 changeAttr :: Ann f a -> a -> Ann f a
-changeAttr (unfix -> AnnF x a) na = ann x na
+changeAttr (Ann x a) = Ann x
 
-pattern Ann x y = Fix (AnnF x y)
-pattern UnAnn x <- Fix (AnnF x y)
-
-pattern Lit x = Fix (LitF x)
-pattern WildCard = Fix WildCardF
-pattern UniqObject x = Fix (UniqObjectF x)
-pattern Ident x = Fix (IdentF x)
-pattern ParamIdent x = Fix (ParamIdentF x)
-pattern As x y = Fix (AsF x y)
-pattern Cases x = Fix (CasesF x)
-pattern Let x y = Fix (LetF x y)
-pattern RecordLabel x y = Fix (RecordLabelF x y)
-pattern LabelAccess x = Fix (LabelAccessF x)
-pattern Call x y = Fix (CallF x y)
-pattern Update x y = Fix (UpdateF x y)
-pattern Record x = Fix (RecordF x)
-pattern Destruct x y = Fix (DestructF x y)
-pattern ExprList x = Fix (ExprListF x)
-pattern Function x y z = Fix (FunctionF x y z)
-pattern TypeDecl x y = Fix (TypeDeclF x y)
-pattern ClassFn x y = Fix (ClassFnF x y)
-pattern InstanceFn x y z = Fix (InstanceFnF x y z)
-pattern Ffi x y = Fix (FfiF x y)
-pattern FfiType x y = Fix (FfiTypeF x y)
-pattern ExprType x  = Fix (ExprTypeF x)
-pattern GetInstance x y = Fix (GetInstanceF x y)
-pattern Array x = Fix (ArrayF x)
-pattern WithType x y = Fix (WithTypeF x y)
-pattern Stmt x = Fix (StmtF x)
-pattern If x y z = Fix (IfF x y z)
-pattern MD x y = Fix (MDF x y)
-pattern In x y = Fix (InF x y)
-pattern SetStmt x y = Fix (SetStmtF x y)
-
+pattern UnAnn x <- Ann x y
 
 pattern ExprListMD x <- MD y (ExprList x)
 pattern LabelAccessCall label e = Call (LabelAccess label) e

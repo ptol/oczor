@@ -419,7 +419,7 @@ casesFuncs newOutType (UnAnn f@(FunctionF params guard _)) = do
 cases list newOutType = do
   funcsWithCond <- list & traverse (casesFuncs newOutType)
   let hasNoCondFunc = funcsWithCond & any (snd >>> isNothing)
-  let arity = list & map stripAnns & casesArity
+  let arity = list & map (refix . stripAnns) & casesArity
   let count = if olength arity == 1 then arity & unsafeHead else error "cases arity length <> 1"
   let params = [1..count] & map (\i -> sysPrefix ++ "a" ++ show i)
   let paramIdents = params & map A.Ident

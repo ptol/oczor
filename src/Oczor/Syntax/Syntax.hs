@@ -6,7 +6,6 @@ import Data.Monoid
 import Oczor.Syntax.Types as X
 import Oczor.Syntax.Ast as X
 import Oczor.Syntax.Errors as X
-import Oczor.Syntax.AstF as X
 import Oczor.Syntax.Operators as X
 import qualified Control.Monad.Writer.Strict as W
 

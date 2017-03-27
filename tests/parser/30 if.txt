@@ -1,9 +1,9 @@
 if true then 1 else 2
 -
-IfF (LitF (LitBool True)) (LitF (LitInt 1)) (LitF (LitInt 2))
+If (Lit (LitBool True)) (Lit (LitInt 1)) (Lit (LitInt 2))
 =
 if true
 then 1
 else 2
 -
-IfF (LitF (LitBool True)) (LitF (LitInt 1)) (LitF (LitInt 2))
+If (Lit (LitBool True)) (Lit (LitInt 1)) (Lit (LitInt 2))

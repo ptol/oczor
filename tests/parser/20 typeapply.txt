@@ -1,7 +1,7 @@
 foo : Foo Int => Int
 -
-ExprTypeF (TypeLabel "foo" (TypeFunc (TypeApply (TypeIdent "Foo") [TypeIdent "Int"]) (TypeIdent "Int")))
+ExprType (TypeLabel "foo" (TypeFunc (TypeApply (TypeIdent "Foo") [TypeIdent "Int"]) (TypeIdent "Int")))
 =
 foo : Foo Int Int => Int
 -
-ExprTypeF (TypeLabel "foo" (TypeFunc (TypeApply (TypeIdent "Foo") [TypeIdent "Int",TypeIdent "Int"]) (TypeIdent "Int")))
+ExprType (TypeLabel "foo" (TypeFunc (TypeApply (TypeIdent "Foo") [TypeIdent "Int",TypeIdent "Int"]) (TypeIdent "Int")))

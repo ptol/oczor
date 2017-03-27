@@ -47,7 +47,6 @@ library
     Oczor.Pretty.Pretty
     Oczor.Pretty.Types
     Oczor.Syntax.Ast
-    Oczor.Syntax.AstF
     Oczor.Syntax.Errors
     Oczor.Syntax.Operators
     Oczor.Syntax.Syntax
