@@ -9,4 +9,4 @@ instance Foo pure x = pureFoo x
 x : Foo Int
 x = pure 1
 -
-TypeLabelF "x" (TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Int"])
+TypeLabel "x" (TypeApply (TypeIdent "Foo") [TypeIdent "Int"])

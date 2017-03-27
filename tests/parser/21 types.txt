@@ -2,32 +2,32 @@ type Foo = y : Int
 x : Foo
 x = y = 1
 -
-RecordF [TypeDeclF "Foo" (TypeLabelF "y" (TypeIdentF "Int")),RecordLabelF "x" (WithTypeF (RecordLabelF "y" (LitF (LitInt 1))) (TypeIdentF "Foo"))]
+RecordF [TypeDeclF "Foo" (TypeLabel "y" (TypeIdent "Int")),RecordLabelF "x" (WithTypeF (RecordLabelF "y" (LitF (LitInt 1))) (TypeIdent "Foo"))]
 =
 type Foo = Int
 -
-TypeDeclF "Foo" (TypeIdentF "Int")
+TypeDeclF "Foo" (TypeIdent "Int")
 =
 type Foo = Foo | Bar
 -
-TypeDeclF "Foo" (TypeUnionF [TypeIdentF "Foo",TypeIdentF "Bar"])
+TypeDeclF "Foo" (TypeUnion [TypeIdent "Foo",TypeIdent "Bar"])
 =
 foo : x
 -
-ExprTypeF (TypeLabelF "foo" (TypeVarF "x"))
+ExprTypeF (TypeLabel "foo" (TypeVar "x"))
 =
 foo : x => x
 -
-ExprTypeF (TypeLabelF "foo" (TypeFuncF (TypeVarF "x") (TypeVarF "x")))
+ExprTypeF (TypeLabel "foo" (TypeFunc (TypeVar "x") (TypeVar "x")))
 =
 foo : Int => Int
 -
-ExprTypeF (TypeLabelF "foo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")))
+ExprTypeF (TypeLabel "foo" (TypeFunc (TypeIdent "Int") (TypeIdent "Int")))
 =
 foo : (foo : Int, bar : Int)
 -
-ExprTypeF (TypeLabelF "foo" (TypeRecordF [TypeLabelF "foo" (TypeIdentF "Int"),TypeLabelF "bar" (TypeIdentF "Int")]))
+ExprTypeF (TypeLabel "foo" (TypeRecord [TypeLabel "foo" (TypeIdent "Int"),TypeLabel "bar" (TypeIdent "Int")]))
 =
 foo : Int, Int => Int
 -
-ExprTypeF (TypeLabelF "foo" (TypeFuncF (TypeRecordF [TypeIdentF "Int",TypeIdentF "Int"]) (TypeIdentF "Int")))
+ExprTypeF (TypeLabel "foo" (TypeFunc (TypeRecord [TypeIdent "Int",TypeIdent "Int"]) (TypeIdent "Int")))

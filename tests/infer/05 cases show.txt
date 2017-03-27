@@ -2,4 +2,4 @@ class show a : a => String
 case
  x => show x
 -
-TypeFuncF (TypeConstraintsF [(TypeVarF "a","show")] (TypeVarF "a")) (TypeIdentF "String")
+TypeFunc (TypeConstraints [(TypeVar "a","show")] (TypeVar "a")) (TypeIdent "String")

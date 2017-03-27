@@ -1,22 +1,22 @@
 1
 -
-TypeIdentF "Int"
+TypeIdent "Int"
 =
 x = 1
 -
-TypeLabelF "x" (TypeIdentF "Int")
+TypeLabel "x" (TypeIdent "Int")
 =
 x = 1
 y = x
 -
-TypeLabelF "y" (TypeIdentF "Int")
+TypeLabel "y" (TypeIdent "Int")
 =
 x = 1
 y = z = x
 -
-TypeLabelF "y" (TypeLabelF "z" (TypeIdentF "Int"))
+TypeLabel "y" (TypeLabel "z" (TypeIdent "Int"))
 =
 foo : ((x : Int), y : Int)
 foo = ((x = 1), y = 1)
 -
-TypeLabelF "foo" (TypeRecordF [TypeLabelF "x" (TypeIdentF "Int"),TypeLabelF "y" (TypeIdentF "Int")])
+TypeLabel "foo" (TypeRecord [TypeLabel "x" (TypeIdent "Int"),TypeLabel "y" (TypeIdent "Int")])

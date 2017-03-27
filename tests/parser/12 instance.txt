@@ -1,11 +1,11 @@
 instance Int eq x y = eqInt x y
 -
-InstanceFnF (TypeIdentF "Int") "eq" (FunctionF (RecordF [ParamIdentF "x",ParamIdentF "y"]) Nothing (CallF (IdentF "eqInt") (RecordF [IdentF "x",IdentF "y"])))
+InstanceFnF (TypeIdent "Int") "eq" (FunctionF (RecordF [ParamIdentF "x",ParamIdentF "y"]) Nothing (CallF (IdentF "eqInt") (RecordF [IdentF "x",IdentF "y"])))
 =
 instance (Foo (a eq <: a)) eq = eqFoo
 -
-InstanceFnF (TypeApplyF (TypeIdentF "Foo") [TypeConstraintsF [(TypeVarF "a","eq")] (TypeVarF "a")]) "eq" (IdentF "eqFoo")
+InstanceFnF (TypeApply (TypeIdent "Foo") [TypeConstraints [(TypeVar "a","eq")] (TypeVar "a")]) "eq" (IdentF "eqFoo")
 =
 instance (a eq <: Foo a) eq = eqFoo
 -
-InstanceFnF (TypeConstraintsF [(TypeVarF "a","eq")] (TypeApplyF (TypeIdentF "Foo") [TypeVarF "a"])) "eq" (IdentF "eqFoo")
+InstanceFnF (TypeConstraints [(TypeVar "a","eq")] (TypeApply (TypeIdent "Foo") [TypeVar "a"])) "eq" (IdentF "eqFoo")

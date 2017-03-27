@@ -8,6 +8,8 @@ import Oczor.Parser.ParserState
 import Oczor.Utl
 import qualified Control.Monad.Writer.Strict as W
 
+import Data.Functor.Foldable
+
 paramToBody newParam ast = case removeMD ast of
   Lit _ -> (Just $ Call (Ident "eq") (Record [Ident newParam, ast]), Nothing)
   Ident x -> (Just $ Call (Ident "eq") (Record [Ident newParam, ast]), Nothing)
@@ -99,7 +101,7 @@ typeDecl name param body = listIfSome $ (types >>= generateEmptyType) ++ [td] wh
   alg (TypeVarF x) | not $ elem x params = do
     W.tell [x]
     return $ TypeIdent (toTitleCase x)
-  alg x = return $ Fix x
+  alg x = return $ embed x
   (r,types) = W.runWriter $ cataM alg body
   td = TypeDecl name $ if onull param then r else TypePoly param r
 
@@ -117,4 +119,4 @@ partialApply ast = case ast of
         fn <- lift freshName
         modify (++ [fn])
         return $ Ident fn
-      x -> return $ Fix x
+      x -> return $ embed x

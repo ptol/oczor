@@ -17,7 +17,7 @@ type Foo =
  Int
  Int
 -
-TypeDeclF "Foo" (TypeRecordF [TypeIdentF "Int",TypeIdentF "Int"])
+TypeDeclF "Foo" (TypeRecord [TypeIdent "Int",TypeIdent "Int"])
 =
 case
  x => 1

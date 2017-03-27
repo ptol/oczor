@@ -2,31 +2,31 @@ class inc a : a => a
 class zero a : a
 foo = inc zero
 -
-TypeLabelF "foo" (TypeConstraintsF [(TypeVarF "a","zero"),(TypeVarF "a","inc")] (TypeVarF "a"))
+TypeLabel "foo" (TypeConstraints [(TypeVar "a","zero"),(TypeVar "a","inc")] (TypeVar "a"))
 =
 class add a : a, a => a
 class zero a : a
 foo = add zero zero
 -
-TypeLabelF "foo" (TypeConstraintsF [(TypeVarF "a","zero"),(TypeVarF "a","add")] (TypeVarF "a"))
+TypeLabel "foo" (TypeConstraints [(TypeVar "a","zero"),(TypeVar "a","add")] (TypeVar "a"))
 =
 class add a : a, a => a
 class zero a : a
 class inc a : a => a
 foo = add zero (inc zero)
 -
-TypeLabelF "foo" (TypeConstraintsF [(TypeVarF "a","zero"),(TypeVarF "a","inc"),(TypeVarF "a","add")] (TypeVarF "a"))
+TypeLabel "foo" (TypeConstraints [(TypeVar "a","zero"),(TypeVar "a","inc"),(TypeVar "a","add")] (TypeVar "a"))
 =
 class foldl f : f a => a
 foo x = foldl x
 -
-TypeLabelF "foo" (TypeFuncF (TypeApplyF (TypeConstraintsF [(TypeVarF "b","foldl")] (TypeVarF "b")) [TypeVarF "a"]) (TypeVarF "a"))
+TypeLabel "foo" (TypeFunc (TypeApply (TypeConstraints [(TypeVar "b","foldl")] (TypeVar "b")) [TypeVar "a"]) (TypeVar "a"))
 =
 class zero a : a
 class foldl f : a, f a => Int
 foo x = foldl zero x
 -
-TypeLabelF "foo" (TypeFuncF (TypeApplyF (TypeConstraintsF [(TypeVarF "a","foldl")] (TypeVarF "a")) [TypeConstraintsF [(TypeVarF "b","zero")] (TypeVarF "b")]) (TypeIdentF "Int"))
+TypeLabel "foo" (TypeFunc (TypeApply (TypeConstraints [(TypeVar "a","foldl")] (TypeVar "a")) [TypeConstraints [(TypeVar "b","zero")] (TypeVar "b")]) (TypeIdent "Int"))
 =
 class add a : a, a => a
 class zero a : a
@@ -43,4 +43,4 @@ sum l = foldl (a e => add a e) zero l
 
 foo = sum [1]
 -
-TypeLabelF "foo" (TypeIdentF "Int")
+TypeLabel "foo" (TypeIdent "Int")

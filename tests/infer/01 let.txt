@@ -1,4 +1,4 @@
 x = 1
 in x
 -
-TypeIdentF "Int"
+TypeIdent "Int"

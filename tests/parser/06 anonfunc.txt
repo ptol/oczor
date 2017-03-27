@@ -8,7 +8,7 @@ FunctionF (RecordF [ParamIdentF "x",ParamIdentF "y"]) Nothing (LitF (LitInt 1))
 =
 \ (x : Int) => x
 -
-FunctionF (ExprTypeF (TypeLabelF "x" (TypeIdentF "Int"))) Nothing (IdentF "x")
+FunctionF (ExprTypeF (TypeLabel "x" (TypeIdent "Int"))) Nothing (IdentF "x")
 =
 x | 1 => x
 -

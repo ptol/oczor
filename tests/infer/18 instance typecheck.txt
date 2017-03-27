@@ -1,9 +1,9 @@
 class zero a : a
 instance Double zero = 0
 -
-(UnificationFail (TypeIdentF "Int") (TypeIdentF "Double"),(2,1,""))
+(UnificationFail (TypeIdent "Int") (TypeIdent "Double"),(2,1,""))
 =
 class mempty a: a
 instance Int mempty = 1.0
 -
-(UnificationFail (TypeIdentF "Double") (TypeIdentF "Int"),(2,1,""))
+(UnificationFail (TypeIdent "Double") (TypeIdent "Int"),(2,1,""))

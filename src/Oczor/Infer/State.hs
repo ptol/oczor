@@ -12,7 +12,7 @@ import Oczor.Infer.InferContext
 
 import Oczor.Infer.Substitutable
 import Oczor.Infer.InferAst
-
+import Data.Functor.Foldable
 
 
 data InferState = InferState {
@@ -70,7 +70,7 @@ renameVars vars tp = do
 renameVarsInExpr :: Expr -> Infer Expr
 renameVarsInExpr x = flip cataM x $ \case
       ExprTypeF tp -> ExprType <$> renameVars vars tp
-      x -> return $ Fix x
+      x -> return $ embed x
     where
     vars = flip cata x $ \case
         ExprTypeF tp -> setToList $ ftv tp

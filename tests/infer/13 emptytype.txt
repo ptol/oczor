@@ -4,4 +4,4 @@ ffi eqAny : a , a => Bool
 type Foo = bar
 foo = bar
 -
-TypeLabelF "foo" (TypeIdentF "Bar")
+TypeLabel "foo" (TypeIdent "Bar")

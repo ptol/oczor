@@ -18,3 +18,7 @@ cabal.sandbox.config
 *.eventlog
 .stack-work/
 cabal.project.local
+.idea/
+.ideaHaskellLib/
+cabal.config
+oczor.iml

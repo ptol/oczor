@@ -1,7 +1,7 @@
 ffi foo : Int => Int
 y = foo 1.0
 -
-(UnificationFail (TypeIdentF "Double") (TypeIdentF "Int"),(2,5,""))
+(UnificationFail (TypeIdent "Double") (TypeIdent "Int"),(2,5,""))
 =
 foo = bar
 -
@@ -10,4 +10,4 @@ foo = bar
 x : Unit
 x = 1
 -
-(UnificationFail (TypeIdentF "Int") (TypeIdentF "Unit"),(1,1,""))
+(UnificationFail (TypeIdent "Int") (TypeIdent "Unit"),(1,1,""))

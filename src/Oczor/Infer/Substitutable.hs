@@ -5,6 +5,8 @@ import ClassyPrelude
 import Oczor.Syntax.Syntax
 import Oczor.Utl
 
+import Data.Functor.Foldable
+
 newtype Subst = Subst (Map String TypeExpr)
   deriving (Eq, Ord, Show, Monoid)
 
@@ -56,11 +58,11 @@ instance Substitutable TypeExpr where
   apply (Subst s) x = cata alg x -- TODO add typepoly case
     where
       alg = \case
-        x@TypeConstraintsF {} -> normalizeTypeConstraints $ moveConstraintsOnTop (Fix x)
+        x@TypeConstraintsF {} -> normalizeTypeConstraints $ moveConstraintsOnTop (embed x)
         TypeApplyF (TypeApply body param1) param2 -> TypeApply body (param1 ++ param2)
         t@TypeRowF {} -> normalizeTypeRow t
-        t@(TypeVarF x) -> findWithDefault (Fix t) x s
-        x -> Fix x
+        t@(TypeVarF x) -> findWithDefault (embed t) x s
+        x -> embed x
 
   ftv = setFromList . getTypeVars
 

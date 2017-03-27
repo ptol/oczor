@@ -10,6 +10,8 @@ import Oczor.Infer.State
 import Oczor.Infer.Substitutable
 import Oczor.Infer.UnifyState
 
+import Data.Functor.Foldable
+
 -- runUnify x y |  traceResult ["=== runUnify ===", show x, show y] = trac "=== result ===" <$> runReaderT (unify x y) initState
 runUnify x y = runReaderT (unify x y) initState
 
@@ -107,12 +109,12 @@ getTupleType = \case
 addConstraintToExpr :: ConstraintSet -> TypeExpr -> TypeExpr
 addConstraintToExpr set = cata $ \case
   ast@(TypeVarF var) ->
-    let a = Fix ast in
+    let a = embed ast in
       if onull constraints then a
       else TypeConstraints (constraintListToSet var constraints) a
     where
       constraints = setGetConstraints var set
-  x -> Fix x
+  x -> embed x
 
 addConstraintsToSubst context s@(Subst subst) =
   if null cList then s

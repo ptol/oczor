@@ -3,4 +3,4 @@ ffi foo : Array
 bar : Array a
 bar = foo
 -
-TypeLabelF "bar" (TypeApplyF (TypeIdentF "Array") [TypeVarF "a"])
+TypeLabel "bar" (TypeApply (TypeIdent "Array") [TypeVar "a"])

@@ -1,42 +1,42 @@
 _.foo
 -
-TypeFuncF (TypeRowF (TypeVarF "b") [TypeLabelF "foo" (TypeVarF "a")]) (TypeVarF "a")
+TypeFunc (TypeRow (TypeVar "b") [TypeLabel "foo" (TypeVar "a")]) (TypeVar "a")
 =
 \x => (x.foo)
 -
-TypeFuncF (TypeRowF (TypeVarF "b") [TypeLabelF "foo" (TypeVarF "a")]) (TypeVarF "a")
+TypeFunc (TypeRow (TypeVar "b") [TypeLabel "foo" (TypeVar "a")]) (TypeVar "a")
 =
 \x => (x.foo.bar)
 -
-TypeFuncF (TypeRowF (TypeVarF "c") [TypeLabelF "foo" (TypeRowF (TypeVarF "b") [TypeLabelF "bar" (TypeVarF "a")])]) (TypeVarF "a")
+TypeFunc (TypeRow (TypeVar "c") [TypeLabel "foo" (TypeRow (TypeVar "b") [TypeLabel "bar" (TypeVar "a")])]) (TypeVar "a")
 =
 ffi foo : Int => Unit
 \x => foo(x.bar)
 -
-TypeFuncF (TypeRowF (TypeVarF "a") [TypeLabelF "bar" (TypeIdentF "Int")]) (TypeIdentF "Unit")
+TypeFunc (TypeRow (TypeVar "a") [TypeLabel "bar" (TypeIdent "Int")]) (TypeIdent "Unit")
 =
 x = 1
 y = (x.foo)
 -
-(UnificationFail (TypeLabelF "foo" (TypeVarF "c")) (TypeIdentF "Int"),(2,6,""))
+(UnificationFail (TypeLabel "foo" (TypeVar "c")) (TypeIdent "Int"),(2,6,""))
 =
 x = bar = 1
 y = (x.foo)
 -
-(UnificationFail (TypeLabelF "foo" (TypeVarF "d")) (TypeLabelF "bar" (TypeIdentF "Int")),(2,6,""))
+(UnificationFail (TypeLabel "foo" (TypeVar "d")) (TypeLabel "bar" (TypeIdent "Int")),(2,6,""))
 =
 x = foo = 1
 y = x.foo
 -
-TypeLabelF "y" (TypeIdentF "Int")
+TypeLabel "y" (TypeIdent "Int")
 =
 ffi bar : Int => Int
 x => ((y = x.foo), bar y)
 -
-TypeFuncF (TypeRowF (TypeVarF "a") [TypeLabelF "foo" (TypeIdentF "Int")]) (TypeRecordF [TypeLabelF "y" (TypeIdentF "Int"),TypeIdentF "Int"])
+TypeFunc (TypeRow (TypeVar "a") [TypeLabel "foo" (TypeIdent "Int")]) (TypeRecord [TypeLabel "y" (TypeIdent "Int"),TypeIdent "Int"])
 =
 ffi bar : Int => Int
 id z = z
 x => ((y = id x), bar y)
 -
-TypeFuncF (TypeIdentF "Int") (TypeRecordF [TypeLabelF "y" (TypeIdentF "Int"),TypeIdentF "Int"])
+TypeFunc (TypeIdent "Int") (TypeRecord [TypeLabel "y" (TypeIdent "Int"),TypeIdent "Int"])

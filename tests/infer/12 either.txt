@@ -9,7 +9,7 @@ instance (Either a) pure x = pureEither x
 x : Either String Int
 x = pure 2
 -
-TypeLabelF "x" (TypeApplyF (TypeIdentF "Either") [TypeIdentF "String",TypeIdentF "Int"])
+TypeLabel "x" (TypeApply (TypeIdent "Either") [TypeIdent "String",TypeIdent "Int"])
 =
 type Either a b = left : a | right : b
 
@@ -23,7 +23,7 @@ fromEither = case
 
 bar = fromEither 3 foo
 -
-TypeLabelF "bar" (TypeIdentF "Int")
+TypeLabel "bar" (TypeIdent "Int")
 =
 type Either a b = left : a | right : b
 
@@ -32,7 +32,7 @@ either fl fr m = m # case
  (left = x) => fl x
  (right = x) => fr x
 -
-TypeLabelF "either" (TypeFuncF (TypeRecordF [TypeFuncF (TypeVarF "a") (TypeVarF "c"),TypeFuncF (TypeVarF "b") (TypeVarF "c"),TypeApplyF (TypeIdentF "Either") [TypeVarF "a",TypeVarF "b"]]) (TypeVarF "c"))
+TypeLabel "either" (TypeFunc (TypeRecord [TypeFunc (TypeVar "a") (TypeVar "c"),TypeFunc (TypeVar "b") (TypeVar "c"),TypeApply (TypeIdent "Either") [TypeVar "a",TypeVar "b"]]) (TypeVar "c"))
 =
 type Either a b = left : a | right : b
 
@@ -50,4 +50,4 @@ foo = left = "foo"
 
 bar = map (x => x) foo
 -
-TypeLabelF "bar" (TypeApplyF (TypeIdentF "Either") [TypeIdentF "String",TypeIdentF "Int"])
+TypeLabel "bar" (TypeApply (TypeIdent "Either") [TypeIdent "String",TypeIdent "Int"])
