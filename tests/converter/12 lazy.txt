@@ -2,14 +2,14 @@ type Lazy a = a
 foo : Lazy Int
 foo = 1
 -
-ObjectF [("foo",FunctionF [] [ReturnF (LitF (LitInt 1))])]
+Object [("foo",Function [] [Return (Lit (LitInt 1))])]
 =
 type Lazy a = a
 foo : Lazy Int
 foo = 1
 bar = foo
 -
-ScopeF [VarF "foo" (FunctionF [] [ReturnF (LitF (LitInt 1))])] (ObjectF [("foo",IdentF "foo"),("bar",IdentF "foo")])
+Scope [Var "foo" (Function [] [Return (Lit (LitInt 1))])] (Object [("foo",Ident "foo"),("bar",Ident "foo")])
 =
 type Lazy a = a
 foo : Lazy Int
@@ -17,10 +17,10 @@ foo = 1
 bar : Int
 bar = foo
 -
-ScopeF [VarF "foo" (FunctionF [] [ReturnF (LitF (LitInt 1))])] (ObjectF [("foo",IdentF "foo"),("bar",CallF (IdentF "foo") [])])
+Scope [Var "foo" (Function [] [Return (Lit (LitInt 1))])] (Object [("foo",Ident "foo"),("bar",Call (Ident "foo") [])])
 =
 type Lazy a = a
 foo : Int => Lazy Int
 foo x = x
 -
-ObjectF [("foo",FunctionF ["x"] [ReturnF (FunctionF [] [ReturnF (IdentF "x")])])]
+Object [("foo",Function ["x"] [Return (Function [] [Return (Ident "x")])])]

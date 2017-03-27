@@ -59,4 +59,4 @@ rewrite lang = cata $ \case
     | Just operator <- instanceRules & lookup lang >>= lookup (tp, func) -> Parens $ Operator operator param
   CallF (Field (Field (Field (Ident "oc") "std") "ff") x) param | Just operator <- ffRules & lookup lang >>= lookup x -> Parens $ Operator operator param
   CallF x@Function {} y -> Call (Parens x) y
-  x -> Fix x
+  x -> embed x

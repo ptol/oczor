@@ -24,7 +24,6 @@ library
     Oczor.Compiler.State
     Oczor.Compiler.Utl
     Oczor.Converter.CodeGenAst
-    Oczor.Converter.CodeGenAstF
     Oczor.Converter.Converter
     Oczor.Converter.Rewriter
     Oczor.Desugar.Desugar

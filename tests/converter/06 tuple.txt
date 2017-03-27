@@ -1,19 +1,19 @@
 x = (1,2)
 -
-ObjectF [("x",ObjectF [("item1",LitF (LitInt 1)),("item2",LitF (LitInt 2))])]
+Object [("x",Object [("item1",Lit (LitInt 1)),("item2",Lit (LitInt 2))])]
 =
 foo x = (x,x)
 -
-ObjectF [("foo",FunctionF ["x"] [ReturnF (ObjectF [("item1",IdentF "x"),("item2",IdentF "x")])])]
+Object [("foo",Function ["x"] [Return (Object [("item1",Ident "x"),("item2",Ident "x")])])]
 =
 ffi foo : (Int, Int) => Int
 
 bar = foo 1 2
 -
-ObjectF [("foo",IdentF "foo"),("bar",CallF (IdentF "foo") [LitF (LitInt 1),LitF (LitInt 2)])]
+Object [("foo",Ident "foo"),("bar",Call (Ident "foo") [Lit (LitInt 1),Lit (LitInt 2)])]
 =
 ffi foo : Int => Int
 
 bar = (1, foo 1)
 -
-ObjectF [("foo",IdentF "foo"),("bar",ObjectF [("item1",LitF (LitInt 1)),("item2",CallF (IdentF "foo") [LitF (LitInt 1)])])]
+Object [("foo",Ident "foo"),("bar",Object [("item1",Lit (LitInt 1)),("item2",Call (Ident "foo") [Lit (LitInt 1)])])]
