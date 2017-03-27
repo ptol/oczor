@@ -84,9 +84,8 @@ instance Functor f => Corecursive (Ann f a) where
 instance Show a => Show (Ann ExprF a) where
   show (Ann x y) = "(" ++ show x ++ " ANN " ++ show y ++ ")"
 
-stripAnns :: Functor f => Ann f a -> Fix f
-stripAnns = cata $ \case
-  (AnnF x _) -> Fix x
+stripAnns :: Ann ExprF a -> Expr
+stripAnns = cata $ \case AnnF x _ -> embed x
 
 attr :: Ann f a -> a
 attr (Ann _ a) = a
