@@ -1,15 +1,15 @@
 x # case (x => 2)
 -
-CallF (CasesF [FunctionF (ParamIdentF "x") Nothing (LitF (LitInt 2))]) (IdentF "x")
+Call (Cases [Function (ParamIdent "x") Nothing (Lit (LitInt 2))]) (Ident "x")
 =
 foo (bar [1 2 3] # qwe)
 -
-CallF (IdentF "foo") (CallF (IdentF "qwe") (CallF (IdentF "bar") (ArrayF [LitF (LitInt 1),LitF (LitInt 2),LitF (LitInt 3)])))
+Call (Ident "foo") (Call (Ident "qwe") (Call (Ident "bar") (Array [Lit (LitInt 1),Lit (LitInt 2),Lit (LitInt 3)])))
 =
 1 , 2 # foo
 -
-CallF (IdentF "foo") (RecordF [LitF (LitInt 1),LitF (LitInt 2)])
+Call (Ident "foo") (Record [Lit (LitInt 1),Lit (LitInt 2)])
 =
 foo $ bar qwe
 -
-CallF (IdentF "foo") (CallF (IdentF "bar") (IdentF "qwe"))
+Call (Ident "foo") (Call (Ident "bar") (Ident "qwe"))

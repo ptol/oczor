@@ -1,7 +1,7 @@
 class mempty a: a
 -
-ClassFnF "mempty" (TypePoly [TypeVar "a"] (TypeVar "a"))
+ClassFn "mempty" (TypePoly [TypeVar "a"] (TypeVar "a"))
 =
 instance Int mempty = 0
 -
-InstanceFnF (TypeIdent "Int") "mempty" (LitF (LitInt 0))
+InstanceFn (TypeIdent "Int") "mempty" (Lit (LitInt 0))

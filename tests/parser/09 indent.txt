@@ -5,27 +5,27 @@ bar =
  3
  4
 -
-RecordF [RecordLabelF "foo" (RecordF [LitF (LitInt 1),LitF (LitInt 2)]),RecordLabelF "bar" (RecordF [LitF (LitInt 3),LitF (LitInt 4)])]
+Record [RecordLabel "foo" (Record [Lit (LitInt 1),Lit (LitInt 2)]),RecordLabel "bar" (Record [Lit (LitInt 3),Lit (LitInt 4)])]
 =
 foo (x) =
  1
  2
 -
-RecordLabelF "foo" (FunctionF (ParamIdentF "x") Nothing (RecordF [LitF (LitInt 1),LitF (LitInt 2)]))
+RecordLabel "foo" (Function (ParamIdent "x") Nothing (Record [Lit (LitInt 1),Lit (LitInt 2)]))
 =
 type Foo =
  Int
  Int
 -
-TypeDeclF "Foo" (TypeRecord [TypeIdent "Int",TypeIdent "Int"])
+TypeDecl "Foo" (TypeRecord [TypeIdent "Int",TypeIdent "Int"])
 =
 case
  x => 1
 -
-CasesF [FunctionF (ParamIdentF "x") Nothing (LitF (LitInt 1))]
+Cases [Function (ParamIdent "x") Nothing (Lit (LitInt 1))]
 =
 foo =
  case
   x => 1
 -
-RecordLabelF "foo" (CasesF [FunctionF (ParamIdentF "x") Nothing (LitF (LitInt 1))])
+RecordLabel "foo" (Cases [Function (ParamIdent "x") Nothing (Lit (LitInt 1))])

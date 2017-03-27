@@ -1,11 +1,11 @@
 (x,y) = (1,2)
 -
-RecordF [RecordLabelF "_a" (RecordF [LitF (LitInt 1),LitF (LitInt 2)]),RecordLabelF "x" (CallF (LabelAccessF "item1") (IdentF "_a")),RecordLabelF "y" (CallF (LabelAccessF "item2") (IdentF "_a"))]
+Record [RecordLabel "_a" (Record [Lit (LitInt 1),Lit (LitInt 2)]),RecordLabel "x" (Call (LabelAccess "item1") (Ident "_a")),RecordLabel "y" (Call (LabelAccess "item2") (Ident "_a"))]
 =
 (foo = x) = bar
 -
-RecordF [RecordLabelF "_a" (IdentF "bar"),RecordLabelF "x" (CallF (LabelAccessF "foo") (IdentF "_a"))]
+Record [RecordLabel "_a" (Ident "bar"),RecordLabel "x" (Call (LabelAccess "foo") (Ident "_a"))]
 =
 (foo = x, bar = y) = x
 -
-RecordF [RecordLabelF "_a" (IdentF "x"),RecordLabelF "x" (CallF (LabelAccessF "foo") (IdentF "_a")),RecordLabelF "y" (CallF (LabelAccessF "bar") (IdentF "_a"))]
+Record [RecordLabel "_a" (Ident "x"),RecordLabel "x" (Call (LabelAccess "foo") (Ident "_a")),RecordLabel "y" (Call (LabelAccess "bar") (Ident "_a"))]

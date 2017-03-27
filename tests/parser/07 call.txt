@@ -1,31 +1,31 @@
 foo x
 -
-CallF (IdentF "foo") (IdentF "x")
+Call (Ident "foo") (Ident "x")
 =
 foo x y
 -
-CallF (IdentF "foo") (RecordF [IdentF "x",IdentF "y"])
+Call (Ident "foo") (Record [Ident "x",Ident "y"])
 =
 foo (bar y)
 -
-CallF (IdentF "foo") (CallF (IdentF "bar") (IdentF "y"))
+Call (Ident "foo") (Call (Ident "bar") (Ident "y"))
 =
 foo (x = 1)
 -
-CallF (IdentF "foo") (RecordLabelF "x" (LitF (LitInt 1)))
+Call (Ident "foo") (RecordLabel "x" (Lit (LitInt 1)))
 =
 foo (x = 1) (y = 1)
 -
-CallF (IdentF "foo") (RecordF [RecordLabelF "x" (LitF (LitInt 1)),RecordLabelF "y" (LitF (LitInt 1))])
+Call (Ident "foo") (Record [RecordLabel "x" (Lit (LitInt 1)),RecordLabel "y" (Lit (LitInt 1))])
 =
 foo (x => x)
 -
-CallF (IdentF "foo") (FunctionF (ParamIdentF "x") Nothing (IdentF "x"))
+Call (Ident "foo") (Function (ParamIdent "x") Nothing (Ident "x"))
 =
 x | (foo x) => x
 -
-FunctionF (ParamIdentF "x") (Just (CallF (IdentF "foo") (IdentF "x"))) (IdentF "x")
+Function (ParamIdent "x") (Just (Call (Ident "foo") (Ident "x"))) (Ident "x")
 =
 foo case (x => x)
 -
-CallF (IdentF "foo") (CasesF [FunctionF (ParamIdentF "x") Nothing (IdentF "x")])
+Call (Ident "foo") (Cases [Function (ParamIdent "x") Nothing (Ident "x")])

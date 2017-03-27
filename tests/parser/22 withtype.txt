@@ -1,8 +1,8 @@
 foo : Int
 foo = 1
 -
-RecordLabelF "foo" (WithTypeF (LitF (LitInt 1)) (TypeIdent "Int"))
+RecordLabel "foo" (WithType (Lit (LitInt 1)) (TypeIdent "Int"))
 =
 foo : Int = 1
 -
-RecordLabelF "foo" (WithTypeF (LitF (LitInt 1)) (TypeIdent "Int"))
+RecordLabel "foo" (WithType (Lit (LitInt 1)) (TypeIdent "Int"))

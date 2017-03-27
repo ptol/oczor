@@ -1,9 +1,9 @@
 foo with bar = 1
 -
-UpdateF (IdentF "foo") [RecordLabelF "bar" (LitF (LitInt 1))]
+Update (Ident "foo") [RecordLabel "bar" (Lit (LitInt 1))]
 =
 foo with 
   bar = 1
   qwe = 2
 -
-UpdateF (IdentF "foo") [RecordLabelF "bar" (LitF (LitInt 1)),RecordLabelF "qwe" (LitF (LitInt 2))]
+Update (Ident "foo") [RecordLabel "bar" (Lit (LitInt 1)),RecordLabel "qwe" (Lit (LitInt 2))]

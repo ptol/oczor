@@ -1,6 +1,5 @@
 module Oczor.Syntax.Errors where
 import Oczor.Syntax.Ast
-import Oczor.Syntax.AstF
 import ClassyPrelude hiding (TVar)
 
 type Error = (ErrorType, AstPosition)

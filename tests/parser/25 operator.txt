@@ -1,12 +1,12 @@
 infixl + 6 addInt
 -
-StmtF StmtOperator
+Stmt StmtOperator
 =
 ffi add : (Int, Int) => Int
 infixl + 6 add
 1 + 2
 -
-RecordF [FfiF "add" (TypeFunc (TypeRecord [TypeIdent "Int",TypeIdent "Int"]) (TypeIdent "Int")),StmtF StmtOperator,CallF (IdentF "add") (RecordF [LitF (LitInt 1),LitF (LitInt 2)])]
+Record [Ffi "add" (TypeFunc (TypeRecord [TypeIdent "Int",TypeIdent "Int"]) (TypeIdent "Int")),Stmt StmtOperator,Call (Ident "add") (Record [Lit (LitInt 1),Lit (LitInt 2)])]
 =
 ffi mul : (Int, Int) => Int
 ffi add : (Int, Int) => Int
@@ -14,20 +14,20 @@ infixl + 6 add
 infixl * 7 mul
 1 + 2 * 3
 -
-RecordF [FfiF "mul" (TypeFunc (TypeRecord [TypeIdent "Int",TypeIdent "Int"]) (TypeIdent "Int")),FfiF "add" (TypeFunc (TypeRecord [TypeIdent "Int",TypeIdent "Int"]) (TypeIdent "Int")),StmtF StmtOperator,StmtF StmtOperator,CallF (IdentF "add") (RecordF [LitF (LitInt 1),CallF (IdentF "mul") (RecordF [LitF (LitInt 2),LitF (LitInt 3)])])]
+Record [Ffi "mul" (TypeFunc (TypeRecord [TypeIdent "Int",TypeIdent "Int"]) (TypeIdent "Int")),Ffi "add" (TypeFunc (TypeRecord [TypeIdent "Int",TypeIdent "Int"]) (TypeIdent "Int")),Stmt StmtOperator,Stmt StmtOperator,Call (Ident "add") (Record [Lit (LitInt 1),Call (Ident "mul") (Record [Lit (LitInt 2),Lit (LitInt 3)])])]
 =
 (1) # foo
 -
-CallF (IdentF "foo") (LitF (LitInt 1))
+Call (Ident "foo") (Lit (LitInt 1))
 =
 infixl + 6 add
 infixl ++ 5 add
 1 ++ 2
 -
-RecordF [StmtF StmtOperator,StmtF StmtOperator,CallF (IdentF "add") (RecordF [LitF (LitInt 1),LitF (LitInt 2)])]
+Record [Stmt StmtOperator,Stmt StmtOperator,Call (Ident "add") (Record [Lit (LitInt 1),Lit (LitInt 2)])]
 =
 infix == 4 eq
 
 y = x == 2
 -
-RecordF [StmtF StmtOperator,RecordLabelF "y" (CallF (IdentF "eq") (RecordF [IdentF "x",LitF (LitInt 2)]))]
+Record [Stmt StmtOperator,RecordLabel "y" (Call (Ident "eq") (Record [Ident "x",Lit (LitInt 2)]))]

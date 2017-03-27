@@ -1,11 +1,11 @@
 foo x = 1
 -
-RecordLabelF "foo" (FunctionF (ParamIdentF "x") Nothing (LitF (LitInt 1)))
+RecordLabel "foo" (Function (ParamIdent "x") Nothing (Lit (LitInt 1)))
 =
 foo x y = 1
 -
-RecordLabelF "foo" (FunctionF (RecordF [ParamIdentF "x",ParamIdentF "y"]) Nothing (LitF (LitInt 1)))
+RecordLabel "foo" (Function (Record [ParamIdent "x",ParamIdent "y"]) Nothing (Lit (LitInt 1)))
 =
 foo ^x = 1
 -
-RecordLabelF "foo" (FunctionF (ParamIdentF "_a") (Just (CallF (IdentF "eq") (RecordF [IdentF "_a",IdentF "x"]))) (LitF (LitInt 1)))
+RecordLabel "foo" (Function (ParamIdent "_a") (Just (Call (Ident "eq") (Record [Ident "_a",Ident "x"]))) (Lit (LitInt 1)))

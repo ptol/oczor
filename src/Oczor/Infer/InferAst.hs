@@ -13,7 +13,7 @@ type InferExpr = Ann ExprF (TypeExpr, InferContext)
 
 attrType = fst . attr
 
-annType x y = ann x (y, emptyContext)
+annType x y = Ann x (y, emptyContext)
 
 changeType newTp (Ann x (tp,ctx)) = Ann x (newTp, ctx)
 changeContext newCtx (Ann x (tp,ctx)) = Ann x (tp, newCtx)
@@ -24,5 +24,5 @@ removeContext = cata $ \case
 
 instance Substitutable InferExpr where
   -- apply s | traceArgs ["apply inferExpr", show s] = undefined
-  apply s = cata $ \case (AnnF ast (tp,ctx)) -> ann (apply s ast) (apply s tp, apply s ctx) -- TODO FF (apply ast)
+  apply s = cata $ \case (AnnF ast (tp,ctx)) -> Ann (apply s ast) (apply s tp, apply s ctx) -- TODO FF (apply ast)
   -- ftv = cata $ \case (AnnF ast tp) -> ftv tp 

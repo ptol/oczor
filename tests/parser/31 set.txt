@@ -1,4 +1,4 @@
 x = 1
 x := 2
 -
-RecordF [RecordLabelF "x" (LitF (LitInt 1)),SetStmtF (IdentF "x") (LitF (LitInt 2))]
+Record [RecordLabel "x" (Lit (LitInt 1)),SetStmt (Ident "x") (Lit (LitInt 2))]

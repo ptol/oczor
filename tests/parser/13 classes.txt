@@ -1,7 +1,7 @@
 class eq a: (a,a) => Unit
 -
-ClassFnF "eq" (TypePoly [TypeVar "a"] (TypeFunc (TypeRecord [TypeVar "a",TypeVar "a"]) (TypeIdent "Unit")))
+ClassFn "eq" (TypePoly [TypeVar "a"] (TypeFunc (TypeRecord [TypeVar "a",TypeVar "a"]) (TypeIdent "Unit")))
 =
 foo : a show <: a
 -
-ExprTypeF (TypeLabel "foo" (TypeConstraints [(TypeVar "a","show")] (TypeVar "a")))
+ExprType (TypeLabel "foo" (TypeConstraints [(TypeVar "a","show")] (TypeVar "a")))

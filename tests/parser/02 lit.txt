@@ -1,23 +1,23 @@
 10
 -
-LitF (LitInt 10)
+Lit (LitInt 10)
 =
 10.1
 -
-LitF (LitDouble 10.1)
+Lit (LitDouble 10.1)
 =
 'a'
 -
-LitF (LitChar 'a')
+Lit (LitChar 'a')
 =
 "test"
 -
-LitF (LitString "test")
+Lit (LitString "test")
 =
 foo "foo" "foo"
 -
-CallF (IdentF "foo") (RecordF [LitF (LitString "foo"),LitF (LitString "foo")])
+Call (Ident "foo") (Record [Lit (LitString "foo"),Lit (LitString "foo")])
 =
 true
 -
-LitF (LitBool True)
+Lit (LitBool True)

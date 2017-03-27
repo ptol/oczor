@@ -1,11 +1,11 @@
 foo x@(1,2) = x
 -
-RecordLabelF "foo" (FunctionF (ParamIdentF "x") (Just (CallF (IdentF "andBool") (RecordF [CallF (IdentF "eq") (RecordF [CallF (LabelAccessF "item1") (IdentF "x"),LitF (LitInt 1)]),CallF (IdentF "eq") (RecordF [CallF (LabelAccessF "item2") (IdentF "x"),LitF (LitInt 2)])]))) (IdentF "x"))
+RecordLabel "foo" (Function (ParamIdent "x") (Just (Call (Ident "andBool") (Record [Call (Ident "eq") (Record [Call (LabelAccess "item1") (Ident "x"),Lit (LitInt 1)]),Call (Ident "eq") (Record [Call (LabelAccess "item2") (Ident "x"),Lit (LitInt 2)])]))) (Ident "x"))
 =
 @(1,2) => 1
 -
-FunctionF (ParamIdentF "_a") (Just (CallF (IdentF "andBool") (RecordF [CallF (IdentF "eq") (RecordF [CallF (LabelAccessF "item1") (IdentF "_a"),LitF (LitInt 1)]),CallF (IdentF "eq") (RecordF [CallF (LabelAccessF "item2") (IdentF "_a"),LitF (LitInt 2)])]))) (LitF (LitInt 1))
+Function (ParamIdent "_a") (Just (Call (Ident "andBool") (Record [Call (Ident "eq") (Record [Call (LabelAccess "item1") (Ident "_a"),Lit (LitInt 1)]),Call (Ident "eq") (Record [Call (LabelAccess "item2") (Ident "_a"),Lit (LitInt 2)])]))) (Lit (LitInt 1))
 =
 @(foo = x, bar = y) => 1
 -
-FunctionF (ParamIdentF "_a") Nothing (LetF (RecordF [RecordLabelF "x" (CallF (LabelAccessF "foo") (IdentF "_a")),RecordLabelF "y" (CallF (LabelAccessF "bar") (IdentF "_a"))]) (LitF (LitInt 1)))
+Function (ParamIdent "_a") Nothing (Let (Record [RecordLabel "x" (Call (LabelAccess "foo") (Ident "_a")),RecordLabel "y" (Call (LabelAccess "bar") (Ident "_a"))]) (Lit (LitInt 1)))

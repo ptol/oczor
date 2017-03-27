@@ -1,6 +1,6 @@
 [1 foo bar (foo bar)]
 -
-ArrayF [LitF (LitInt 1),IdentF "foo",IdentF "bar",CallF (IdentF "foo") (IdentF "bar")]
+Array [Lit (LitInt 1),Ident "foo",Ident "bar",Call (Ident "foo") (Ident "bar")]
 =
 [
  1 
@@ -9,16 +9,16 @@ ArrayF [LitF (LitInt 1),IdentF "foo",IdentF "bar",CallF (IdentF "foo") (IdentF "
  foo bar
 ]
 -
-ArrayF [LitF (LitInt 1),IdentF "foo",IdentF "bar",CallF (IdentF "foo") (IdentF "bar")]
+Array [Lit (LitInt 1),Ident "foo",Ident "bar",Call (Ident "foo") (Ident "bar")]
 =
 []
 -
-ArrayF []
+Array []
 =
 [1, foo bar]
 -
-ArrayF [LitF (LitInt 1),CallF (IdentF "foo") (IdentF "bar")]
+Array [Lit (LitInt 1),Call (Ident "foo") (Ident "bar")]
 =
 [1 _ 2]
 -
-FunctionF (ParamIdentF "_a") Nothing (ArrayF [LitF (LitInt 1),IdentF "_a",LitF (LitInt 2)])
+Function (ParamIdent "_a") Nothing (Array [Lit (LitInt 1),Ident "_a",Lit (LitInt 2)])
