@@ -2,28 +2,28 @@ foo x =
  x.foo
  x.bar
 -
-TypeLabelF "foo" (TypeFuncF (TypeRowF (TypeVarF "c") [TypeLabelF "foo" (TypeVarF "a"),TypeLabelF "bar" (TypeVarF "b")]) (TypeRecordF [TypeVarF "a",TypeVarF "b"]))
+TypeLabel "foo" (TypeFunc (TypeRow (TypeVar "c") [TypeLabel "foo" (TypeVar "a"),TypeLabel "bar" (TypeVar "b")]) (TypeRecord [TypeVar "a",TypeVar "b"]))
 =
 foo x =
  x.foo
  x.bar
  x.qwe
 -
-TypeLabelF "foo" (TypeFuncF (TypeRowF (TypeVarF "d") [TypeLabelF "foo" (TypeVarF "a"),TypeLabelF "bar" (TypeVarF "b"),TypeLabelF "qwe" (TypeVarF "c")]) (TypeRecordF [TypeVarF "a",TypeVarF "b",TypeVarF "c"]))
+TypeLabel "foo" (TypeFunc (TypeRow (TypeVar "d") [TypeLabel "foo" (TypeVar "a"),TypeLabel "bar" (TypeVar "b"),TypeLabel "qwe" (TypeVar "c")]) (TypeRecord [TypeVar "a",TypeVar "b",TypeVar "c"]))
 =
 ffi foo : (Int, Int) => Int
 test x = foo x.foo x.bar
 -
-TypeLabelF "test" (TypeFuncF (TypeRowF (TypeVarF "a") [TypeLabelF "foo" (TypeIdentF "Int"),TypeLabelF "bar" (TypeIdentF "Int")]) (TypeIdentF "Int"))
+TypeLabel "test" (TypeFunc (TypeRow (TypeVar "a") [TypeLabel "foo" (TypeIdent "Int"),TypeLabel "bar" (TypeIdent "Int")]) (TypeIdent "Int"))
 =
 foo (x,y) z = 0
 foo (1,2) 3
 -
-TypeIdentF "Int"
+TypeIdent "Int"
 =
 ffi eqInt : (Int, Int) => Bool
 foo = case
  x y | (eqInt x 1) => 2
  z => 1
 -
-TypeLabelF "foo" (TypeFuncF (TypeUnionF [TypeRowF (TypeVarF "b") [TypeLabelF "item1" (TypeIdentF "Int"),TypeLabelF "item2" (TypeVarF "a")],TypeVarF "c"]) (TypeIdentF "Int"))
+TypeLabel "foo" (TypeFunc (TypeUnion [TypeRow (TypeVar "b") [TypeLabel "item1" (TypeIdent "Int"),TypeLabel "item2" (TypeVar "a")],TypeVar "c"]) (TypeIdent "Int"))

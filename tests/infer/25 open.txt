@@ -2,4 +2,4 @@ foo = x = 1
 open foo
 x
 -
-TypeIdentF "Int"
+TypeIdent "Int"

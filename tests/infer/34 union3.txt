@@ -4,4 +4,4 @@ type Maybe a = None
 foo : Maybe
 foo = none
 -
-TypeLabelF "foo" (TypeIdentF "Maybe")
+TypeLabel "foo" (TypeIdent "Maybe")

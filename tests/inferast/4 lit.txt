@@ -1,9 +1,9 @@
 1
 -
-(LitF (LitInt 1) ANN TypeIdentF "Int")
+(LitF (LitInt 1) ANN TypeIdent "Int")
 =
 type Foo = Int
 bar : Foo
 bar = 1
 -
-(RecordF [(TypeDeclF "Foo" (TypeIdentF "Int") ANN NoTypeF),(RecordLabelF "bar" (LitF (LitInt 1) ANN TypeIdentF "Foo") ANN TypeLabelF "bar" (TypeIdentF "Foo"))] ANN TypeRecordF [NoTypeF,TypeLabelF "bar" (TypeIdentF "Foo")])
+(RecordF [(TypeDeclF "Foo" (TypeIdent "Int") ANN NoType),(RecordLabelF "bar" (LitF (LitInt 1) ANN TypeIdent "Foo") ANN TypeLabel "bar" (TypeIdent "Foo"))] ANN TypeRecord [NoType,TypeLabel "bar" (TypeIdent "Foo")])

@@ -1,4 +1,4 @@
 ffi foo: a => String
 foo 1
 -
-(RecordF [(FfiF "foo" (TypeFuncF (TypeVarF "a") (TypeIdentF "String")) ANN NoTypeF),(CallF (IdentF "foo" ANN TypeFuncF (TypeIdentF "Int") (TypeIdentF "String")) (LitF (LitInt 1) ANN TypeIdentF "Int") ANN TypeIdentF "String")] ANN TypeRecordF [NoTypeF,TypeIdentF "String"])
+(RecordF [(FfiF "foo" (TypeFunc (TypeVar "a") (TypeIdent "String")) ANN NoType),(CallF (IdentF "foo" ANN TypeFunc (TypeIdent "Int") (TypeIdent "String")) (LitF (LitInt 1) ANN TypeIdent "Int") ANN TypeIdent "String")] ANN TypeRecord [NoType,TypeIdent "String"])

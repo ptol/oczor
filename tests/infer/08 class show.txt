@@ -13,4 +13,4 @@ test = foo = 1
 
 bar = show test
 -
-TypeLabelF "bar" (TypeIdentF "String")
+TypeLabel "bar" (TypeIdent "String")

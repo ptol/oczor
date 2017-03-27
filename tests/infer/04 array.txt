@@ -1,17 +1,17 @@
 [1 2 3]
 -
-TypeApplyF (TypeIdentF "Array") [TypeIdentF "Int"]
+TypeApply (TypeIdent "Array") [TypeIdent "Int"]
 =
 ffi eqInt : (Int, Int) => Bool
 eqInt [1 2 3] 1
 -
-(UnificationFail (TypeApplyF (TypeIdentF "Array") [TypeIdentF "Int"]) (TypeIdentF "Int"),(2,1,""))
+(UnificationFail (TypeApply (TypeIdent "Array") [TypeIdent "Int"]) (TypeIdent "Int"),(2,1,""))
 =
 []
 -
-TypeApplyF (TypeIdentF "Array") [TypeVarF "a"]
+TypeApply (TypeIdent "Array") [TypeVar "a"]
 =
 x : Array Int
 x = []
 -
-TypeLabelF "x" (TypeApplyF (TypeIdentF "Array") [TypeIdentF "Int"])
+TypeLabel "x" (TypeApply (TypeIdent "Array") [TypeIdent "Int"])

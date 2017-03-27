@@ -1,20 +1,20 @@
 class mempty a: a
 foo = mempty
 -
-TypeLabelF "foo" (TypeConstraintsF [(TypeVarF "a","mempty")] (TypeVarF "a"))
+TypeLabel "foo" (TypeConstraints [(TypeVar "a","mempty")] (TypeVar "a"))
 =
 class mempty a: a
 instance Int mempty = 0
 test : Int
 test = mempty
 -
-TypeLabelF "test" (TypeIdentF "Int")
+TypeLabel "test" (TypeIdent "Int")
 =
 class mempty a: a
 x : Int
  x = mempty
 -
-(NoInstance (TypeIdentF "Int") "mempty",(2,1,""))
+(NoInstance (TypeIdent "Int") "mempty",(2,1,""))
 =
 class mempty a: a
 instance Int mempty = 0
@@ -22,28 +22,28 @@ type Foo = Int
 x : Foo
  x = mempty
 -
-TypeLabelF "x" (TypeIdentF "Foo")
+TypeLabel "x" (TypeIdent "Foo")
 =
 class show s: s => Unit
 -
-NoTypeF
+NoType
 =
 class show s: s => Unit
 foo x = show x
 -
-TypeLabelF "foo" (TypeFuncF (TypeConstraintsF [(TypeVarF "a","show")] (TypeVarF "a")) (TypeIdentF "Unit"))
+TypeLabel "foo" (TypeFunc (TypeConstraints [(TypeVar "a","show")] (TypeVar "a")) (TypeIdent "Unit"))
 =
 class show s: s => Unit
 show 1
 -
-(NoInstance (TypeIdentF "Int") "show",(2,1,""))
+(NoInstance (TypeIdent "Int") "show",(2,1,""))
 =
 class show s: s => Unit
 ffi showInt : Int => Unit
 instance Int show x = showInt x
 show(1)
 -
-TypeIdentF "Unit"
+TypeIdent "Unit"
 =
 type Foo a = Int
 class bar f : (f a) => Int
@@ -52,7 +52,7 @@ x : Foo Int
 x = 1
 test = bar x
 -
-TypeLabelF "test" (TypeIdentF "Int")
+TypeLabel "test" (TypeIdent "Int")
 =
 class mempty a: a
 instance Int mempty = 0
@@ -61,7 +61,7 @@ instance (Foo (a mempty <: a)) mempty = (foo = mempty)
 x : Foo Int
 x = mempty
 -
-TypeLabelF "x" (TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Int"])
+TypeLabel "x" (TypeApply (TypeIdent "Foo") [TypeIdent "Int"])
 =
 class mempty a: a
 instance Int mempty = 0
@@ -70,10 +70,10 @@ instance (Foo (a mempty <: a)) mempty = (foo = mempty)
 x : Foo Double
 x = mempty
 -
-(NoInstance (TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Double"]) "mempty",(5,1,""))
+(NoInstance (TypeApply (TypeIdent "Foo") [TypeIdent "Double"]) "mempty",(5,1,""))
 =
 type Foo a = (foo : a)
 fooMap : ((a => b), Foo a) => Foo b
 fooMap f x = foo = f (x.foo)
 -
-TypeLabelF "fooMap" (TypeFuncF (TypeRecordF [TypeFuncF (TypeVarF "a") (TypeVarF "b"),TypeApplyF (TypeIdentF "Foo") [TypeVarF "a"]]) (TypeApplyF (TypeIdentF "Foo") [TypeVarF "b"]))
+TypeLabel "fooMap" (TypeFunc (TypeRecord [TypeFunc (TypeVar "a") (TypeVar "b"),TypeApply (TypeIdent "Foo") [TypeVar "a"]]) (TypeApply (TypeIdent "Foo") [TypeVar "b"]))

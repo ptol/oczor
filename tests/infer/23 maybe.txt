@@ -11,7 +11,7 @@ maybe x f m = m # case
 
 foo = maybe 1 (x => 2) none
 -
-TypeLabelF "foo" (TypeIdentF "Int")
+TypeLabel "foo" (TypeIdent "Int")
 =
 ffi emptyObject : a
 ffi eqAny : a, a => Bool
@@ -23,7 +23,7 @@ eqMaybe = case
  ^none ^none => true
  x y => eq x.just y.just
 -
-TypeLabelF "eqMaybe" (TypeFuncF (TypeConstraintsF [(TypeVarF "a","eq")] (TypeRecordF [TypeApplyF (TypeIdentF "Maybe") [TypeVarF "a"],TypeApplyF (TypeIdentF "Maybe") [TypeVarF "a"]])) (TypeIdentF "Bool"))
+TypeLabel "eqMaybe" (TypeFunc (TypeConstraints [(TypeVar "a","eq")] (TypeRecord [TypeApply (TypeIdent "Maybe") [TypeVar "a"],TypeApply (TypeIdent "Maybe") [TypeVar "a"]])) (TypeIdent "Bool"))
 =
 ffi emptyObject : a
 ffi eqAny : a, a => Bool
@@ -42,4 +42,4 @@ noneMaybe = none
 mapMaybe : (a => b, (Maybe a)) => Maybe b
 mapMaybe f x = maybe noneMaybe (y => just = (f y)) x
 -
-TypeLabelF "mapMaybe" (TypeFuncF (TypeRecordF [TypeFuncF (TypeVarF "a") (TypeVarF "b"),TypeApplyF (TypeIdentF "Maybe") [TypeVarF "a"]]) (TypeApplyF (TypeIdentF "Maybe") [TypeVarF "b"]))
+TypeLabel "mapMaybe" (TypeFunc (TypeRecord [TypeFunc (TypeVar "a") (TypeVar "b"),TypeApply (TypeIdent "Maybe") [TypeVar "a"]]) (TypeApply (TypeIdent "Maybe") [TypeVar "b"]))

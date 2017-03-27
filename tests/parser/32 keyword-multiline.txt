@@ -2,13 +2,13 @@ class
   foo a : a
   bar a : a
 -
-RecordF [ClassFnF "foo" (TypePolyF [TypeVarF "a"] (TypeVarF "a")),ClassFnF "bar" (TypePolyF [TypeVarF "a"] (TypeVarF "a"))]
+RecordF [ClassFnF "foo" (TypePoly [TypeVar "a"] (TypeVar "a")),ClassFnF "bar" (TypePoly [TypeVar "a"] (TypeVar "a"))]
 =
 instance
   Int foo = 1
   Int bar = 1
 -
-RecordF [InstanceFnF (TypeIdentF "Int") "foo" (LitF (LitInt 1)),InstanceFnF (TypeIdentF "Int") "bar" (LitF (LitInt 1))]
+RecordF [InstanceFnF (TypeIdent "Int") "foo" (LitF (LitInt 1)),InstanceFnF (TypeIdent "Int") "bar" (LitF (LitInt 1))]
 =
 import
   foo

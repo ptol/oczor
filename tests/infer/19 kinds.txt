@@ -2,28 +2,28 @@ ffi foo : (Array a) => Int
 ffi x : (Array Int)
 foo x
 -
-TypeIdentF "Int"
+TypeIdent "Int"
 =
 ffi foo : (Array Unit) => Unit
 ffi x : (Array Int)
 foo x
 -
-(UnificationFail (TypeIdentF "Int") (TypeIdentF "Unit"),(3,1,""))
+(UnificationFail (TypeIdent "Int") (TypeIdent "Unit"),(3,1,""))
 =
 ffi foo : (Array a) => a
 ffi x : (Array Int)
 foo x
 -
-TypeIdentF "Int"
+TypeIdent "Int"
 =
 type Foo a = Int
 x : Foo Int
 x = 1
 -
-TypeLabelF "x" (TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Int"])
+TypeLabel "x" (TypeApply (TypeIdent "Foo") [TypeIdent "Int"])
 =
 type Foo a = a
 x : Foo Int
 x = 1
 -
-TypeLabelF "x" (TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Int"])
+TypeLabel "x" (TypeApply (TypeIdent "Foo") [TypeIdent "Int"])
