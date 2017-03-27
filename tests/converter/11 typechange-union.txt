@@ -5,4 +5,4 @@ bar = 1
 foo : Foo
 foo = bar
 -
-ScopeF [VarF "bar" (LitF (LitInt 1))] (ObjectF [("bar",IdentF "bar"),("foo",IdentF "bar")])
+Scope [Var "bar" (Lit (LitInt 1))] (Object [("bar",Ident "bar"),("foo",Ident "bar")])

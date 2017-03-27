@@ -1,40 +1,55 @@
-{-# LANGUAGE PatternSynonyms       #-}
-module Oczor.Converter.CodeGenAst (module Oczor.Converter.CodeGenAst, module Oczor.Converter.CodeGenAstF) where
-import Data.Functor.Foldable hiding (Foldable)
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
+
+module Oczor.Converter.CodeGenAst (module Oczor.Converter.CodeGenAst) where
+
+import Data.Functor.Foldable.TH
+import Data.Functor.Foldable
 import ClassyPrelude
-import Oczor.Converter.CodeGenAstF
 import Oczor.Utl
 
-type Ast = Fix AstF
+type Name = String
 
-pattern None = Fix NoneF
-pattern Lit x = Fix (LitF x)
-pattern UniqObject x = Fix (UniqObjectF x)
-pattern Ident x = Fix (IdentF x)
-pattern Var x y = Fix (VarF x y)
-pattern Set x y = Fix (SetF x y)
-pattern Throw x = Fix (ThrowF x)
-pattern StmtList x = Fix (StmtListF x)
-pattern BoolAnds x = Fix (BoolAndsF x)
-pattern Array x = Fix (ArrayF x)
-pattern Field x y = Fix (FieldF x y)
-pattern HasField x y = Fix (HasFieldF x y)
-pattern ConditionOperator x y z = Fix (ConditionOperatorF x y z)
-pattern Call x y = Fix (CallF x y)
-pattern Label x y = Fix (LabelF x y)
-pattern Object x = Fix (ObjectF x)
-pattern Scope x y = Fix (ScopeF x y)
-pattern Function x y = Fix (FunctionF x y)
-pattern Return x = Fix (ReturnF x)
-pattern Operator x y = Fix (OperatorF x y)
-pattern If x y z = Fix (IfF x y z)
-pattern NotEqual x y = Fix (NotEqualF x y)
-pattern Equal x y = Fix (EqualF x y)
-pattern Parens x = Fix (ParensF x)
-pattern Code x = Fix (CodeF x)
+data Lits =
+  LitNull |
+  LitBool Bool |
+  LitChar Char |
+  LitDouble Double |
+  LitInt Int |
+  LitString String
+  deriving (Eq, Ord, Show)
 
+data Ast =
+  None |
+  Lit Lits |
+  UniqObject String |
+  Ident Name |
+  NotEqual Ast Ast |
+  Operator String [Ast] |
+  Equal Ast Ast |
+  Var Name Ast |
+  Set Ast Ast |
+  Throw String |
+  Scope [Ast] Ast |
+  StmtList [Ast] |
+  BoolAnds [Ast] |
+  Array [Ast] |
+  Return Ast |
+  HasField Ast Name |
+  Label Name Ast |
+  Field Ast Name |
+  ConditionOperator Ast Ast Ast |
+  Code String |
+  Call Ast [Ast] |
+  Parens Ast |
+  If Ast [Ast] [Ast] |
+  Object [(Name, Ast)] |
+  Function [String] [Ast]
+  deriving (Show, Eq, Ord)
 
-scopeToFunc (ScopeF x y) = if onull x then y else CallF (Parens (Function [] (x ++ [ReturnF (Fix y)] <&> Fix))) []
+makeBaseFunctor ''Ast
+
+scopeToFunc (ScopeF x y) = if onull x then y else CallF (Parens (Function [] (x ++ [ReturnF (embed y)] <&> embed))) []
   
 -- pattern Scope x <- Function _ x
 

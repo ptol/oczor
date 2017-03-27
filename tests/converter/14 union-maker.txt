@@ -2,4 +2,4 @@ type Foo a = Int | foo : a
 foo : Foo Int
 foo = 1
 -
-ObjectF [("foo",LitF (LitInt 1))]
+Object [("foo",Lit (LitInt 1))]

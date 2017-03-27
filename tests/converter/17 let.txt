@@ -2,4 +2,4 @@ foo x =
   y = 1
   in y
 -
-ObjectF [("foo",FunctionF ["x"] [VarF "y" (LitF (LitInt 1)),ReturnF (IdentF "y")])]
+Object [("foo",Function ["x"] [Var "y" (Lit (LitInt 1)),Return (Ident "y")])]

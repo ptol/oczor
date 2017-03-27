@@ -1,15 +1,15 @@
 1
 -
-LitF (LitInt 1)
+Lit (LitInt 1)
 =
 1.1
 -
-LitF (LitDouble 1.1)
+Lit (LitDouble 1.1)
 =
 "test"
 -
-LitF (LitString "test")
+Lit (LitString "test")
 =
 'x'
 -
-LitF (LitChar 'x')
+Lit (LitChar 'x')

@@ -1,4 +1,4 @@
 x = foo = 1
 y = x with foo = 2
 -
-ScopeF [VarF "x" (ObjectF [("foo",LitF (LitInt 1))])] (ObjectF [("x",IdentF "x"),("y",ScopeF [VarF "_obj" (IdentF "x"),VarF "_clone" (CallF (FieldF (IdentF "oc") "cloneObject") [IdentF "_obj"]),SetF (FieldF (IdentF "_clone") "foo") (LitF (LitInt 2))] (IdentF "_clone"))])
+Scope [Var "x" (Object [("foo",Lit (LitInt 1))])] (Object [("x",Ident "x"),("y",Scope [Var "_obj" (Ident "x"),Var "_clone" (Call (Field (Ident "oc") "cloneObject") [Ident "_obj"]),Set (Field (Ident "_clone") "foo") (Lit (LitInt 2))] (Ident "_clone"))])

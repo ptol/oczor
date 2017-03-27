@@ -1,19 +1,19 @@
 case (x => x)
 -
-FunctionF ["_a1"] [ReturnF (CallF (FunctionF ["x"] [ReturnF (IdentF "x")]) [IdentF "_a1"])]
+Function ["_a1"] [Return (Call (Function ["x"] [Return (Ident "x")]) [Ident "_a1"])]
 =
 case ((x : Int) => x)
 -
-FunctionF ["_a1"] [ReturnF (CallF (FunctionF ["x"] [ReturnF (IdentF "x")]) [IdentF "_a1"])]
+Function ["_a1"] [Return (Call (Function ["x"] [Return (Ident "x")]) [Ident "_a1"])]
 =
 foo = case
  z => 2
  x y => 2
 -
-ObjectF [("foo",FunctionF ["_a1"] [ReturnF (CallF (FunctionF ["z"] [ReturnF (LitF (LitInt 2))]) [IdentF "_a1"])])]
+Object [("foo",Function ["_a1"] [Return (Call (Function ["z"] [Return (Lit (LitInt 2))]) [Ident "_a1"])])]
 =
 foo = case
  x y => 2
  z => 2
 -
-ObjectF [("foo",FunctionF ["_a1"] [IfF (CallF (FunctionF ["_a"] [ReturnF (BoolAndsF [HasFieldF (IdentF "_a") "item1",HasFieldF (IdentF "_a") "item2"])]) [IdentF "_a1"]) [ReturnF (CallF (FunctionF ["_a"] [VarF "x" (FieldF (IdentF "_a") "item1"),VarF "y" (FieldF (IdentF "_a") "item2"),ReturnF (LitF (LitInt 2))]) [IdentF "_a1"])] [ReturnF (CallF (FunctionF ["z"] [ReturnF (LitF (LitInt 2))]) [IdentF "_a1"])]])]
+Object [("foo",Function ["_a1"] [If (Call (Function ["_a"] [Return (BoolAnds [HasField (Ident "_a") "item1",HasField (Ident "_a") "item2"])]) [Ident "_a1"]) [Return (Call (Function ["_a"] [Var "x" (Field (Ident "_a") "item1"),Var "y" (Field (Ident "_a") "item2"),Return (Lit (LitInt 2))]) [Ident "_a1"])] [Return (Call (Function ["z"] [Return (Lit (LitInt 2))]) [Ident "_a1"])]])]
