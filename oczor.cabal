@@ -52,7 +52,6 @@ library
     Oczor.Syntax.Operators
     Oczor.Syntax.Syntax
     Oczor.Syntax.Types
-    Oczor.Syntax.TypesF
     Oczor.Test.Files
     Oczor.Test.TestEngine
     Oczor.Test.TestCompiler

@@ -4,76 +4,76 @@ foo x = x
 foo 1
 foo 1.0
 -
-TypeApplyF (TypeIdentF "Foo") [TypeIdentF "Double"]
+TypeApply (TypeIdent "Foo") [TypeIdent "Double"]
 =
 compose f g x = f (g x)
 -
-TypeLabelF "compose" (TypeFuncF (TypeRecordF [TypeFuncF (TypeVarF "b") (TypeVarF "c"),TypeFuncF (TypeVarF "a") (TypeVarF "b"),TypeVarF "a"]) (TypeVarF "c"))
+TypeLabel "compose" (TypeFunc (TypeRecord [TypeFunc (TypeVar "b") (TypeVar "c"),TypeFunc (TypeVar "a") (TypeVar "b"),TypeVar "a"]) (TypeVar "c"))
 =
 ffi eq : (Int, Int) => Bool
 foo x = x # case (1 => 2)
 -
-TypeLabelF "foo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int"))
+TypeLabel "foo" (TypeFunc (TypeIdent "Int") (TypeIdent "Int"))
 =
 foo : Int => Int
 foo x = x
 -
-TypeLabelF "foo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int"))
+TypeLabel "foo" (TypeFunc (TypeIdent "Int") (TypeIdent "Int"))
 =
 ffi bar : Int => Int
 foo x = bar x
 -
-TypeLabelF "foo" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int"))
+TypeLabel "foo" (TypeFunc (TypeIdent "Int") (TypeIdent "Int"))
 =
 ffi eq : (Int, Int) => Bool
 1 => 2
 -
-TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")
+TypeFunc (TypeIdent "Int") (TypeIdent "Int")
 =
 ffi eq : (Int, Int) => Bool
 1 => 2
 2 => 3
 -
-TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")
+TypeFunc (TypeIdent "Int") (TypeIdent "Int")
 =
 x = 1
 y => y x
 -
-TypeFuncF (TypeFuncF (TypeIdentF "Int") (TypeVarF "a")) (TypeVarF "a")
+TypeFunc (TypeFunc (TypeIdent "Int") (TypeVar "a")) (TypeVar "a")
 =
 x y => x
 -
-TypeFuncF (TypeRecordF [TypeVarF "a",TypeVarF "b"]) (TypeVarF "a")
+TypeFunc (TypeRecord [TypeVar "a",TypeVar "b"]) (TypeVar "a")
 =
 equal x y => equal x y
 -
-TypeFuncF (TypeRecordF [TypeFuncF (TypeRecordF [TypeVarF "a",TypeVarF "b"]) (TypeVarF "c"),TypeVarF "a",TypeVarF "b"]) (TypeVarF "c")
+TypeFunc (TypeRecord [TypeFunc (TypeRecord [TypeVar "a",TypeVar "b"]) (TypeVar "c"),TypeVar "a",TypeVar "b"]) (TypeVar "c")
 =
 \(equal : (a, a => Int), x, y) => equal x y
 -
-TypeFuncF (TypeRecordF [TypeFuncF (TypeRecordF [TypeVarF "a",TypeVarF "a"]) (TypeIdentF "Int"),TypeVarF "a",TypeVarF "a"]) (TypeIdentF "Int")
+TypeFunc (TypeRecord [TypeFunc (TypeRecord [TypeVar "a",TypeVar "a"]) (TypeIdent "Int"),TypeVar "a",TypeVar "a"]) (TypeIdent "Int")
 =
 \(x : Int) => x
 -
-TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")
+TypeFunc (TypeIdent "Int") (TypeIdent "Int")
 =
 ffi foo : Int => Int
 \(x : Unit) => foo x
 -
-(UnificationFail (TypeIdentF "Unit") (TypeIdentF "Int"),(2,16,""))
+(UnificationFail (TypeIdent "Unit") (TypeIdent "Int"),(2,16,""))
 =
 ffi foo : (x : xType) => xType
 ffi bar : (y : yType) => yType
 \x => foo (bar x)
 -
-TypeFuncF (TypeLabelF "y" (TypeLabelF "x" (TypeVarF "a"))) (TypeVarF "a")
+TypeFunc (TypeLabel "y" (TypeLabel "x" (TypeVar "a"))) (TypeVar "a")
 =
 ffi eq : (a,a) => Int
 test x = eq x 1
 -
-TypeLabelF "test" (TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int"))
+TypeLabel "test" (TypeFunc (TypeIdent "Int") (TypeIdent "Int"))
 =
 ffi foo : Int => Bool
 x | (foo x) => x
 -
-TypeFuncF (TypeIdentF "Int") (TypeIdentF "Int")
+TypeFunc (TypeIdent "Int") (TypeIdent "Int")

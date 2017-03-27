@@ -13,4 +13,4 @@ range = case
  \x => foo
  \y => (y, (range y))
 -
-TypeLabelF "range" (TypeFuncF (TypeIdentF "Int") (TypeApplyF (TypeIdentF "List") [TypeIdentF "Int"]))
+TypeLabel "range" (TypeFunc (TypeIdent "Int") (TypeApply (TypeIdent "List") [TypeIdent "Int"]))

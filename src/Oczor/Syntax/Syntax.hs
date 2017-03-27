@@ -7,9 +7,10 @@ import Oczor.Syntax.Types as X
 import Oczor.Syntax.Ast as X
 import Oczor.Syntax.Errors as X
 import Oczor.Syntax.AstF as X
-import Oczor.Syntax.TypesF as X
 import Oczor.Syntax.Operators as X
 import qualified Control.Monad.Writer.Strict as W
+
+import Data.Functor.Foldable
 
 sysPrefix = "_"
 
@@ -34,7 +35,7 @@ removeAllConstraints x = cataM alg x & W.runWriter & (_2 %~ ordNub) where
     TypeConstraintsF list x -> do
       W.tell list
       return x
-    x -> return $ Fix x
+    x -> return $ embed x
 
 moveConstraintsOnTop x =
   if onull set then x
@@ -48,7 +49,7 @@ renameTypeVars :: Map String String -> TypeExpr -> TypeExpr
 renameTypeVars f = cata $ \case
   (TypeVarF x) -> TypeVar $ Map.findWithDefault x x f
   -- (TypeConstraintsF c y) -> TypeConstraints (renameTypeVarsInConstraints f c) y
-  x -> Fix x
+  x -> embed x
 
 
 exprAppend (Record l1) (Record l2) = Record (l1 ++ l2)
@@ -174,7 +175,7 @@ newTypeRecord = \case {[x] -> x; x -> TypeRecord x}
 removeMD :: Expr -> Expr
 removeMD = cata $ \case
   MDF _ x -> x
-  x -> Fix x
+  x -> embed x
 
 funcArity = \case
   Function (Record list) _ _ -> olength list

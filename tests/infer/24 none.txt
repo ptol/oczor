@@ -2,4 +2,4 @@ ffi unit : Unit
 class eq a : (a,a) => Bool
 case (x | (eq x unit) => x)
 -
-(NoInstance (TypeIdentF "Unit") "eq",(3,11,""))
+(NoInstance (TypeIdent "Unit") "eq",(3,11,""))

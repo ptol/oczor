@@ -2,28 +2,28 @@ id x = x
 id 1.0
 id 1
 -
-TypeIdentF "Int"
+TypeIdent "Int"
 =
 foo(x) = x
 -
-TypeLabelF "foo" (TypeFuncF (TypeVarF "a") (TypeVarF "a"))
+TypeLabel "foo" (TypeFunc (TypeVar "a") (TypeVar "a"))
 =
 ffi foo : (a,a) => Unit
 foo 1 1.1
 -
-(UnificationFail (TypeIdentF "Double") (TypeIdentF "Int"),(2,1,""))
+(UnificationFail (TypeIdent "Double") (TypeIdent "Int"),(2,1,""))
 =
 id : a => a
 id x = x
 -
-TypeLabelF "id" (TypeFuncF (TypeVarF "a") (TypeVarF "a"))
+TypeLabel "id" (TypeFunc (TypeVar "a") (TypeVar "a"))
 =
 ffi foo : x => Unit
 foo 1
 -
-TypeIdentF "Unit"
+TypeIdent "Unit"
 =
 ffi foo : x => x
 foo 1
 -
-TypeIdentF "Int"
+TypeIdent "Int"

@@ -1,9 +1,9 @@
 x = foo = 1
 /* TODO y : (foo : Int) */
-y = x with foo = 1 
+y = x with foo = 1
 -
-TypeLabelF "y" (TypeRowF (TypeVarF "a") [TypeLabelF "foo" (TypeIdentF "Int")])
+TypeLabel "y" (TypeRow (TypeVar "a") [TypeLabel "foo" (TypeIdent "Int")])
 =
 \x => x with bar = 1
 -
-TypeFuncF (TypeRowF (TypeVarF "a") [TypeLabelF "bar" (TypeIdentF "Int")]) (TypeRowF (TypeVarF "a") [TypeLabelF "bar" (TypeIdentF "Int")])
+TypeFunc (TypeRow (TypeVar "a") [TypeLabel "bar" (TypeIdent "Int")]) (TypeRow (TypeVar "a") [TypeLabel "bar" (TypeIdent "Int")])

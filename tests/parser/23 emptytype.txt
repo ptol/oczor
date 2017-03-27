@@ -1,8 +1,8 @@
 type Foo = bar
 -
-RecordF [FfiTypeF "Bar" (TypeIdentF "Bar"),RecordLabelF "bar" (WithTypeF (UniqObjectF "bar") (TypeIdentF "Bar")),InstanceFnF (TypeIdentF "Bar") "eq" (IdentF "eqAny"),TypeDeclF "Foo" (TypeIdentF "Bar")]
+RecordF [FfiTypeF "Bar" (TypeIdent "Bar"),RecordLabelF "bar" (WithTypeF (UniqObjectF "bar") (TypeIdent "Bar")),InstanceFnF (TypeIdent "Bar") "eq" (IdentF "eqAny"),TypeDeclF "Foo" (TypeIdent "Bar")]
 =
 type Foo = bar
 foo = bar
 -
-RecordF [FfiTypeF "Bar" (TypeIdentF "Bar"),RecordLabelF "bar" (WithTypeF (UniqObjectF "bar") (TypeIdentF "Bar")),InstanceFnF (TypeIdentF "Bar") "eq" (IdentF "eqAny"),TypeDeclF "Foo" (TypeIdentF "Bar"),RecordLabelF "foo" (IdentF "bar")]
+RecordF [FfiTypeF "Bar" (TypeIdent "Bar"),RecordLabelF "bar" (WithTypeF (UniqObjectF "bar") (TypeIdent "Bar")),InstanceFnF (TypeIdent "Bar") "eq" (IdentF "eqAny"),TypeDeclF "Foo" (TypeIdent "Bar"),RecordLabelF "foo" (IdentF "bar")]
