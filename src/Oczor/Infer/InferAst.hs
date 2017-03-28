@@ -3,15 +3,15 @@ module Oczor.Infer.InferAst where
 import ClassyPrelude
 import Data.Functor.Foldable hiding (Foldable)
 import Oczor.Syntax.Syntax
-import Oczor.Infer.Substitutable 
+import Oczor.Infer.Substitutable
 import Oczor.Infer.InferContext
 import Oczor.Utl
-
 
 type InferExprF = AnnF ExprF (TypeExpr, InferContext)
 type InferExpr = Ann ExprF (TypeExpr, InferContext)
 
-attrType = fst . attr
+attrType :: Ann a (x, y) -> x
+attrType = view (attr . _1)
 
 annType x y = Ann x (y, emptyContext)
 
@@ -25,4 +25,4 @@ removeContext = cata $ \case
 instance Substitutable InferExpr where
   -- apply s | traceArgs ["apply inferExpr", show s] = undefined
   apply s = cata $ \case (AnnF ast (tp,ctx)) -> Ann (apply s ast) (apply s tp, apply s ctx) -- TODO FF (apply ast)
-  -- ftv = cata $ \case (AnnF ast tp) -> ftv tp 
+  -- ftv = cata $ \case (AnnF ast tp) -> ftv tp

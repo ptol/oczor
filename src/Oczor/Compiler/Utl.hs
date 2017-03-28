@@ -46,14 +46,14 @@ compileJsPartTxt x = do
 inferTxt2 x = either (putStrLn . pack . show) (putStrLn . pack . prettyShow) $ inferTxt x
 
 inferType :: Expr -> Either Error TypeExpr
-inferType y = (fst . attr . snd) <$> inferAllExpr baseTypeContext y
+inferType y = (fst . view attr . snd) <$> inferAllExpr baseTypeContext y
 
 inferTxt :: String -> Either Error TypeExpr
 inferTxt x = normalizeType <$> (Parser.parseExpr x >>= inferType)
 
 inferAstTxt2 :: String -> Either Error InferExpr
 inferAstTxt2 x = Parser.parseExpr x >>= (\y -> snd <$> inferAllExpr emptyContext y)
-  
+
 inferContext :: InferContext -> ModuleName -> String -> Either Error InferContext
 inferContext context fileName x = fst <$> inferAllTxtWith context fileName x
 

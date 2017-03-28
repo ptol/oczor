@@ -10,6 +10,7 @@ module Oczor.Syntax.Ast (module Oczor.Syntax.Ast, module Oczor.Syntax.Types, Lit
 import ClassyPrelude
 import Data.Functor.Foldable
 import Data.Functor.Foldable.TH
+import Control.Lens
 import Oczor.Syntax.Types
 
 type ModuleName  = [String]
@@ -70,34 +71,27 @@ makeBaseFunctor ''Expr
 
 deriving instance Show a => Show (ExprF a)
 
-data Ann f a = Ann (f (Ann f a)) a deriving (Functor, Foldable, Traversable)
-data AnnF f a r = AnnF (f r) a deriving (Functor, Foldable, Traversable)
+data Ann f a = Ann { _unAnn :: f (Ann f a), _attr :: a } deriving (Functor, Foldable, Traversable)
+data AnnF f a r = AnnF { _unAnnF :: f r, _attrF :: a } deriving (Functor, Foldable, Traversable)
+
+makeLenses ''Ann
+makeLenses ''AnnF
 
 type instance Base (Ann f a) = AnnF f a
 
 instance Functor f => Recursive (Ann f a) where
-	project = \case Ann f a -> AnnF f a
+  project = \case Ann f a -> AnnF f a
 
 instance Functor f => Corecursive (Ann f a) where
-	embed = \case AnnF f a -> Ann f a
+  embed = \case AnnF f a -> Ann f a
 
 instance Show a => Show (Ann ExprF a) where
-  show (Ann x y) = "(" ++ show x ++ " ANN " ++ show y ++ ")"
+  show (Ann x y) = "(" <> show x <> " ANN " <> show y <> ")"
 
 stripAnns :: Ann ExprF a -> Expr
-stripAnns = cata $ \case AnnF x _ -> embed x
-
-attr :: Ann f a -> a
-attr (Ann _ a) = a
-
-unAnn :: Ann f a -> f (Ann f a)
-unAnn (Ann a _) = a
-
-changeAttr :: Ann f a -> a -> Ann f a
-changeAttr (Ann x a) = Ann x
+stripAnns = cata $ embed . view unAnnF
 
 pattern UnAnn x <- Ann x y
 
 pattern ExprListMD x <- MD y (ExprList x)
 pattern LabelAccessCall label e = Call (LabelAccess label) e
-
