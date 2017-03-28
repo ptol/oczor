@@ -46,7 +46,7 @@ compileJsPartTxt x = do
 inferTxt2 x = either (putStrLn . pack . show) (putStrLn . pack . prettyShow) $ inferTxt x
 
 inferType :: Expr -> Either Error TypeExpr
-inferType y = (fst . view attr . snd) <$> inferAllExpr baseTypeContext y
+inferType y = (attrType . snd) <$> inferAllExpr baseTypeContext y
 
 inferTxt :: String -> Either Error TypeExpr
 inferTxt x = normalizeType <$> (Parser.parseExpr x >>= inferType)
