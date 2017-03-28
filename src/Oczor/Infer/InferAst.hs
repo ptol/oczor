@@ -11,7 +11,8 @@ import Oczor.Utl
 type InferExprF = AnnF ExprF (TypeExpr, InferContext)
 type InferExpr = Ann ExprF (TypeExpr, InferContext)
 
-attrType = fst . attr
+attrType :: Ann a (x, y) -> x
+attrType = view (attr . _1)
 
 annType x y = Ann x (y, emptyContext)
 
