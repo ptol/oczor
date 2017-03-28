@@ -8,9 +8,9 @@
 module Oczor.Syntax.Ast (module Oczor.Syntax.Ast, module Oczor.Syntax.Types, Lits(..), Stmts(..)) where
 
 import ClassyPrelude
-import Control.Lens
 import Data.Functor.Foldable
 import Data.Functor.Foldable.TH
+import Control.Lens
 import Oczor.Syntax.Types
 
 type ModuleName  = [String]
@@ -86,7 +86,7 @@ instance Functor f => Corecursive (Ann f a) where
   embed = \case AnnF f a -> Ann f a
 
 instance Show a => Show (Ann ExprF a) where
-  show (Ann x y) = "(" ++ show x ++ " ANN " ++ show y ++ ")"
+  show (Ann x y) = "(" <> show x <> " ANN " <> show y <> ")"
 
 stripAnns :: Ann ExprF a -> Expr
 stripAnns = cata $ embed . view unAnnF
