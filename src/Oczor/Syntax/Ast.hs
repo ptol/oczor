@@ -80,10 +80,10 @@ makeLenses ''AnnF
 type instance Base (Ann f a) = AnnF f a
 
 instance Functor f => Recursive (Ann f a) where
-  project = \case Ann f a -> AnnF f a
+	project = \case Ann f a -> AnnF f a
 
 instance Functor f => Corecursive (Ann f a) where
-  embed = \case AnnF f a -> Ann f a
+	embed = \case AnnF f a -> Ann f a
 
 instance Show a => Show (Ann ExprF a) where
   show (Ann x y) = "(" ++ show x ++ " ANN " ++ show y ++ ")"
@@ -95,3 +95,4 @@ pattern UnAnn x <- Ann x y
 
 pattern ExprListMD x <- MD y (ExprList x)
 pattern LabelAccessCall label e = Call (LabelAccess label) e
+

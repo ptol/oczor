@@ -53,10 +53,10 @@ inferTxt x = normalizeType <$> (Parser.parseExpr x >>= inferType)
 
 inferAstTxt2 :: String -> Either Error InferExpr
 inferAstTxt2 x = Parser.parseExpr x >>= (\y -> snd <$> inferAllExpr emptyContext y)
-
+  
 inferContext :: InferContext -> ModuleName -> String -> Either Error InferContext
 inferContext context fileName x = fst <$> inferAllTxtWith context fileName x
-  
+
 
 inferAllTxt :: String -> Either Error (InferContext, InferExpr)
 -- inferAllTxt x | traceArgs ["inferAllTxt", x] = undefined

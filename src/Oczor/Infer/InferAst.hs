@@ -3,9 +3,10 @@ module Oczor.Infer.InferAst where
 import ClassyPrelude
 import Data.Functor.Foldable hiding (Foldable)
 import Oczor.Syntax.Syntax
-import Oczor.Infer.Substitutable
+import Oczor.Infer.Substitutable 
 import Oczor.Infer.InferContext
 import Oczor.Utl
+
 
 type InferExprF = AnnF ExprF (TypeExpr, InferContext)
 type InferExpr = Ann ExprF (TypeExpr, InferContext)
