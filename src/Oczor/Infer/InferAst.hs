@@ -25,4 +25,4 @@ removeContext = cata $ \case
 instance Substitutable InferExpr where
   -- apply s | traceArgs ["apply inferExpr", show s] = undefined
   apply s = cata $ \case (AnnF ast (tp,ctx)) -> Ann (apply s ast) (apply s tp, apply s ctx) -- TODO FF (apply ast)
-  -- ftv = cata $ \case (AnnF ast tp) -> ftv tp
+  -- ftv = cata $ \case (AnnF ast tp) -> ftv tp 
