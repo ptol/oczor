@@ -1,5 +1,8 @@
 # The goal #
 A simple statically typed language that should be easily compiled to dynamically typed languages
+
+[![Build Status](https://secure.travis-ci.org/ptol/oczor.png?branch=master)](http://travis-ci.org/ptol/oczor)
+
 # Occam's Razor #
 
 > Entities should not be multiplied unnecessarily.
