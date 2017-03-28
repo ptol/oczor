@@ -52,7 +52,7 @@ unionMaps = unions . reverse
 
 unsafeUnconsLast l = (unsafeInit l, unsafeLast l)
 
-lookupEx = (headEx .) . lookup
+lookupEx key = headEx . lookup key
 
 t31 (x, _, _) = x
 t32 (_, x, _) = x
