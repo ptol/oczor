@@ -4,7 +4,7 @@
 module Oczor.Utl (module Oczor.Utl, module Control.Arrow, module Control.Lens,  Fix(..), refix, cata, embed, project, para, (&)) where
 import ClassyPrelude as C
 import Control.Arrow
-import Data.Function ((&))
+import Data.Function ((&), on)
 import Text.Show.Pretty as PP
 import Data.Functor.Foldable
 import Data.Char as Char
@@ -17,7 +17,7 @@ cataM
      (Base a b -> f b) -> a -> f b
 cataM f = (>>= f) . cata (traverse (>>= f))
 
-eqLength x y = olength x == olength y
+eqLength = (==) `on` olength
 
 groupMapBy :: (Ord b) => (a -> b) -> [a] -> [(b, [a])]
 groupMapBy f = map (f . headEx &&& id)
@@ -48,11 +48,11 @@ joinLines = intercalate "\n"
 pshow :: Show a => a -> String
 pshow = PP.ppShow
 
-unionMaps = unionsWith (\_ y -> y)
+unionMaps = unions . reverse
 
 unsafeUnconsLast l = (unsafeInit l, unsafeLast l)
 
-lookupEx key map = map & lookup key & headEx
+lookupEx key = headEx . lookup key
 
 t31 (x, _, _) = x
 t32 (_, x, _) = x

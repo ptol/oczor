@@ -34,7 +34,7 @@ parset x = either (putStrLn . pack . show) (putStrLn . pack . pshow . removeMD .
 parseType = parsew (ExprType <$> (typeRecord <* eof))
 
 parsew :: Parser Expr -> String -> Either Error Expr
-parsew p x = (removeMD . fst) <$> parseAll p x [] []
+parsew p x = removeMD . fst <$> parseAll p x [] []
 
 getImports :: String -> Either Error [ModuleName]
 getImports x =

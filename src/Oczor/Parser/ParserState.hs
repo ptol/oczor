@@ -30,9 +30,7 @@ cleanAsName :: Parser ()
 cleanAsName = asName .= Nothing
 
 asNameOrFresh :: Parser String
-asNameOrFresh = do
-  asn <- use asName
-  maybe freshName return asn
+asNameOrFresh = use asName >>= maybe freshName return
 
 letters :: [String]
 letters = [1..] >>= flip C.replicateM ['a'..'z']

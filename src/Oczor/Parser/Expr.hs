@@ -48,7 +48,7 @@ record = recordIndentWith (recordCommaWith recordItem)
 
   
 recordWith :: Parser Expr ->  Parser Expr
-recordWith x = recordIndentWith (recordCommaWith x)
+recordWith = recordIndentWith . recordCommaWith
 
 exprItemCommon = ifExpr <|> cases <|> labelAccess <|> lits <|> ident <|> array
 
@@ -124,16 +124,13 @@ update = do
   return $ Update id labels
 
 ifExpr :: Parser Expr
-ifExpr = do
-  b <- try (L.rword "if" *> record)
-  t <- L.rword "then" *> record
-  f <- L.rword "else" *> record
-  return $ If b t f
+ifExpr = liftA3 If
+	(try (L.rword "if" *> record))
+	(L.rword "then" *> record)
+	(L.rword "else" *> record)
 
 array :: Parser Expr
-array = do
-  var <- try simpleItems <|> recordItems
-  Desugar.partialApply $ Array var
+array = try simpleItems <|> recordItems >>= Desugar.partialApply . Array
   where
     simpleItem = md $ L.parens record <|> labelAccess <|> lits <|> ident <|> wildcard
     simpleItems = L.brackets $ many simpleItem
@@ -154,10 +151,8 @@ funcParam = recordIfSomeExceptRecord <$> some paramRecordComma
     identOut = Ident <$> L.identOut
 
     asParamExpr :: Parser Expr
-    asParamExpr = do
-      name <- try (optional L.ident <* L.rop "@")
-      param <- paramItem
-      return $ As name param
+    asParamExpr = liftA2 As (try (optional L.ident <* L.rop "@")) paramItem
+
     paramItemAny = asParamExpr <|> lits <|> wildcard <|> identOut <|> paramIdent
     paramParens = (ExprType <$> typeLabel) <|> paramLabel <|> paramItemAny
     paramItem :: Parser Expr
@@ -179,21 +174,18 @@ func = do
   (name, params) <- try (((,) <$> L.ident <*> funcParam) <* L.rop "=")
   body <- record
   RecordLabel name <$> newFunction params Nothing body
-anonFunc = do
-  x <- anonFuncRaw
-  Desugar.func x
+
+anonFunc = anonFuncRaw >>= Desugar.func
+
 anonFuncRaw :: Parser Expr
 anonFuncRaw = do
-  (param, guard) <- try anonFuncParamGuard
-  body <- record
-  return $ Function param guard body
+	(param, guard) <- try anonFuncParamGuard
+	Function param guard <$> record
 
 anonFuncSingleParam :: Parser Expr
 anonFuncSingleParam = do
-  (param, guard) <- try anonFuncParamGuard
-  body <- record
-  Desugar.funcSingleParam $ Function param guard body
-
+	(param, guard) <- try anonFuncParamGuard
+	Desugar.funcSingleParam . Function param guard =<< record
 
 call :: Parser Expr
 call = do
