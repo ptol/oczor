@@ -24,7 +24,7 @@ fixModuleNameIfDir moduleName = do
   let rootName = rootModuleName moduleName
   let fileName = combinePath rootName ++ ocExt
   path <- findFilePathInDirs fileName
-  return $ maybe moduleName (const rootName)
+  return $ maybe moduleName (const rootName) path
 
 findFilePathInDirs fileName = do
   dirs <- use srcDirs
