@@ -24,7 +24,7 @@ fixModuleNameIfDir moduleName = do
   let rootName = rootModuleName moduleName
   let fileName = combinePath rootName ++ ocExt
   path <- findFilePathInDirs fileName
-  if isJust path then return rootName else return moduleName
+  return $ case path of Just _ -> rootName; Nothing -> moduleName
 
 findFilePathInDirs fileName = do
   dirs <- use srcDirs
@@ -59,7 +59,7 @@ readFileMay file = do
   else return Nothing
 
 readWithFfi :: ModuleName -> Compiler OcWithFfi
-readWithFfi file = (,) <$> readLangMay file <*> readOc file
+readWithFfi file = liftA2 (,) (readLangMay file) (readOc file)
 
 readOc = filePathOc >=> read
 
