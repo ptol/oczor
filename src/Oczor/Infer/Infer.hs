@@ -48,17 +48,11 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       newType <- applySubst renamedTP
       return (changeType newType ast) -- TODO think WithType
 
-    Lit x -> do
-      let tp = inferLit x
-      return (annType (LitF x) tp)
+    Lit x -> return . annType (LitF x) $ inferLit x
 
-    UniqObject x -> do
-      tp <- fresh
-      return (annType (UniqObjectF x) tp)
+    UniqObject x -> annType (UniqObjectF x) <$> fresh
 
-    Ident x -> do
-      tp <- lookupIdentType x
-      return (annType (IdentF x) tp)
+    Ident x -> annType (IdentF x) <$> lookupIdentType x
 
     RecordLabel name body -> do
       fv <- fresh
@@ -69,9 +63,7 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       t <- applySubst $ TypeLabel name tp
       return (annType (RecordLabelF name newAst) t)
 
-    Record x -> do
-      (_, newAst) <- inferRecord ast
-      return newAst
+    Record x -> snd <$> inferRecord ast
 
     Let x y -> do
       (newContext, newX) <- inferRecord x
@@ -91,7 +83,7 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
         let fTp = TypeFunc inTypeApp (attrType newAst)
         return (annType (FunctionF newParam newGuard newAst) fTp)
         where
-          fromMaybeT x = map (fromMaybe x) . runMaybeT
+          fromMaybeT x = fmap (fromMaybe x) . runMaybeT
 
     Call func arg -> do
       funcAst <- infer func
@@ -201,7 +193,7 @@ lookupIdentType :: Name -> Infer TypeExpr
 --lookupIdentType x | traceArgs ["lookupIdentType", show x] = undefined
 lookupIdentType x = fromMaybeM (typeError $ UnboundVariable x) $ do
   ctx <- ask
-  tp <- MaybeT $ return $ getIdentType ctx x
+  tp <- MaybeT . return $ getIdentType ctx x
   lift $ instantiate tp
   where
     fromMaybeM x y = runMaybeT y >>= maybe x return
@@ -228,7 +220,7 @@ generalize context t = do
 
 
 findClassTypeList :: String -> [TypeExpr] -> [TypeExpr] -> Maybe TypeExpr
-findClassTypeList var l1 l2 = zip l1 l2 &map (uncurry $ findClassType var) &catMaybes &headMay
+findClassTypeList var l1 l2 = zip l1 l2 & fmap (uncurry $ findClassType var) &catMaybes &headMay
 
 findClassType :: String -> TypeExpr -> TypeExpr -> Maybe TypeExpr
 
@@ -267,12 +259,12 @@ identToModule ident ctx = (ctx & lookupModule ident) <|> (schemeToModule ident <
 openIdent :: ModuleName -> InferContext -> Infer InferContext
 openIdent ident ctx = fromMaybe (typeError $ UnboundVariable (ident & moduleNameToIdent)) $ do
   mdl <- identToModule ident ctx
-  return $ return $ addOpenModule ident mdl ctx
+  return . return $ addOpenModule ident mdl ctx
 
 includeIdent :: ModuleName -> InferContext -> Infer InferContext
 includeIdent ident ctx = fromMaybe (typeError $ UnboundVariable (moduleNameToIdent ident)) $ do
   mdl <- identToModule ident ctx
-  return $ return $ includeModule ident mdl ctx
+  return . return $ includeModule ident mdl ctx
 
 
 getTypeDecl :: String -> InferContext -> Infer TypeExpr
@@ -350,40 +342,34 @@ joinTypes list x = list ++ [x]
 putInUnion (TypeUnion list) tp  = TypeUnion (list ++ [tp])
 unionRecordToRecordUnion tp@(TypeUnion x) = C.foldM go (TypeRecord []) x & fromMaybe tp
   where
-    go (TypeRecord []) (TypeRecord list) = Just $ TypeRecord (list &map (\x -> TypeUnion [x]))
-    go (TypeRecord list) (TypeRecord uList) | length list == length uList = Just $ TypeRecord $ zipWith putInUnion list uList
+    go (TypeRecord []) (TypeRecord list) = Just $ TypeRecord (list & fmap (\x -> TypeUnion [x]))
+    go (TypeRecord list) (TypeRecord uList) | length list == length uList = Just . TypeRecord $ zipWith putInUnion list uList
     go x y = Nothing
 unionRecordToRecordUnion tp = tp
 
 joinFuncTypes [t] = t
 joinFuncTypes list =
-  TypeFunc (unionRecordToRecordUnion $ typeUnionIfSome $ ordNub inTypes) (unionRecordToRecordUnion $ typeUnionIfSome $ ordNub outTypes) --TODO add union unification
+  TypeFunc (unionRecordToRecordUnion . typeUnionIfSome $ ordNub inTypes) (unionRecordToRecordUnion . typeUnionIfSome $ ordNub outTypes) --TODO add union unification
   where
     go (inTypes, outTypes) (TypeFunc inType outType) =
                   (joinTypes inTypes inType, joinTypes outTypes outType)
     go x y = error $ unwords ["joinFuncType", show y]
     (inTypes, outTypes) = list &foldl' go ([], [])
 
-normalizeModule context = context & idents %~ map normalize
+normalizeModule context = context & idents %~ fmap normalize
 normalizeType t = renameTypeVars m t
   where
-    m = zip (ordNub $ setToList $ ftv t) letters & mapFromList
+    m = zip (ordNub . setToList $ ftv t) letters & mapFromList
 normalize :: Scheme -> Scheme
-normalize (Forall _ body) = Forall (map snd ordList) (renameTypeVars m body)
+normalize (Forall _ body) = Forall (fmap snd ordList) (renameTypeVars m body)
   where
-    ordList = zip (ordNub $ setToList $ ftv body) letters
+    ordList = zip (ordNub . setToList $ ftv body) letters
     m = mapFromList ordList
 
 match t1 t2 = applyContext $ runUnify t1 t2
-unifyWithSubst t1 t2 = do
-  x <- applyContext $ runUnify t1 t2
-  addSubst x
 
-applyContext x = do
-  ctx <- ask
-  newCtx <- applySubst ctx
-  localPut newCtx x
+unifyWithSubst t1 t2 = applyContext $ runUnify t1 t2 >>= addSubst
 
-applyContext2 ctx x = do
-  newCtx <- applySubst ctx
-  localPut newCtx x
+applyContext x = ask >>= flip applyContext2 x
+
+applyContext2 ctx x = applySubst ctx >>= flip localPut x
