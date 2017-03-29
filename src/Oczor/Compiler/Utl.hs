@@ -45,7 +45,7 @@ inferType :: Expr -> Either Error TypeExpr
 inferType y = attrType . snd <$> inferAllExpr baseTypeContext y
 
 inferTxt :: String -> Either Error TypeExpr
-inferTxt x = normalizeType <$> (Parser.parseExpr x >>= inferType)
+inferTxt = Parser.parseExpr >=> fmap normalizeType . inferType
 
 inferAstTxt2 :: String -> Either Error InferExpr
 inferAstTxt2 x = Parser.parseExpr x >>= (\y -> snd <$> inferAllExpr emptyContext y)
