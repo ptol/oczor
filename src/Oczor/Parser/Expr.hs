@@ -36,8 +36,7 @@ wildcard = L.rword "_" *> return WildCard
 stmtSet :: Parser Expr
 stmtSet = do
   expr <- try (l <* L.rop ":=")
-  value <- record
-  return $ SetStmt expr value
+  SetStmt expr <$> record
   where
     l = labelAccess <|> ident
   
@@ -101,8 +100,7 @@ labelWith body = RecordLabel <$> try (L.ident <* L.rop "=") <*> body
 labelWithType :: Parser Expr
 labelWithType = do
   (lbl,tp) <- try (((,) <$> (L.ident <* L.rop ":") <*> typeRecord) <* L.rop "=")
-  b <- record
-  return $ RecordLabel lbl (WithType b tp)
+  (RecordLabel lbl . flip WithType tp) <$> record
 
 destruct :: Parser Expr
 destruct = do
@@ -120,8 +118,7 @@ ident = Ident <$> L.ident
 update :: Parser Expr
 update = do
   id <- try (ident <* L.rword "with")
-  labels <- recordToList <$> record -- L.parens (L.commaSep1 label) <|> ((:[]) <$> label)
-  return $ Update id labels
+  Update id . recordToList <$> record
 
 ifExpr :: Parser Expr
 ifExpr = liftA3 If
@@ -205,10 +202,7 @@ cases = do
  body <- try (L.rword "case" *> (try (some $ L.parens anonFuncRaw) <|> L.someIndent anonFuncRaw))
  desugarCases body
 
-letExpr = do
-  l <- try (letKw *> recordWith (labelWith exprLet) <* L.rword "in")
-  r <- record
-  return $ Let l r
+letExpr = liftA2 Let (try (letKw *> recordWith (labelWith exprLet) <* L.rword "in")) record
   where
     letKw = option () (void $ L.rword "let")
     exprLet :: Parser Expr
