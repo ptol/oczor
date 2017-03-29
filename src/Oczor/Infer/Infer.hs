@@ -48,7 +48,7 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       newType <- applySubst renamedTP
       return (changeType newType ast) -- TODO think WithType
 
-    Lit x -> return . annType (LitF x) $ inferLit x
+    Lit x -> annType (LitF x) <$> return (inferLit x)
 
     UniqObject x -> annType (UniqObjectF x) <$> fresh
 
