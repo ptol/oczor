@@ -30,8 +30,7 @@ findFilePathInDirs fileName = do
   dirs <- use srcDirs
   cd <- io getCurrentDirectory
   let paths =  fileName : (dirs <&> (++ fileName)) 
-  r <- io $ C.filterM doesFileExist paths
-  return $ headMay r
+  headMay <$> io (C.filterM doesFileExist paths)
 
 filePathOc :: ModuleName -> Compiler FilePath
 filePathOc moduleName = do

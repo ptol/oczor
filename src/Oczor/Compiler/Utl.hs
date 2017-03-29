@@ -28,11 +28,7 @@ liftE = \case
 io :: IO a -> Compiler a
 io = liftIO
 
-writeFileCreateDir path txt = do
-  let dir = Fp.takeDirectory path
-  createDirectoryIfMissing True dir
-  writeFileUtf8 path $ pack txt
-
+writeFileCreateDir path txt = createDirectoryIfMissing True (Fp.takeDirectory path) >> writeFileUtf8 path (pack txt)
 
 inferAllTxtWith :: InferContext -> ModuleName -> String -> Either Error (InferContext, InferExpr)
 inferAllTxtWith context fileName x = do
@@ -46,7 +42,7 @@ compileJsPartTxt x = do
 inferTxt2 x = either (putStrLn . pack . show) (putStrLn . pack . prettyShow) $ inferTxt x
 
 inferType :: Expr -> Either Error TypeExpr
-inferType y = (attrType . snd) <$> inferAllExpr baseTypeContext y
+inferType y = attrType . snd <$> inferAllExpr baseTypeContext y
 
 inferTxt :: String -> Either Error TypeExpr
 inferTxt x = normalizeType <$> (Parser.parseExpr x >>= inferType)
