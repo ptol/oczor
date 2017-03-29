@@ -368,7 +368,7 @@ normalize (Forall _ body) = Forall (fmap snd ordList) (renameTypeVars m body)
 
 match t1 t2 = applyContext $ runUnify t1 t2
 
-unifyWithSubst t1 t2 = applyContext $ runUnify t1 t2 >>= addSubst
+unifyWithSubst t1 t2 = match t1 t2 >>= addSubst
 
 applyContext x = ask >>= flip applyContext2 x
 
