@@ -51,12 +51,6 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
         where
           fromMaybeT x = fmap (fromMaybe x) . runMaybeT
 
-    Call func arg -> do
-      funcAst <- infer func
-      argAstOld <- infer arg
-      (outTp, argAst) <- applyContext (inferCall (attrType funcAst) argAstOld)
-      return ( annType (CallF funcAst argAst) outTp)
-
     Update arg labels -> do
       (funcTp, labelAsts) <- inferUpdateLabels labels
       argAstOld <- infer arg
@@ -121,6 +115,8 @@ inferPhi = \case
   ArrayF arrayAsts -> return $ typeArray $ simplifyUnion $ map attrType arrayAsts
 
   CasesF newAst -> return $ joinFuncTypes (newAst <&> attrType)
+
+  CallF funcAst argAstOld -> fst <$> applyContext (inferCall (attrType funcAst) argAstOld)
 
   x -> error $ unwords ["infer", show x]
 
