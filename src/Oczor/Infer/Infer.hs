@@ -20,8 +20,8 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
   where
   xann = traverse infer $ project ast
   xann2 tp = do
-    term <- xann
-    return $ annType term tp
+    annFn <- fst <$> xann3
+    annFn tp
   xann3 = do
     term <- xann
     return (return . annType term, term)
@@ -29,11 +29,11 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
     -- ast | traceArgs (["infer", show ast]) -> undefined
     MD pos x -> local (position .~ Just pos) $ infer x
 
-    Stmt x -> xann2 NoType
-    Ffi name expr -> xann2 NoType
-    FfiType name expr -> xann2 NoType
-    ClassFn name tp -> xann2 NoType
-    TypeDecl name expr -> xann2 NoType
+    Stmt {} -> xann2 NoType
+    Ffi {} -> xann2 NoType
+    FfiType {} -> xann2 NoType
+    ClassFn {} -> xann2 NoType
+    TypeDecl {} -> xann2 NoType
 
     InstanceFn {} -> do
       (annFn, InstanceFnF tp name ast) <- xann3
@@ -58,13 +58,13 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
 
     Ident x -> lookupIdentType x >>= xann2
 
-    RecordLabel name body -> do
+    RecordLabel name _ -> do
       fv <- fresh
-      newAst <- local (addIdentType name fv) (infer body)
+      (annFn, RecordLabelF _ newAst) <- local (addIdentType name fv) xann3
       let tp = attrType newAst
       appFv <- applySubst fv
       unifyWithSubst appFv tp
-      annType (RecordLabelF name newAst) <$> applySubst (TypeLabel name tp)
+      applySubst (TypeLabel name tp) >>= annFn
 
     Record x -> snd <$> inferRecord ast
 
