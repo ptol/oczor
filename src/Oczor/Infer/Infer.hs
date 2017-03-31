@@ -29,21 +29,6 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
     -- ast | traceArgs (["infer", show ast]) -> undefined
     MD pos x -> local (position .~ Just pos) $ infer x
 
-    Stmt {} -> xann2 NoType
-    Ffi {} -> xann2 NoType
-    FfiType {} -> xann2 NoType
-    ClassFn {} -> xann2 NoType
-    TypeDecl {} -> xann2 NoType
-
-    InstanceFn {} -> do
-      (annFn, InstanceFnF tp name ast) <- xann3
-      let t = attrType ast
-      context <- ask
-      instanceType <- getInstanceType context name t
-      match instanceType tp
-      -- newType <- applySubst t -- TODO
-      annFn t
-
     WithType expr tp -> do
       renamedTP <- renameVarsInType tp
       ast <- infer expr
@@ -51,20 +36,6 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       unifyWithSubst t renamedTP
       newType <- applySubst renamedTP
       return (changeType newType ast) -- TODO think WithType
-
-    Lit x -> xann2 $ inferLit x
-
-    UniqObject x -> fresh >>= xann2
-
-    Ident x -> lookupIdentType x >>= xann2
-
-    RecordLabel name _ -> do
-      fv <- fresh
-      (annFn, RecordLabelF _ newAst) <- local (addIdentType name fv) xann3
-      let tp = attrType newAst
-      appFv <- applySubst fv
-      unifyWithSubst appFv tp
-      applySubst (TypeLabel name tp) >>= annFn
 
     Record x -> snd <$> inferRecord ast
 
@@ -113,6 +84,35 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       unifyWithSubst tType (attrType inferFExpr)
       apptType <- applySubst tType
       return (annType (IfF inferBExpr inferTExpr inferFExpr) apptType)
+
+    Stmt {} -> xann2 NoType
+    Ffi {} -> xann2 NoType
+    FfiType {} -> xann2 NoType
+    ClassFn {} -> xann2 NoType
+    TypeDecl {} -> xann2 NoType
+
+    InstanceFn {} -> do
+      (annFn, InstanceFnF tp name ast) <- xann3
+      let t = attrType ast
+      context <- ask
+      instanceType <- getInstanceType context name t
+      match instanceType tp
+      -- newType <- applySubst t -- TODO
+      annFn t
+
+    Lit x -> xann2 $ inferLit x
+
+    UniqObject x -> fresh >>= xann2
+
+    Ident x -> lookupIdentType x >>= xann2
+
+    RecordLabel name _ -> do
+      fv <- fresh
+      (annFn, RecordLabelF _ newAst) <- local (addIdentType name fv) xann3
+      let tp = attrType newAst
+      appFv <- applySubst fv
+      unifyWithSubst appFv tp
+      applySubst (TypeLabel name tp) >>= annFn
 
     LabelAccess x -> do
       tv <- fresh
