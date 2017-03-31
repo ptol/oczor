@@ -196,7 +196,7 @@ lookupIdentType x = fromMaybeM (typeError $ UnboundVariable x) $ do
     fromMaybeM x y = runMaybeT y >>= maybe x return
 
 addIdentType :: String -> TypeExpr -> InferContext -> InferContext
-addIdentType name tp context = context & cmodule . idents %~ insertMap name (toScheme tp) --TODO repalce with Gen version
+addIdentType name tp = cmodule . idents %~ insertMap name (toScheme tp) --TODO repalce with Gen version
 
 addTypeDeclRename name tp isFfi context = (\x -> context &addTypeDecl name x isFfi) <$> renameVarsInType tp
 
@@ -211,9 +211,7 @@ addIdentTypeGen name tp context = do
   return $ context & cmodule . idents %~ insertMap name x
 
 generalize :: InferContext -> TypeExpr -> Infer Scheme
-generalize context t = do
-  let as = setToList $ difference (ftv t) (ftv context)
-  return $ Forall as t
+generalize context t = return $ Forall (setToList $ difference (ftv t) (ftv context)) t
 
 findClassTypeList :: String -> [TypeExpr] -> [TypeExpr] -> Maybe TypeExpr
 findClassTypeList var l1 l2 =  zipWith (findClassType var) l1 l2 & catMaybes & headMay
