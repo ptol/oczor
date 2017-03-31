@@ -25,7 +25,7 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
 
     WithType expr tp -> do
       renamedTP <- renameVarsInType tp
-      ast @ (Ann x  _) <- infer expr
+      WithTypeF ast @ (Ann x _) _ <- traverse infer $ project ast
       unifyWithSubst (attrType ast) renamedTP
       annType x <$> applySubst renamedTP -- TODO think WithType
 
