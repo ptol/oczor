@@ -18,12 +18,11 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
   changeContext ctx <$> r
 
   where
-  xann = traverse infer $ project ast
   xann2 tp = do
     annFn <- fst <$> xann3
     annFn tp
   xann3 = do
-    term <- xann
+    term <- traverse infer $ project ast
     return (return . annType term, term)
   r = case ast of
     -- ast | traceArgs (["infer", show ast]) -> undefined
@@ -85,27 +84,6 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       apptType <- applySubst tType
       return (annType (IfF inferBExpr inferTExpr inferFExpr) apptType)
 
-    Stmt {} -> xann2 NoType
-    Ffi {} -> xann2 NoType
-    FfiType {} -> xann2 NoType
-    ClassFn {} -> xann2 NoType
-    TypeDecl {} -> xann2 NoType
-
-    InstanceFn {} -> do
-      (annFn, InstanceFnF tp name ast) <- xann3
-      let t = attrType ast
-      context <- ask
-      instanceType <- getInstanceType context name t
-      match instanceType tp
-      -- newType <- applySubst t -- TODO
-      annFn t
-
-    Lit x -> xann2 $ inferLit x
-
-    UniqObject x -> fresh >>= xann2
-
-    Ident x -> lookupIdentType x >>= xann2
-
     RecordLabel name _ -> do
       fv <- fresh
       (annFn, RecordLabelF _ newAst) <- local (addIdentType name fv) xann3
@@ -114,23 +92,41 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       unifyWithSubst appFv tp
       applySubst (TypeLabel name tp) >>= annFn
 
-    LabelAccess x -> do
-      tv <- fresh
-      tv2 <- fresh
-      xann2 $ TypeFunc (TypeRow tv2 [TypeLabel x tv]) tv
+    _ -> do
+      (annFn, ast) <- xann3
+      tp <- case ast of
+        StmtF {} -> return NoType
+        FfiF {} -> return NoType
+        FfiTypeF {} -> return NoType
+        ClassFnF {} -> return NoType
+        TypeDeclF {} -> return NoType
 
-    Array [] -> typeArray <$> fresh >>= xann2
+        InstanceFnF tp name ast -> do
+          let t = attrType ast
+          context <- ask
+          instanceType <- getInstanceType context name t
+          match instanceType tp
+          -- newType <- applySubst t -- TODO
+          return t
 
-    Array list -> do
-      (annFn, ArrayF arrayAsts) <- xann3
-      annFn $ typeArray $ simplifyUnion $ map attrType arrayAsts
+        LitF x -> return $ inferLit x
+        UniqObjectF {} -> fresh
+        IdentF x -> lookupIdentType x
 
-    Cases body -> do
-      (annFn, CasesF newAst) <- xann3
-      let funcType = joinFuncTypes (newAst <&> attrType)
-      annFn funcType
+        LabelAccessF x -> do
+          tv <- fresh
+          tv2 <- fresh
+          return $ TypeFunc (TypeRow tv2 [TypeLabel x tv]) tv
 
-    x -> error $ unwords ["infer", show x]
+        ArrayF [] -> typeArray <$> fresh
+
+        ArrayF arrayAsts -> return $ typeArray $ simplifyUnion $ map attrType arrayAsts
+
+        CasesF newAst -> return $ joinFuncTypes (newAst <&> attrType)
+
+        x -> error $ unwords ["infer", show x]
+      -- end of tp <- case
+      annFn tp
 
 inferUpdateLabels labels = do
     asts <- traverse inferLabel labels
