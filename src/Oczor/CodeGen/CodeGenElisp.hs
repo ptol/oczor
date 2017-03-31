@@ -60,7 +60,7 @@ lit = createLit (('?':) . (:[])) "nil" ("t", "nil")
 
 convertName x = x & split (startsWithOneOf ['A'..'Z']) <&> toLower & intercalate "-"
 
-keywords = ["not", "log", "eq"]
+keywords = setFromList ["not", "log", "eq"]
 identKw = createIdent keywords
 ident name = let newName = convertName name in identKw newName
 

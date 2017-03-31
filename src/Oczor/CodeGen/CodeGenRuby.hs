@@ -34,7 +34,7 @@ func params body = hcat [text "->", parens $ cat $ punctuate comma (params <&> t
 
 lit = createLit (('?':) . (:[])) "nil" ("true", "false")
 
-keywords = ["__ENCODING__", "def", "in", "self", "__LINE__", "defined?", "module", "super", "__FILE__", "do", "next", "then", "BEGIN", "else", "nil", "true", "END", "elsif", "not", "undef", "alias", "end", "or", "unless", "and", "ensure", "redo", "until", "begin", "false", "rescue", "when", "break", "for", "retry", "while", "case", "if", "return", "yield", "class"]
+keywords = setFromList ["__ENCODING__", "def", "in", "self", "__LINE__", "defined?", "module", "super", "__FILE__", "do", "next", "then", "BEGIN", "else", "nil", "true", "END", "elsif", "not", "undef", "alias", "end", "or", "unless", "and", "ensure", "redo", "until", "begin", "false", "rescue", "when", "break", "for", "retry", "while", "case", "if", "return", "yield", "class"]
 
 ident = createIdent keywords
 

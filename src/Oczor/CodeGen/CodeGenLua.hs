@@ -32,7 +32,7 @@ codeGen = x
 
 lit = createLit (show . (:[])) "nil" ("true", "false")
 
-keywords = ["print", "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil", "not", "or", "repeat", "return", "then", "true", "until", "while"]
+keywords = setFromList ["print", "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil", "not", "or", "repeat", "return", "then", "true", "until", "while"]
 
 ident = createIdent keywords
 

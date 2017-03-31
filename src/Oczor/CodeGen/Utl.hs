@@ -4,11 +4,8 @@ import ClassyPrelude as X hiding ((<>), empty, (<$>), (</>), bool, group)
 import Text.PrettyPrint.Leijen as X
 import Oczor.Utl 
 
-createIdent :: [String] -> String -> Doc
-createIdent keywords x = text $ if member x kw then "_" ++ x else x
-  where
-  kw :: Set String
-  kw = setFromList keywords
+createIdent :: Set String -> String -> Doc
+createIdent keywords x = text $ if member x keywords then "_" ++ x else x
 
 createLit charFunc null (t,f)  = \case
   (LitInt value) -> int value
