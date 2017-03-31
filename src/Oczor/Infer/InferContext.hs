@@ -3,7 +3,6 @@ module Oczor.Infer.InferContext (module Oczor.Infer.InferContext, module Oczor.I
 
 import Oczor.Syntax.Syntax
 import ClassyPrelude 
-import Control.Lens
 import Oczor.Utl
 import Oczor.Infer.Substitutable
 import Oczor.Infer.Module

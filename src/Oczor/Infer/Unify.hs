@@ -10,8 +10,6 @@ import Oczor.Infer.State
 import Oczor.Infer.Substitutable
 import Oczor.Infer.UnifyState
 
-import Data.Functor.Foldable
-
 -- runUnify x y |  traceResult ["=== runUnify ===", show x, show y] = trac "=== result ===" <$> runReaderT (unify x y) initState
 runUnify x y = runReaderT (unify x y) initState
 

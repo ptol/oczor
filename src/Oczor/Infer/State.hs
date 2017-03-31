@@ -12,8 +12,6 @@ import Oczor.Infer.InferContext
 
 import Oczor.Infer.Substitutable
 import Oczor.Infer.InferAst
-import Data.Functor.Foldable
-
 
 data InferState = InferState {
   _count :: Int,

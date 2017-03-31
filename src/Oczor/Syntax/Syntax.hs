@@ -11,8 +11,6 @@ import Oczor.Syntax.Errors as X
 import Oczor.Syntax.Operators as X
 import qualified Control.Monad.Writer.Strict as W
 
-import Data.Functor.Foldable
-
 sysPrefix = "_"
 
 

@@ -5,8 +5,6 @@ import ClassyPrelude
 import Oczor.Syntax.Syntax
 import Oczor.Utl
 
-import Data.Functor.Foldable
-
 newtype Subst = Subst (Map String TypeExpr)
   deriving (Eq, Ord, Show, Monoid)
 
