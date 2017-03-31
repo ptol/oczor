@@ -1,7 +1,9 @@
 module Oczor.Syntax.Syntax (module Oczor.Syntax.Syntax, module X) where
-import ClassyPrelude hiding (TVar)
+
+import ClassyPrelude hiding (TVar, first)
 import qualified Data.Map as Map
 import Oczor.Utl
+import Data.Foldable as F
 import Data.Monoid
 import Oczor.Syntax.Types as X
 import Oczor.Syntax.Ast as X
@@ -19,7 +21,7 @@ isTVar = \case
   _ -> False
 
 lastType = \case
-  (TypeRecord list) | Just l <- lastMay list -> l
+  TypeRecord (lastMay -> Just l) -> l
   x -> x
 
 constraintSetToMap :: ConstraintSet -> Map String [String]
@@ -101,9 +103,11 @@ listIfSome = \case {[x] -> x; x -> ExprList x}
 typeUnionIfSome :: [TypeExpr] -> TypeExpr
 typeUnionIfSome = \case {[x] -> x; x -> TypeUnion x}
 
-exprListToRecord (MD md x) = newMD md (exprListToRecord x)
-exprListToRecord (ExprList x) = recordIfSome x
-exprListToRecord x = x
+exprListToRecord :: Expr -> Expr
+exprListToRecord = cata $ \case
+  MDF md x -> newMD md x
+  ExprListF x -> recordIfSome x
+  x -> embed x
 
 listToLetOrRecord = \case
   -- x | traceArgs ["listToletOrRecord", show x] -> undefined
@@ -135,32 +139,32 @@ typeExprToList (TypeRecord l) = l
 typeExprToList x = [x]
 
 getTypeLabels :: TypeExpr -> [String]
-getTypeLabels (TypeRow x y) = (y ++ [x]) >>= getTypeLabels
-getTypeLabels (TypeRecord x) = x >>= getTypeLabels
-getTypeLabels (TypeLabel x _) = [x]
-getTypeLabels _ = []
+getTypeLabels = cata $ \case
+  TypeRowF x y -> y >>= (++ x)
+  TypeRecordF x -> mconcat x
+  TypeLabelF x _ -> [x]
+  _ -> []
 
 hasTypeVar :: TypeExpr -> Bool
 hasTypeVar = getAny . cata (\case
       TypeVarF _ -> Any True
       x -> ffold x)
 
-instanceTypeName = \case
-  (TypeIdent x) -> x
-  (TypeConstraints _ x) -> instanceTypeName x
-  (TypeApply x _) -> instanceTypeName x
-  x -> error $ "instanceTypeName " ++ show x
+instanceTypeName :: TypeExpr -> String
+instanceTypeName = cata $ \case
+  TypeIdentF x -> x
+  TypeConstraintsF _ x -> x
+  TypeApplyF x _ -> x
+  x -> error $ "instanceTypeName " `mappend` show x
 
 getTypeVars :: TypeExpr -> [String]
 getTypeVars = cata $ \case
   TypeVarF x -> [x]
   x -> ffold x
 
-curryTypeApply2 arg@(TypeApply x arga) param@(TypeApply y argp) =
-  if olength arga < olength argp then
-    (arg, curryTypeApply (olength arga) param)
-  else
-    (curryTypeApply (olength argp) arg, param)
+curryTypeApply2 arg@(TypeApply x arga) param@(TypeApply y argp)
+  | olength arga < olength argp = (arg, curryTypeApply (olength arga) param)
+  | otherwise = (curryTypeApply (olength argp) arg, param)
 
 curryTypeApply arity ast@(TypeApply x params) =
   let l = olength params in
@@ -184,14 +188,13 @@ typeArity = \case
   TypeRecord list -> olength list
   _ -> 1
 
-casesArity list = list & map funcArity & ordNub
+casesArity = ordNub . fmap funcArity
 
-getLabelType label = \case
-  TypeLabel lbl tp | lbl == label -> Just tp
-  TypeRecord list -> list <&> getLabelType label & catMaybes & headMay
-  TypeConstraints c x -> getLabelType label x <&> TypeConstraints c -- TODO filter constraints in c
-  TypeRow x y -> getLabelType label (TypeRecord y)
-  _ -> Nothing
+getLabelType :: String -> TypeExpr -> Maybe TypeExpr
+getLabelType label = para $ \case
+  TypeLabelF lbl (tp, _) | lbl == label -> Just tp
+  TypeConstraintsF c (_, x) -> TypeConstraints (first fst <$> c) <$> x
+  x -> ala First F.foldMap $ snd <$> x
 
 moduleNameToIdent :: [String] -> String
 moduleNameToIdent = intercalate "."

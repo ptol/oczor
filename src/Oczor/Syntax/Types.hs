@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, TypeFamilies #-}
+{-# LANGUAGE TemplateHaskell, TypeFamilies, StandaloneDeriving #-}
 
 module Oczor.Syntax.Types where
 
@@ -20,6 +20,8 @@ data TypeExpr =
   deriving (Eq, Ord, Show, Read)
 
 makeBaseFunctor ''TypeExpr
+
+deriving instance Show a => (Show (TypeExprF a))
 
 typeBool  = TypeIdent "Bool"
 typeUnit  = TypeIdent "Unit"

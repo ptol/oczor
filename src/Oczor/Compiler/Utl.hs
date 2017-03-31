@@ -35,9 +35,7 @@ inferAllTxtWith context fileName x = do
   (ast, ops) <- Parser.parseAll Parser.parser x fileName (context & allOperators)
   inferAllExpr (context & cmodule . operators .~ ops & cmodule . moduleName .~ fileName) ast
 
-compileJsPartTxt x = do
-  (context, tast) <- inferAllTxt x
-  return $ Js.codeGen $ convert2 context tast
+compileJsPartTxt x = Js.codeGen . uncurry convert2 <$> inferAllTxt x
 
 inferTxt2 x = either (putStrLn . pack . show) (putStrLn . pack . prettyShow) $ inferTxt x
 

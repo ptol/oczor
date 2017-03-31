@@ -18,4 +18,4 @@ createLit charFunc null (t,f)  = \case
   (LitBool value) -> text $ if value then t else f
   LitNull -> text null
 
-jsArray x = brackets $ hcat $ punctuate comma x
+jsArray = brackets . hcat . punctuate comma

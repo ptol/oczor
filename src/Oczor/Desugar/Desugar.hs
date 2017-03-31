@@ -98,7 +98,7 @@ typeDecl name param body = listIfSome $ (types >>= generateEmptyType) ++ [td] wh
   params :: [String]
   params = param <&> (\(TypeVar x) -> x)
   alg :: TypeExprF TypeExpr -> W.Writer [String] TypeExpr
-  alg (TypeVarF x) | not $ elem x params = do
+  alg (TypeVarF x) | x `notElem` params = do
     W.tell [x]
     return $ TypeIdent (toTitleCase x)
   alg x = return $ embed x
