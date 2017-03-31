@@ -53,12 +53,14 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
 
     Call func arg -> do
       funcAst <- infer func
-      (outTp, argAst) <- applyContext (inferCall (attrType funcAst) arg)
+      argAstOld <- infer arg
+      (outTp, argAst) <- applyContext (inferCall (attrType funcAst) argAstOld)
       return ( annType (CallF funcAst argAst) outTp)
 
     Update arg labels -> do
       (funcTp, labelAsts) <- inferUpdateLabels labels
-      (outTp, argAst) <- applyContext (inferCall funcTp arg)
+      argAstOld <- infer arg
+      (outTp, argAst) <- applyContext (inferCall funcTp argAstOld)
       return (annType (UpdateF argAst labelAsts) outTp)
 
     SetStmt l r -> do
@@ -135,8 +137,7 @@ inferUpdateLabels labels = do
         return (annType (RecordLabelF label ast) tp)
       MD pos x -> local (position .~ Just pos) $ inferLabel x
 
-inferCall t1 e2 = do
-  ast2 <- infer e2
+inferCall t1 ast2 = do
   tv <- fresh
   appt1 <- applySubst t1
   unifyWithSubst (TypeFunc (attrType ast2) tv) appt1
