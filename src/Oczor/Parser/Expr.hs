@@ -122,9 +122,9 @@ update = do
 
 ifExpr :: Parser Expr
 ifExpr = liftA3 If
-	(try (L.rword "if" *> record))
-	(L.rword "then" *> record)
-	(L.rword "else" *> record)
+  (try (L.rword "if" *> record))
+  (L.rword "then" *> record)
+  (L.rword "else" *> record)
 
 array :: Parser Expr
 array = try simpleItems <|> recordItems >>= Desugar.partialApply . Array
@@ -176,13 +176,13 @@ anonFunc = anonFuncRaw >>= Desugar.func
 
 anonFuncRaw :: Parser Expr
 anonFuncRaw = do
-	(param, guard) <- try anonFuncParamGuard
-	Function param guard <$> record
+  (param, guard) <- try anonFuncParamGuard
+  Function param guard <$> record
 
 anonFuncSingleParam :: Parser Expr
 anonFuncSingleParam = do
-	(param, guard) <- try anonFuncParamGuard
-	Desugar.funcSingleParam . Function param guard =<< record
+  (param, guard) <- try anonFuncParamGuard
+  Desugar.funcSingleParam . Function param guard =<< record
 
 call :: Parser Expr
 call = do

@@ -20,8 +20,10 @@ composeSubstList :: [Subst] -> Subst
 composeSubstList =  foldr (flip composeSubst) emptySubst
 
 class Substitutable a where
+  {-# MINIMAL apply #-}
   apply :: Subst -> a -> a
   ftv   :: a -> Set String
+  ftv = mempty
 
 
 instance (Substitutable a) => Substitutable (ExprF a) where

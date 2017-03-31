@@ -32,7 +32,7 @@ toTitleCase (x : xs) = Char.toUpper x : xs
 
 notNull = not . onull
 
-trace2 x y = C.trace x y
+-- trace2 x y = C.trace x y
 trace2 x y = y
 
 ffold = F.fold
