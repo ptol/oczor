@@ -90,8 +90,8 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       applySubst (TypeLabel name tp) >>= annFn
 
     _ -> do
-      (annFn, ast) <- xann3
-      inferPhi ast >>= annFn
+      term <- traverse infer $ project ast
+      annType term <$> inferPhi term
 
 -- "phi" is a reference to future cata
 inferPhi = \case
