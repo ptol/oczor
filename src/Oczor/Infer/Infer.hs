@@ -18,9 +18,7 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
   changeContext ctx <$> r
 
   where
-  xann3 = do
-    term <- traverse infer $ project ast
-    return (return . annType term, term)
+
   r = case ast of
     -- ast | traceArgs (["infer", show ast]) -> undefined
     MD pos x -> local (position .~ Just pos) $ infer x
@@ -83,11 +81,11 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
 
     RecordLabel name _ -> do
       fv <- fresh
-      (annFn, RecordLabelF _ newAst) <- local (addIdentType name fv) xann3
+      term @ (RecordLabelF _ newAst) <- local (addIdentType name fv) $ traverse infer $ project ast
       let tp = attrType newAst
       appFv <- applySubst fv
       unifyWithSubst appFv tp
-      applySubst (TypeLabel name tp) >>= annFn
+      annType term <$> applySubst (TypeLabel name tp)
 
     _ -> do
       term <- traverse infer $ project ast
