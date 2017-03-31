@@ -18,19 +18,19 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
   changeContext ctx <$> r
 
   where
+  xann = traverse infer $ project ast
+  xann2 tp = do
+    term <- xann
+    return $ annType term tp
   r = case ast of
     -- ast | traceArgs (["infer", show ast]) -> undefined
     MD pos x -> local (position .~ Just pos) $ infer x
 
-    Stmt x -> return (annType (StmtF x) NoType)
-
-    Ffi name expr -> return (annType (FfiF name expr) NoType)
-
-    FfiType name expr -> return (annType (FfiTypeF name expr) NoType)
-
-    ClassFn name tp -> return (annType (ClassFnF name tp) NoType)
-
-    TypeDecl name expr -> return (annType (TypeDeclF name expr) NoType)
+    Stmt x -> xann2 NoType
+    Ffi name expr -> xann2 NoType
+    FfiType name expr -> xann2 NoType
+    ClassFn name tp -> xann2 NoType
+    TypeDecl name expr -> xann2 NoType
 
     InstanceFn tp name expr -> do
       ast <- infer expr
@@ -49,11 +49,11 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       newType <- applySubst renamedTP
       return (changeType newType ast) -- TODO think WithType
 
-    Lit x -> annType (LitF x) <$> return (inferLit x)
+    Lit x -> xann2 $ inferLit x
 
-    UniqObject x -> annType (UniqObjectF x) <$> fresh
+    UniqObject x -> fresh >>= xann2
 
-    Ident x -> annType (IdentF x) <$> lookupIdentType x
+    Ident x -> lookupIdentType x >>= xann2
 
     RecordLabel name body -> do
       fv <- fresh
@@ -114,16 +114,13 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
     LabelAccess x -> do
       tv <- fresh
       tv2 <- fresh
-      let tp = TypeFunc (TypeRow tv2 [TypeLabel x tv]) tv
-      return (annType (LabelAccessF x) tp)
+      xann2 $ TypeFunc (TypeRow tv2 [TypeLabel x tv]) tv
 
-    Array list ->
-      if onull list then (annType (ArrayF []) . typeArray)<$> fresh
-      else do
-      arrayAsts <- list & traverse infer
-      let arrayTypes = arrayAsts <&> attrType
-      let tp = typeArray $ simplifyUnion arrayTypes
-      return (annType (ArrayF arrayAsts) tp)
+    Array [] -> typeArray <$> fresh >>= xann2
+
+    Array list -> do
+      arrayAsts <- traverse infer list
+      return $ annType (ArrayF arrayAsts) $ typeArray $ simplifyUnion $ map attrType arrayAsts
 
     Cases body -> do
       newAst <- traverse infer body
