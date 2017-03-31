@@ -151,11 +151,11 @@ inferCall t1 e2 = do
   return (rTp, ast2)
 
 inferLit = \case
-  (LitInt _) -> TypeIdent "Int"
-  (LitDouble _) -> TypeIdent "Double"
-  (LitChar _) -> TypeIdent "Char"
-  (LitString _) -> TypeIdent "String"
-  (LitBool _) -> typeBool
+  LitInt _ -> TypeIdent "Int"
+  LitDouble _ -> TypeIdent "Double"
+  LitChar _ -> TypeIdent "Char"
+  LitString _ -> TypeIdent "String"
+  LitBool _ -> typeBool
 
 -- addFuctionParamToContext context ast |traceArgs ["addFuctionParamToContext", show ast] = undefined
 addFuctionParamToContext ast = case ast of
@@ -297,13 +297,13 @@ inferRecord x = do
 updateContext expr = do
   context <- ask
   case expr of
-    (MD pos y) -> local (position .~ Just pos) $ updateContext y
-    (Stmt (StmtImport name asName)) -> importModule name asName context
-    (Stmt (StmtOpen name)) -> openIdent [name] context
-    (Stmt (StmtInclude name)) -> includeIdent name context
-    (Ffi name expr) -> context & addIdentTypeRename name expr
-    (FfiType name expr) -> addTypeDeclRename name expr True context
-    (TypeDecl name tp) -> addTypeDeclCheck context name tp -- TODO add type decl schema
+    MD pos y -> local (position .~ Just pos) $ updateContext y
+    Stmt (StmtImport name asName) -> importModule name asName context
+    Stmt (StmtOpen name) -> openIdent [name] context
+    Stmt (StmtInclude name) -> includeIdent name context
+    Ffi name expr -> context & addIdentTypeRename name expr
+    FfiType name expr -> addTypeDeclRename name expr True context
+    TypeDecl name tp -> addTypeDeclCheck context name tp -- TODO add type decl schema
     (ClassFn name tp) -> do
       let (TypePoly [TypeVar var] t) = tp
       identType <- renameVarsInType (TypeConstraints [(TypeVar var, name)] t)

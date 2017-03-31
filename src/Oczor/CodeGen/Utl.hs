@@ -8,11 +8,11 @@ createIdent :: Set String -> String -> Doc
 createIdent keywords x = text $ if member x keywords then "_" ++ x else x
 
 createLit charFunc null (t,f)  = \case
-  (LitInt value) -> int value
-  (LitDouble value) -> double value
-  (LitChar value) -> text $ charFunc value
-  (LitString value) -> text $ show value
-  (LitBool value) -> text $ if value then t else f
+  LitInt value -> int value
+  LitDouble value -> double value
+  LitChar value -> text $ charFunc value
+  LitString value -> text $ show value
+  LitBool value -> text $ if value then t else f
   LitNull -> text null
 
 jsArray = brackets . hcat . punctuate comma
