@@ -18,9 +18,6 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
   changeContext ctx <$> r
 
   where
-  xann2 tp = do
-    annFn <- fst <$> xann3
-    annFn tp
   xann3 = do
     term <- traverse infer $ project ast
     return (return . annType term, term)
@@ -94,39 +91,40 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
 
     _ -> do
       (annFn, ast) <- xann3
-      tp <- case ast of
-        StmtF {} -> return NoType
-        FfiF {} -> return NoType
-        FfiTypeF {} -> return NoType
-        ClassFnF {} -> return NoType
-        TypeDeclF {} -> return NoType
+      inferPhi ast >>= annFn
 
-        InstanceFnF tp name ast -> do
-          let t = attrType ast
-          context <- ask
-          instanceType <- getInstanceType context name t
-          match instanceType tp
-          -- newType <- applySubst t -- TODO
-          return t
+-- "phi" is a reference to future cata
+inferPhi = \case
+  StmtF {} -> return NoType
+  FfiF {} -> return NoType
+  FfiTypeF {} -> return NoType
+  ClassFnF {} -> return NoType
+  TypeDeclF {} -> return NoType
 
-        LitF x -> return $ inferLit x
-        UniqObjectF {} -> fresh
-        IdentF x -> lookupIdentType x
+  InstanceFnF tp name ast -> do
+    let t = attrType ast
+    context <- ask
+    instanceType <- getInstanceType context name t
+    match instanceType tp
+    -- newType <- applySubst t -- TODO
+    return t
 
-        LabelAccessF x -> do
-          tv <- fresh
-          tv2 <- fresh
-          return $ TypeFunc (TypeRow tv2 [TypeLabel x tv]) tv
+  LitF x -> return $ inferLit x
+  UniqObjectF {} -> fresh
+  IdentF x -> lookupIdentType x
 
-        ArrayF [] -> typeArray <$> fresh
+  LabelAccessF x -> do
+    tv <- fresh
+    tv2 <- fresh
+    return $ TypeFunc (TypeRow tv2 [TypeLabel x tv]) tv
 
-        ArrayF arrayAsts -> return $ typeArray $ simplifyUnion $ map attrType arrayAsts
+  ArrayF [] -> typeArray <$> fresh
 
-        CasesF newAst -> return $ joinFuncTypes (newAst <&> attrType)
+  ArrayF arrayAsts -> return $ typeArray $ simplifyUnion $ map attrType arrayAsts
 
-        x -> error $ unwords ["infer", show x]
-      -- end of tp <- case
-      annFn tp
+  CasesF newAst -> return $ joinFuncTypes (newAst <&> attrType)
+
+  x -> error $ unwords ["infer", show x]
 
 inferUpdateLabels labels = do
     asts <- traverse inferLabel labels
