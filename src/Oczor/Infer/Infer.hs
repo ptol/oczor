@@ -297,11 +297,11 @@ updateContext expr = do
     Ffi name expr -> context & addIdentTypeRename name expr
     FfiType name expr -> addTypeDeclRename name expr True context
     TypeDecl name tp -> addTypeDeclCheck context name tp -- TODO add type decl schema
-    (ClassFn name tp) -> do
+    ClassFn name tp -> do
       let (TypePoly [TypeVar var] t) = tp
       identType <- renameVarsInType (TypeConstraints [(TypeVar var, name)] t)
       context & cmodule . classes %~ insertMap name (var, t) & addIdentTypeGen name identType
-    (InstanceFn tp name _) ->
+    InstanceFn tp name _ ->
       return $ context
         & cmodule . instances %~ alterMap (\x -> Just ((maybeToList x & concat) ++ [name])) tp 
         & cmodule . instancesType %~ insertMap (instanceTypeName tp, name) tp
