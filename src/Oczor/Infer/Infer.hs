@@ -22,6 +22,9 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
   xann2 tp = do
     term <- xann
     return $ annType term tp
+  xann3 = do
+    term <- xann
+    return (return . annType term, term)
   r = case ast of
     -- ast | traceArgs (["infer", show ast]) -> undefined
     MD pos x -> local (position .~ Just pos) $ infer x
@@ -32,14 +35,14 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
     ClassFn name tp -> xann2 NoType
     TypeDecl name expr -> xann2 NoType
 
-    InstanceFn tp name expr -> do
-      ast <- infer expr
+    InstanceFn {} -> do
+      (annFn, InstanceFnF tp name ast) <- xann3
       let t = attrType ast
       context <- ask
       instanceType <- getInstanceType context name t
       match instanceType tp
       -- newType <- applySubst t -- TODO
-      return (annType (InstanceFnF tp name ast) t)
+      annFn t
 
     WithType expr tp -> do
       renamedTP <- renameVarsInType tp
@@ -119,13 +122,13 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
     Array [] -> typeArray <$> fresh >>= xann2
 
     Array list -> do
-      arrayAsts <- traverse infer list
-      return $ annType (ArrayF arrayAsts) $ typeArray $ simplifyUnion $ map attrType arrayAsts
+      (annFn, ArrayF arrayAsts) <- xann3
+      annFn $ typeArray $ simplifyUnion $ map attrType arrayAsts
 
     Cases body -> do
-      newAst <- traverse infer body
+      (annFn, CasesF newAst) <- xann3
       let funcType = joinFuncTypes (newAst <&> attrType)
-      return (annType (CasesF newAst) funcType)
+      annFn funcType
 
     x -> error $ unwords ["infer", show x]
 
