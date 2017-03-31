@@ -5,6 +5,7 @@ import Oczor.Utl
 import Oczor.Infer.Unify
 import Control.Monad.RWS
 import ClassyPrelude as C
+import qualified Data.Map as M
 import Oczor.Infer.InferContext as X
 import Oczor.Infer.State
 import Oczor.Infer.InferAst as X
@@ -60,8 +61,7 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       let tp = attrType newAst
       appFv <- applySubst fv
       unifyWithSubst appFv tp
-      t <- applySubst $ TypeLabel name tp
-      return (annType (RecordLabelF name newAst) t)
+      annType (RecordLabelF name newAst) <$> applySubst (TypeLabel name tp)
 
     Record x -> snd <$> inferRecord ast
 
@@ -98,7 +98,7 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
     SetStmt l r -> do
       (ctxL, inferLExpr) <- inferRecord l
       (ctxR, inferRExpr) <- inferRecord r
-      unifyWithSubst (attrType inferRExpr) (attrType inferLExpr)
+      (unifyWithSubst `on` attrType) inferRExpr inferLExpr
       return (annType (SetStmtF inferLExpr inferRExpr) NoType)
 
     If bExpr tExpr fExpr -> do
@@ -118,10 +118,7 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
       return (annType (LabelAccessF x) tp)
 
     Array list ->
-      if onull list then do
-        fv <- fresh
-        let tp = typeArray fv
-        return (annType (ArrayF []) tp)
+      if onull list then (annType (ArrayF []) . typeArray)<$> fresh
       else do
       arrayAsts <- list & traverse infer
       let arrayTypes = arrayAsts <&> attrType
@@ -218,9 +215,8 @@ generalize context t = do
   let as = setToList $ difference (ftv t) (ftv context)
   return $ Forall as t
 
-
 findClassTypeList :: String -> [TypeExpr] -> [TypeExpr] -> Maybe TypeExpr
-findClassTypeList var l1 l2 = zip l1 l2 & fmap (uncurry $ findClassType var) &catMaybes &headMay
+findClassTypeList var l1 l2 =  zipWith (findClassType var) l1 l2 & catMaybes & headMay
 
 findClassType :: String -> TypeExpr -> TypeExpr -> Maybe TypeExpr
 
@@ -359,17 +355,16 @@ joinFuncTypes list =
 normalizeModule context = context & idents %~ fmap normalize
 normalizeType t = renameTypeVars m t
   where
-    m = zip (ordNub . setToList $ ftv t) letters & mapFromList
+    m = mapFromList $ zip (otoList $ ftv t) letters
 normalize :: Scheme -> Scheme
-normalize (Forall _ body) = Forall (fmap snd ordList) (renameTypeVars m body)
+normalize (Forall _ body) = Forall (M.elems mm) (renameTypeVars mm body)
   where
-    ordList = zip (ordNub . setToList $ ftv body) letters
-    m = mapFromList ordList
+    mm = mapFromList $ zip (otoList $ ftv body) letters
 
 match t1 t2 = applyContext $ runUnify t1 t2
 
 unifyWithSubst t1 t2 = match t1 t2 >>= addSubst
 
-applyContext x = ask >>= flip applyContext2 x
+applyContext x = ask >>= (`applyContext2` x)
 
-applyContext2 ctx x = applySubst ctx >>= flip localPut x
+applyContext2 ctx x = applySubst ctx >>= (`localPut` x)
