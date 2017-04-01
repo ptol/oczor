@@ -51,12 +51,6 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
         where
           fromMaybeT x = fmap (fromMaybe x) . runMaybeT
 
-    Update arg labels -> do
-      (funcTp, labelAsts) <- inferUpdateLabels labels
-      argAstOld <- infer arg
-      (outTp, argAst) <- applyContext (inferCall funcTp argAstOld)
-      return (annType (UpdateF argAst labelAsts) outTp)
-
     SetStmt l r -> do
       (ctxL, inferLExpr) <- inferRecord l
       (ctxR, inferRExpr) <- inferRecord r
@@ -118,20 +112,16 @@ inferPhi = \case
 
   CallF funcAst argAstOld -> fst <$> applyContext (inferCall (attrType funcAst) argAstOld)
 
+  UpdateF argAstOld labelsAstsOld -> do
+    (funcTp, labelAsts) <- inferUpdateLabels labelsAstsOld
+    fst <$> applyContext (inferCall funcTp argAstOld)
+
   x -> error $ unwords ["infer", show x]
 
-inferUpdateLabels labels = do
-    asts <- traverse inferLabel labels
+inferUpdateLabels asts = do
     fv <- fresh
     let tp = TypeRow fv (asts <&> attrType)
     return (TypeFunc tp tp, asts)
-  where
-    inferLabel = \case
-      RecordLabel label expr -> do
-        ast <- infer expr
-        let tp = TypeLabel label (attrType ast)
-        return (annType (RecordLabelF label ast) tp)
-      MD pos x -> local (position .~ Just pos) $ inferLabel x
 
 inferCall t1 ast2 = do
   tv <- fresh
