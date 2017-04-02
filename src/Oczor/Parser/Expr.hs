@@ -34,9 +34,7 @@ wildcard :: Parser Expr
 wildcard = L.rword "_" *> return WildCard
 
 stmtSet :: Parser Expr
-stmtSet = do
-  expr <- try (l <* L.rop ":=")
-  SetStmt expr <$> record
+stmtSet = liftA2 SetStmt (try (l <* L.rop ":=")) record
   where
     l = labelAccess <|> ident
   
@@ -175,20 +173,13 @@ func = do
 anonFunc = anonFuncRaw >>= Desugar.func
 
 anonFuncRaw :: Parser Expr
-anonFuncRaw = do
-  (param, guard) <- try anonFuncParamGuard
-  Function param guard <$> record
+anonFuncRaw = liftA2 (uncurry Function) (try anonFuncParamGuard) record
 
 anonFuncSingleParam :: Parser Expr
-anonFuncSingleParam = do
-  (param, guard) <- try anonFuncParamGuard
-  Desugar.funcSingleParam . Function param guard =<< record
+anonFuncSingleParam = Desugar.funcSingleParam =<< liftA2 (uncurry Function) (try anonFuncParamGuard) record
 
 call :: Parser Expr
-call = do
-  name <- ident <|> L.parens record
-  args <- try (listToLetOrRecord <$> some argExpr)
-  Desugar.partialApply $ Call name args
+call = Desugar.partialApply =<< liftA2 Call (ident <|> L.parens record) (try (listToLetOrRecord <$> some argExpr))
 
 desugarCases [x] = (Cases . (: [])) <$> Desugar.func x
 desugarCases list =
