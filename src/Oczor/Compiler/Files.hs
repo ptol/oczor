@@ -23,8 +23,7 @@ combinePath = intercalate "/"
 fixModuleNameIfDir moduleName = do
   let rootName = rootModuleName moduleName
   let fileName = combinePath rootName ++ ocExt
-  path <- findFilePathInDirs fileName
-  return $ maybe moduleName (const rootName) path
+  maybe moduleName (const rootName) <$> findFilePathInDirs fileName
 
 findFilePathInDirs fileName = do
   dirs <- use srcDirs
