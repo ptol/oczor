@@ -172,7 +172,7 @@ anonFuncRaw :: Parser Expr
 anonFuncRaw = liftA2 (uncurry Function) (try anonFuncParamGuard) record
 
 anonFuncSingleParam :: Parser Expr
-anonFuncSingleParam = Desugar.funcSingleParam =<< liftA2 (uncurry Function) (try anonFuncParamGuard) record
+anonFuncSingleParam = anonFuncRaw >>= Desugar.funcSingleParam
 
 call :: Parser Expr
 call = Desugar.partialApply =<< liftA2 Call (ident <|> L.parens record) (try $ listToLetOrRecord <$> some argExpr)

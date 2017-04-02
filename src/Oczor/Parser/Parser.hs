@@ -22,7 +22,9 @@ parser = topLevelRecord <* eof
 
 parseAll :: Parser Expr -> String -> ModuleName -> OperatorGroups -> Either Error (Expr, OperatorGroups)
 parseAll parser txt file opGroups =
-  left (\x -> (ParserError $ parseErrorPretty x, getPosFromError x)) $ right (\(ast, st) -> (exprListToRecord ast, st ^. ops)) $
+  bimap 
+    ((ParserError . parseErrorPretty) &&& getPosFromError)
+    (exprListToRecord `bimap` (^. ops)) $
     parse (runStateT parser (emptyState & addOperators opGroups)) (moduleNameToIdent file) txt
 
 parseExpr :: String -> Either Error Expr
@@ -31,6 +33,7 @@ parseExpr x = right fst $ parseAll parser x [] []
 parset :: String -> IO ()
 parset x = either (putStrLn . pack . show) (putStrLn . pack . pshow . removeMD . fst) $ parseAll parser x [] []
 
+parseType :: String -> Either Error Expr
 parseType = parsew (ExprType <$> (typeRecord <* eof))
 
 parsew :: Parser Expr -> String -> Either Error Expr

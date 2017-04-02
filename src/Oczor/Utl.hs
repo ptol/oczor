@@ -5,6 +5,7 @@ module Oczor.Utl (module Oczor.Utl, module Control.Arrow, module Control.Lens,  
 import ClassyPrelude as C
 import Control.Arrow
 import Data.Function ((&), on)
+import qualified Data.Map as M
 import Text.Show.Pretty as PP
 import Data.Functor.Foldable
 import Data.Char as Char
@@ -20,9 +21,7 @@ cataM f = (>>= f) . cata (traverse (>>= f))
 eqLength = (==) `on` olength
 
 groupMapBy :: (Ord b) => (a -> b) -> [a] -> [(b, [a])]
-groupMapBy f = map (f . headEx &&& id)
-                   . groupBy ((==) `on` f)
-                   . sortBy (compare `on` f)
+groupMapBy f = M.toList . foldr (\v -> M.insertWith (<>) (f v) [v]) M.empty
 
 concatNub x y = x ++ y & ordNub
 
