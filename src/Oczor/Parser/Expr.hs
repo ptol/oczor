@@ -34,14 +34,14 @@ wildcard :: Parser Expr
 wildcard = L.rword "_" *> return WildCard
 
 stmtSet :: Parser Expr
-stmtSet = liftA2 SetStmt (try (l <* L.rop ":=")) record
+stmtSet = liftA2 SetStmt (try $ l <* L.rop ":=") record
   where
     l = labelAccess <|> ident
   
 recordItem = stmtSet <|> try destruct <|> expr
 
 record :: Parser Expr
-record = recordIndentWith (recordCommaWith recordItem)
+record = recordIndentWith $ recordCommaWith recordItem
 
   
 recordWith :: Parser Expr ->  Parser Expr
@@ -78,7 +78,7 @@ guardArg = exprWith guardArgItem
 exprRecord = recordCommaWith expr
 
 labelAccess = do
-  (MD p e) <- try (body <* char '.')
+  MD p e <- try $ body <* char '.'
   labels <- sepBy1 L.ident (char '.')
   MD p <$> C.foldM newLabelAccess (unwrapMD e) labels
   where
@@ -89,7 +89,7 @@ label :: Parser Expr
 label = labelWith record
 
 labelType :: Parser (Maybe TypeExpr)
-labelType = optional (L.rop ":" *> typeRecord)
+labelType = optional $ L.rop ":" *> typeRecord
 
 labelWith :: Parser Expr -> Parser Expr
 labelWith body = RecordLabel <$> try (L.ident <* L.rop "=") <*> body
@@ -97,14 +97,11 @@ labelWith body = RecordLabel <$> try (L.ident <* L.rop "=") <*> body
 
 labelWithType :: Parser Expr
 labelWithType = do
-  (lbl,tp) <- try (((,) <$> (L.ident <* L.rop ":") <*> typeRecord) <* L.rop "=")
+  (lbl,tp) <- try $ liftA2 (,) (L.ident <* L.rop ":") typeRecord <* L.rop "="
   (RecordLabel lbl . flip WithType tp) <$> record
 
 destruct :: Parser Expr
-destruct = do
-  left <- try (L.parens destructRecord) <* L.rop "="
-  right <- record
-  Desugar.destruct $ Destruct left right
+destruct = Desugar.destruct =<< liftA2 Destruct (try $ L.parens destructRecord <* L.rop "=") record
   where
     destructItem = L.parens destructRecord <|> labelWith destructItem <|> ident
     destructRecord = recordIfSome <$> L.commaSep1 destructItem
@@ -115,12 +112,12 @@ ident = Ident <$> L.ident
 
 update :: Parser Expr
 update = do
-  id <- try (ident <* L.rword "with")
+  id <- try $ ident <* L.rword "with"
   Update id . recordToList <$> record
 
 ifExpr :: Parser Expr
 ifExpr = liftA3 If
-  (try (L.rword "if" *> record))
+  (try $ L.rword "if" *> record)
   (L.rword "then" *> record)
   (L.rword "else" *> record)
 
@@ -146,7 +143,7 @@ funcParam = recordIfSomeExceptRecord <$> some paramRecordComma
     identOut = Ident <$> L.identOut
 
     asParamExpr :: Parser Expr
-    asParamExpr = liftA2 As (try (optional L.ident <* L.rop "@")) paramItem
+    asParamExpr = liftA2 As (try $ optional L.ident <* L.rop "@") paramItem
 
     paramItemAny = asParamExpr <|> lits <|> wildcard <|> identOut <|> paramIdent
     paramParens = (ExprType <$> typeLabel) <|> paramLabel <|> paramItemAny
@@ -157,7 +154,7 @@ funcParam = recordIfSomeExceptRecord <$> some paramRecordComma
     paramRecordComma = try (L.parens paramRecordComma) <|> recordIfSomeComma paramItem
 
 anonFuncParamGuard :: Parser (Expr, Maybe Expr)
-anonFuncParamGuard = ((,) <$> (backslash *> funcParam) <*> funcGuard) <* L.rop "=>" where
+anonFuncParamGuard = liftA2 (,) (backslash *> funcParam) funcGuard <* L.rop "=>" where
   backslash = option () (void $ L.rop "\\")
   funcGuard :: Parser (Maybe Expr)
   funcGuard = optional (L.rop "|" *> guardArg)
@@ -166,9 +163,8 @@ newFunction param guard body = Desugar.func $ Function param guard body
 
 func :: Parser Expr
 func = do
-  (name, params) <- try (((,) <$> L.ident <*> funcParam) <* L.rop "=")
-  body <- record
-  RecordLabel name <$> newFunction params Nothing body
+  (name, params) <- try $ liftA2 (,) L.ident funcParam <* L.rop "="
+  RecordLabel name <$> (newFunction params Nothing =<< record)
 
 anonFunc = anonFuncRaw >>= Desugar.func
 
@@ -179,7 +175,7 @@ anonFuncSingleParam :: Parser Expr
 anonFuncSingleParam = Desugar.funcSingleParam =<< liftA2 (uncurry Function) (try anonFuncParamGuard) record
 
 call :: Parser Expr
-call = Desugar.partialApply =<< liftA2 Call (ident <|> L.parens record) (try (listToLetOrRecord <$> some argExpr))
+call = Desugar.partialApply =<< liftA2 Call (ident <|> L.parens record) (try $ listToLetOrRecord <$> some argExpr)
 
 desugarCases [x] = (Cases . (: [])) <$> Desugar.func x
 desugarCases list =
@@ -189,9 +185,7 @@ desugarCases list =
     arities = casesArity list
 
 cases :: Parser Expr
-cases = do
- body <- try (L.rword "case" *> (try (some $ L.parens anonFuncRaw) <|> L.someIndent anonFuncRaw))
- desugarCases body
+cases = desugarCases =<< try (L.rword "case" *> (try (some $ L.parens anonFuncRaw) <|> L.someIndent anonFuncRaw))
 
 letExpr = liftA2 Let (try (letKw *> recordWith (labelWith exprLet) <* L.rword "in")) record
   where
