@@ -11,9 +11,9 @@ import Oczor.Infer.Infer
 import qualified Data.List as L
 
 -- typeFuncArity x | traceArgs ["typeFuncArity", show x] = undefined
-typeFuncArity x = x & \case
-  (TypeFunc x _) -> typeArity x
-  (TypeConstraints _ y) -> typeFuncArity y
+typeFuncArity = \case
+  TypeFunc x _ -> typeArity x
+  TypeConstraints _ y -> typeFuncArity y
   TypePoly _ (TypeFunc x _) -> typeArity x
   _ -> 0
 
@@ -31,7 +31,7 @@ initObjectIfNull x = A.If (A.Equal x (A.Lit A.LitNull)) [A.Set x A.emptyObject] 
 
 initModuleIfNull moduleName = L.init moduleName & L.inits & L.tail <&> identWithNamespace True <&> initObjectIfNull
 
-typeNormalizeEq t1 t2 = normalizeType t1 == normalizeType t2
+typeNormalizeEq = (==) `on` normalizeType
 
 curryApply :: [A.Ast] -> Int -> A.Ast -> A.Ast
 curryApply args arity func =
@@ -41,7 +41,7 @@ curryApply args arity func =
     hasParams = arity > 0
     params = if hasParams then [1..arity] & map (show >>> ("p" ++)) else []
 
-instancesObject = A.Field (A.Field rootModule "instances")
+instancesObject = A.Field $ A.Field rootModule "instances"
 
 -- applyParam context x | traceArgs ["applyParam", show x] = undefined
 applyParam context (TypeApply (TypeIdent ident) y) = makeType t y
@@ -196,9 +196,7 @@ removeResults :: TypeExprF (a, b) -> TypeExprF a
 removeResults = map fst
 
 newIdent :: String -> Converter A.Ast
-newIdent ident = do
-  context <- ask
-  return $ identWithNamespace False ((context ^. openModules . identsNs &lookup ident & fromMaybe []) ++ [ident])
+newIdent ident = identWithNamespace False . (<> [ident]) . fromMaybe [] . lookup ident <$> view (openModules . identsNs)
 
 collectAllConstraints :: InferExpr -> [(TypeExpr, String)]
 -- collectAllConstraints x | traceArgs ["collectAllConstraints", pshow x] = undefined
@@ -232,10 +230,10 @@ convert2 ctx expr = runReader (convert expr) ctx
 convert :: InferExpr -> Converter A.Ast
 convert annAst@(Ann ast (tp, ctx)) = localPut ctx $ go ast where
   -- go x | traceArgs $ ["convert", show x]  = undefined
-  go x = x & \case
+  go = \case
      IdentF ident -> identAddInstancesArgs ident tp
      UniqObjectF x -> return $ A.UniqObject x
-     FunctionF {} -> convertFunction ast (Just outtp) where (TypeFunc _ outtp) = tp
+     FunctionF {} -> convertFunction ast (Just outtp) where TypeFunc _ outtp = tp
      CasesF expr -> cases expr Nothing -- TODO add out type
      LitF value -> checkExprTypeChange (inferLit value) tp (convertLit value)
      RecordLabelF name expr -> (A.Object . (:[])) <$> convertRecordLabel ast
