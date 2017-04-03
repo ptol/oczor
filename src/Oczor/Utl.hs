@@ -21,7 +21,7 @@ cataM f = (>>= f) . cata (traverse (>>= f))
 eqLength = (==) `on` olength
 
 groupMapBy :: (Ord b) => (a -> b) -> [a] -> [(b, [a])]
-groupMapBy f = M.toList . foldr (\v -> M.insertWith (<>) (f v) [v]) M.empty
+groupMapBy f = M.toList . M.fromListWith (\b [a]-> a : b) . map (f &&& (:[]))
 
 concatNub x y = x ++ y & ordNub
 
