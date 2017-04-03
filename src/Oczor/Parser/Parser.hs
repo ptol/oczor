@@ -33,7 +33,6 @@ parseExpr x = right fst $ parseAll parser x [] []
 parset :: String -> IO ()
 parset x = (putStrLn . pack) . either show (pshow . removeMD . fst) $ parseAll parser x [] []
 
-parseType :: String -> Either Error Expr
 parseType = parsew (ExprType <$> (typeRecord <* eof))
 
 parsew :: Parser Expr -> String -> Either Error Expr
