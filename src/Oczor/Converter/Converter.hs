@@ -12,8 +12,8 @@ import qualified Data.List as L
 
 -- typeFuncArity x | traceArgs ["typeFuncArity", show x] = undefined
 typeFuncArity = \case
-  (TypeFunc x _) -> typeArity x
-  (TypeConstraints _ y) -> typeFuncArity y
+  TypeFunc x _ -> typeArity x
+  TypeConstraints _ y -> typeFuncArity y
   TypePoly _ (TypeFunc x _) -> typeArity x
   _ -> 0
 
@@ -233,7 +233,7 @@ convert annAst@(Ann ast (tp, ctx)) = localPut ctx $ go ast where
   go = \case
      IdentF ident -> identAddInstancesArgs ident tp
      UniqObjectF x -> return $ A.UniqObject x
-     FunctionF {} -> convertFunction ast (Just outtp) where (TypeFunc _ outtp) = tp
+     FunctionF {} -> convertFunction ast (Just outtp) where TypeFunc _ outtp = tp
      CasesF expr -> cases expr Nothing -- TODO add out type
      LitF value -> checkExprTypeChange (inferLit value) tp (convertLit value)
      RecordLabelF name expr -> (A.Object . (:[])) <$> convertRecordLabel ast
