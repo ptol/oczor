@@ -241,8 +241,7 @@ includeIdent ident ctx = fromMaybe (typeError $ UnboundVariable (moduleNameToIde
 getTypeDecl :: String -> InferContext -> Infer TypeExpr
 getTypeDecl name context = fromMaybe (typeError $ UnboundType name) $ do
   (tp, isFfi) <- context & lookupType name
-  if isFfi then return $ return (TypeIdent name)
-  else return $ return tp
+  return . return $ if isFfi then TypeIdent name else tp
 
 -- addTypeDeclCheck context name tp | traceArgs ["addTypeDeclCheck", show name, show tp] = undefined
 addTypeDeclCheck context name tp = do

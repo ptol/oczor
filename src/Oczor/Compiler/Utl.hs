@@ -37,7 +37,7 @@ inferAllTxtWith context fileName x = do
 
 compileJsPartTxt x = Js.codeGen . uncurry convert2 <$> inferAllTxt x
 
-inferTxt2 x = either (putStrLn . pack . show) (putStrLn . pack . prettyShow) $ inferTxt x
+inferTxt2 x = putStrLn . pack . either show prettyShow $ inferTxt x
 
 inferType :: Expr -> Either Error TypeExpr
 inferType y = attrType . snd <$> inferAllExpr baseTypeContext y
@@ -46,7 +46,7 @@ inferTxt :: String -> Either Error TypeExpr
 inferTxt = Parser.parseExpr >=> fmap normalizeType . inferType
 
 inferAstTxt2 :: String -> Either Error InferExpr
-inferAstTxt2 x = Parser.parseExpr x >>= (\y -> snd <$> inferAllExpr emptyContext y)
+inferAstTxt2 x = Parser.parseExpr x >>= fmap snd . inferAllExpr emptyContext
   
 inferContext :: InferContext -> ModuleName -> String -> Either Error InferContext
 inferContext context fileName x = fst <$> inferAllTxtWith context fileName x

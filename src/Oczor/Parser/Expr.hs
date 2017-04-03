@@ -20,7 +20,7 @@ litChar :: Parser Expr
 litChar = Lit . LitChar <$> L.litChar
 
 litBool :: Parser Expr
-litBool = Lit . LitBool <$> try ((L.rword "true" *> return True) <|> (L.rword "false" *> return False))
+litBool = Lit . LitBool <$> try (L.rword "true" *> return True <|> L.rword "false" *> return False)
 
 litStr :: Parser Expr
 litStr = Lit . LitString <$> L.litStr
@@ -66,7 +66,7 @@ exprLabel :: Parser Expr
 exprLabel = exprWith exprItem
 
 expr :: Parser Expr
-expr = md $ exprWith $ recordCommaWith exprItem
+expr = md . exprWith $ recordCommaWith exprItem
 
 guardArgItem = md $ L.parens (try call <|> anonFunc <|> exprRecord) <|> labelWith expr <|> exprItemCommon
 guardArg :: Parser Expr
@@ -89,7 +89,7 @@ labelType :: Parser (Maybe TypeExpr)
 labelType = optional $ L.rop ":" *> typeRecord
 
 labelWith :: Parser Expr -> Parser Expr
-labelWith body = RecordLabel <$> try (L.ident <* L.rop "=") <*> body
+labelWith body = liftA2 RecordLabel (try $ L.ident <* L.rop "=") body
 
 
 labelWithType :: Parser Expr
@@ -152,9 +152,9 @@ funcParam = recordIfSomeExceptRecord <$> some paramRecordComma
 
 anonFuncParamGuard :: Parser (Expr, Maybe Expr)
 anonFuncParamGuard = liftA2 (,) (backslash *> funcParam) funcGuard <* L.rop "=>" where
-  backslash = option () (void $ L.rop "\\")
+  backslash = option () . void $ L.rop "\\"
   funcGuard :: Parser (Maybe Expr)
-  funcGuard = optional (L.rop "|" *> guardArg)
+  funcGuard = optional $ L.rop "|" *> guardArg
 
 newFunction param guard body = Desugar.func $ Function param guard body
 
@@ -172,7 +172,9 @@ anonFuncSingleParam :: Parser Expr
 anonFuncSingleParam = anonFuncRaw >>= Desugar.funcSingleParam
 
 call :: Parser Expr
-call = Desugar.partialApply =<< liftA2 Call (ident <|> L.parens record) (try $ listToLetOrRecord <$> some argExpr)
+call = Desugar.partialApply =<< liftA2 Call
+  (ident <|> L.parens record)
+  (listToLetOrRecord <$> try (some argExpr))
 
 desugarCases [x] = (Cases . (: [])) <$> Desugar.func x
 desugarCases list =
@@ -186,6 +188,6 @@ cases = desugarCases =<< try (L.rword "case" *> (try (some $ L.parens anonFuncRa
 
 letExpr = liftA2 Let (try (letKw *> recordWith (labelWith exprLet) <* L.rword "in")) record
   where
-    letKw = option () (void $ L.rword "let")
+    letKw = option () . void $ L.rword "let"
     exprLet :: Parser Expr
     exprLet = exprWith (exprItemWith mzero)

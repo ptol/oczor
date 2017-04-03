@@ -154,11 +154,11 @@ paramInstancesName ident cls = sysPrefix ++ ident ++ cls
 
 -- getIdentInstancesArgs ident exprTp |traceArgs ["getIdentInstancesArgs", show ident, show exprTp] = undefined
 getIdentInstancesArgs ident exprTp = do
-  ctx <- ask
   identTp <- identType ident -- <&> trac (unwords ["ident tp", ident, show exprTp] ) 
   -- if identTp == exprTp then return []
   -- else instancesToArgs identTp exprTp
-  if ctx ^. T.params & member ident then return []
+  foo <- view T.params
+  if foo & member ident then return []
   else instancesToArgs identTp exprTp
   -- instancesToArgs identTp exprTp
 
@@ -307,7 +307,7 @@ convertCall (UnAnn (CallF expr args)) = do
 
 
 convertClass (ClassFnF name body) =
-  A.StmtList [A.Set (instancesObject name) (A.Object []),
+  A.StmtList [A.Set (instancesObject name) $ A.Object [],
               A.Label name codeBody]
   where
     clsArity = typeFuncArity body
@@ -402,7 +402,7 @@ funcParamCond = \case
   _ -> []
 
 casesFuncs newOutType (UnAnn f@(FunctionF params guard _)) = do
-  temp1 <- maybe (return []) (\x -> (:[]) <$> convert x) guard
+  temp1 <- maybe (return []) (fmap (:[]) . convert) guard
   let conds = funcParamCond params ++ temp1
   func@(A.Function aparams body) <- convertFunction f newOutType
   if onull conds then return (func, Nothing)

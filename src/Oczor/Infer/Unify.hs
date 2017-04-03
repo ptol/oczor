@@ -126,9 +126,7 @@ hasInstance x varConstrain = do
   let instances = getInstancesForConstrain context varConstrain
   r <- orNothing $ unify x (TypeUnion instances)
   maybe (typeErrorLift $ NoInstance x varConstrain) (return . return) r
-hasInstances x varConstraints  = do
-  x <- varConstraints &traverse (hasInstance x)
-  return $ composeSubstList <$> x
+hasInstances x varConstraints  = fmap composeSubstList <$> traverse (hasInstance x) varConstraints
 
 constraintListToSet :: String -> [String] -> ConstraintSet
 constraintListToSet var all = all & map (\x -> (TypeVar var,x))

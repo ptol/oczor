@@ -86,12 +86,11 @@ printError (tp, (row, col, file)) = do
 
 compileSrc name = do
   loadModule name
-  lng <- use lang
   st <- get
-  if st ^. combine then 
-    return $ st ^. modulesOrder & reverse <&> (\x -> st ^. modulesLangSrc & lookupEx x) & unlines
+  return $ if st ^. combine then
+    st ^. modulesOrder & reverse <&> (\x -> st ^. modulesLangSrc & lookupEx x) & unlines
   else
-    return $ st ^. modulesLangSrc & lookupEx name
+    st ^. modulesLangSrc & lookupEx name
 
 compileAndWrite :: ModuleName -> Compiler ()
 compileAndWrite name = do

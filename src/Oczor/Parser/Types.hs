@@ -16,15 +16,10 @@ typeDecl = do
   return $ Desugar.typeDecl name param body
 
 typeUnion :: Parser TypeExpr
-typeUnion = do
-  list <- try (L.sepBy2 typeUnionItem (L.rop "|"))
-  return $ TypeUnion list
-
+typeUnion = TypeUnion <$> try (L.sepBy2 typeUnionItem (L.rop "|"))
 
 typeConstrain :: Parser (String, [String])
-typeConstrain = do
-  list <- try (some L.ident)
-  return $ C.uncons list & unsafeHead
+typeConstrain = unsafeHead . C.uncons <$> try (some L.ident)
 
 typeConstraints :: Parser TypeExpr
 typeConstraints = do
@@ -67,20 +62,16 @@ typeArg =
   typeIdent
 
 typeIdent :: Parser TypeExpr
-typeIdent = do
-  var <- L.identType
-  return $ TypeIdent var
+typeIdent = TypeIdent <$> L.identType
 
 typeIdentWithConstains :: Parser TypeExpr
-typeIdentWithConstains = do
-  var <- L.identType
-  return $ TypeIdent var
+typeIdentWithConstains = TypeIdent <$> L.identType
 
 typeLabelWith :: Parser String -> Parser TypeExpr
-typeLabelWith x = do
-  lbl <- try (x <* L.rop ":" <* notFollowedBy (L.rop "="))
-  b <- typeFunc <|> typeUnionItem
-  return $ TypeLabel lbl b
+typeLabelWith x = liftA2 TypeLabel
+  (try (x <* L.rop ":" <* notFollowedBy (L.rop "=")))
+  (typeFunc <|> typeUnionItem)
+ 
 
 typeLabel :: Parser TypeExpr
 typeLabel = typeLabelWith L.ident
