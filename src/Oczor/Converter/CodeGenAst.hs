@@ -52,7 +52,6 @@ makeBaseFunctor ''Ast
 scopeToFunc (ScopeF x y) = case x of
   [] -> y
   _ -> CallF (Parens (Function [] (embed <$> x <> [ReturnF (embed y)]))) []
-  -- if onull x then y else CallF (Parens (Function [] (x ++ [ReturnF (embed y)] <&> embed))) []
   
 -- pattern Scope x <- Function _ x
 
