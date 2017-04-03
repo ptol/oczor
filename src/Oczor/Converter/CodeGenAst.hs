@@ -49,9 +49,8 @@ data Ast =
 
 makeBaseFunctor ''Ast
 
-scopeToFunc (ScopeF x y) = case x of
-  [] -> y
-  _ -> CallF (Parens (Function [] (embed <$> x <> [ReturnF (embed y)]))) []
+scopeToFunc (ScopeF [] y) = y
+scopeToFunc (ScopeF x y) = CallF (Parens (Function [] (embed <$> x <> [ReturnF (embed y)]))) []
   
 -- pattern Scope x <- Function _ x
 
