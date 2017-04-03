@@ -59,11 +59,8 @@ argExpr = md $ L.parens exprRecord <|> letExpr <|> labelWith record <|> exprItem
 
 exprWith :: Parser Expr -> Parser Expr
 exprWith item = do
-  s <- get
-  let table = (s ^. opTable) ++ defOperators
-  Ex.makeExprParser item table
-
-  
+  table <- use opTable
+  Ex.makeExprParser item $ table <> defOperators
 
 exprLabel :: Parser Expr
 exprLabel = exprWith exprItem

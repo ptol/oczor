@@ -49,7 +49,10 @@ data Ast =
 
 makeBaseFunctor ''Ast
 
-scopeToFunc (ScopeF x y) = if onull x then y else CallF (Parens (Function [] (x ++ [ReturnF (embed y)] <&> embed))) []
+scopeToFunc (ScopeF x y) = case x of
+  [] -> y
+  _ -> CallF (Parens (Function [] (embed <$> x <> [ReturnF (embed y)]))) []
+  -- if onull x then y else CallF (Parens (Function [] (x ++ [ReturnF (embed y)] <&> embed))) []
   
 -- pattern Scope x <- Function _ x
 
@@ -62,7 +65,7 @@ isFunction _ = False
 astToList (StmtList x) = x
 astToList x = [x]
 
-litString x = Lit $ LitString x
+litString = Lit . LitString
 
 setField obj label expr = Set (Field obj label) expr
 
