@@ -44,9 +44,7 @@ ocPathToPrePath :: FilePath -> Compiler FilePath
 ocPathToPrePath ocPath = Fp.replaceExtension ocPath <$> (use lang <&> ("pre." ++))
 
 filePathLangOut :: ModuleName -> Compiler FilePath
-filePathLangOut x = do
-  st <- get
-  return $ langOutputFilePath (st ^. outputDir) (st ^. lang) (st ^. combine) x
+filePathLangOut x = langOutputFilePath <$> use outputDir <*> use lang <*> use combine <*> pure x
 
 langOutputFilePath outputDir lang combine x = 
   Fp.combine outputDir $ combinePath x ++ bool ".module" "" combine ++ "." ++ lang

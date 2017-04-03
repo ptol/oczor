@@ -31,7 +31,7 @@ parseExpr :: String -> Either Error Expr
 parseExpr x = right fst $ parseAll parser x [] []
 
 parset :: String -> IO ()
-parset x = either (putStrLn . pack . show) (putStrLn . pack . pshow . removeMD . fst) $ parseAll parser x [] []
+parset x = (putStrLn . pack) . either show (pshow . removeMD . fst) $ parseAll parser x [] []
 
 parseType :: String -> Either Error Expr
 parseType = parsew (ExprType <$> (typeRecord <* eof))
