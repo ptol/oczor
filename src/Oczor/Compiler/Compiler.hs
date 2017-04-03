@@ -29,9 +29,8 @@ langs = [
 preFile :: ModuleName -> String -> Compiler String
 preFile name langSrc = do
   comb <- use combine
-  if comb then do
-    x <- readPreMay name
-    return $ maybe langSrc (\pre -> joinLines [pre,langSrc]) x
+  if comb then
+    maybe langSrc (joinLines . (: [langSrc])) <$> readPreMay name
   else return langSrc
 
 compileModule :: ModuleName -> OcWithFfi -> Compiler ()
@@ -65,7 +64,7 @@ loadModule :: ModuleName -> Compiler ()
 loadModule n = do
   name <- fixModuleNameIfDir n
   compModules <- use compilingModules
-  if elem name compModules then filePathOc name >>= (\x -> throwError (CircularDependency compModules, (1,1,x))) 
+  if name `elem` compModules then filePathOc name >>= (\x -> throwError (CircularDependency compModules, (1,1,x))) 
   else do
     compilingModules %= (name :)
     mdl <- use loadModules <&> lookup name
