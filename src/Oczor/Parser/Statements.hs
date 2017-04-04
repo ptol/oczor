@@ -19,7 +19,7 @@ import Oczor.Parser.Expr
 
 stmts = Stmt <$> (stmtOperator <|> stmtOpen) <|> stmtInclude  <|> stmtImport
 
-stmt = md $ stmtSet <|> stmts <|> typeDecl <|> ffiType <|> ffi <|> classFn <|> instanceFn <|> labelWithType <|> typeDef
+stmt = md $ choice [stmtSet, stmts, typeDecl, ffiType, ffi, classFn, instanceFn, labelWithType, typeDef]
 
 moduleName = sepBy1 L.ident (string ".")
 
