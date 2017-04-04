@@ -1,8 +1,13 @@
+{-# LANGUAGE StandaloneDeriving #-}
+
 module Oczor.CodeGen.Utl (module Oczor.CodeGen.Utl, module X, (<&>), cata, (&), bracesNest) where
+  
 import Oczor.Converter.CodeGenAst as X
 import ClassyPrelude as X hiding ((<>), empty, (<$>), (</>), bool, group)
 import Text.PrettyPrint.Leijen as X
 import Oczor.Utl 
+
+deriving instance Show (AstF Doc)
 
 createIdent :: Set String -> String -> Doc
 createIdent keywords x = text $ if member x keywords then "_" ++ x else x
