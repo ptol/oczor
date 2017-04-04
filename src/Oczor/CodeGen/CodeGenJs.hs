@@ -43,6 +43,4 @@ stmt x = hsep x <> text ";"
 
 field ast name = ast <> dot <> ident name
 
-bracesNest l = if onull l then braces empty else nest 2 (lbrace <$> vcat l) <$> rbrace
-
 

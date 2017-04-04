@@ -42,6 +42,4 @@ field ast name = ast <> brackets (text ":" <> ident name)
 
 nested l = nest 2 (empty <$> vcat l)
 
-bracesNest l = if onull l then braces empty else nest 2 (lbrace <$> vcat l) <$> rbrace
-
 end = text "end"

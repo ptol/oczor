@@ -11,12 +11,12 @@ import qualified Control.Monad.Writer.Strict as W
 import Data.Functor.Foldable
 
 paramToBody newParam ast = case removeMD ast of
-  Lit _ -> (Just $ Call (Ident "eq") (Record [Ident newParam, ast]), Nothing)
-  Ident x -> (Just $ Call (Ident "eq") (Record [Ident newParam, ast]), Nothing)
+  Lit _ -> (Just . Call (Ident "eq") $ Record [Ident newParam, ast], Nothing)
+  Ident x -> (Just . Call (Ident "eq") $ Record [Ident newParam, ast], Nothing)
   WildCard -> (Nothing, Nothing)
   RecordLabel x lit@(Lit _) ->
-    (Just $ Call (Ident "eq") (Record [LabelAccessCall x (Ident newParam), lit]), Nothing)
-  RecordLabel x (ParamIdent param) -> (Nothing, Just$ RecordLabel param (LabelAccessCall x (Ident newParam)))
+    (Just . Call (Ident "eq") $ Record [LabelAccessCall x $ Ident newParam, lit], Nothing)
+  RecordLabel x (ParamIdent param) -> (Nothing, Just . RecordLabel param $ LabelAccessCall x (Ident newParam))
   RecordLabel x (Ident param) -> (Nothing, Just$ RecordLabel param (LabelAccessCall x (Ident newParam)))
   x -> error $ unwords ["paramToBody", show x]
 
@@ -61,7 +61,7 @@ addToBody [] x = x
 addToBody x (Let y r) = Let (addToExpr x y) r
 addToBody x y = Let (recordIfSome x) y
 
-addToGuard x guard = go $ x ++ maybeToList guard
+addToGuard x = go . (x ++) . maybeToList
   where
     go [] = Nothing
     go [x] = Just x

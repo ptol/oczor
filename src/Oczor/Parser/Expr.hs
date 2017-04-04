@@ -89,7 +89,7 @@ labelType :: Parser (Maybe TypeExpr)
 labelType = optional $ L.rop ":" *> typeRecord
 
 labelWith :: Parser Expr -> Parser Expr
-labelWith body = liftA2 RecordLabel (try $ L.ident <* L.rop "=") body
+labelWith = liftA2 RecordLabel (try $ L.ident <* L.rop "=")
 
 
 labelWithType :: Parser Expr

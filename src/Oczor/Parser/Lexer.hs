@@ -80,7 +80,7 @@ identWith x = identWith2 x identChar rws
 identWith2 :: Parser Char -> Parser Char -> [String] -> Parser String
 identWith2 x y z = (lexeme . try) (p >>= check)
   where
-    p       = (:) <$> x <*> many y
+    p       = liftA2 (:) x (many y)
     check x = if x `elem` z
                 then fail $ "keyword " ++ show x ++ " cannot be an identifier"
                 else return x

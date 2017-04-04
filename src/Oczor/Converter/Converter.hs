@@ -56,7 +56,7 @@ findInstances context l1 l2 = go mempty l1 l2 & ordNub & map (\(_, x, y) -> (x, 
   go :: Map String [String] -> TypeExpr -> TypeExpr -> [(String, String, TypeExpr)]
   -- go var x y | traceArgs ["findInstances go", show var, show x, show y] = undefined
   go var x (TypeConstraints _ y) = go var x y
-  go var (TypeVar x) tp = (var &lookup x) & maybe [] (\clist -> clist &map (\cls -> (x, cls, tp)))
+  go var (TypeVar x) tp = (var &lookup x) & maybe [] (map (\cls -> (x, cls, tp)))
   go var (TypeRecord l1) (TypeRecord l2) = goList var l1 l2
   go var (TypeRecord [x]) y = go var x y
   go var (TypeRow x l1) (TypeRow y l2) = goList var (l1 ++ [x]) (l2 ++ [y])
@@ -86,7 +86,7 @@ addInstancesArgs arity expr contextTp exprTp =
   if contextTp == exprTp then return expr
   else do
     args <- instancesToArgs contextTp exprTp -- <&> trac "instances"
-    if null args then return expr else return $ curryApply args arity expr
+    return $ if null args then expr else curryApply args arity expr
 
 addInstancesParams :: InferExpr -> Converter A.Ast
 -- addInstancesParams context expr | traceArgs ["addInstacesParams", show expr] = undefined
@@ -239,10 +239,7 @@ convert annAst@(Ann ast (tp, ctx)) = localPut ctx $ go ast where
      RecordLabelF name expr -> (A.Object . (:[])) <$> convertRecordLabel ast
      CallF {} -> convertCall annAst
      UpdateF {} -> convertUpdate ast
-     SetStmtF l r -> do
-       lAst <- convert l
-       rAst <- convert r
-       return $ A.Set lAst rAst
+     SetStmtF l r -> (liftA2 A.Set `on` convert) l r
      IfF b t f -> do
        bAst <- convert b
        tAst <- convert t
@@ -288,7 +285,7 @@ convertFunction (FunctionF params guard body) newOutType =
 
 -- convertCall (Ann (CallF (UnAnn (LabelAccessF label)) (UnAnn (IdentF ident))) (exprTp,ctx)) | traceArgs ["convertCall", label, show exprTp] = undefined
 convertCall (Ann (CallF (UnAnn (LabelAccessF label)) (UnAnn (IdentF ident))) (exprTp,ctx)) = do
-  expr <- A.Field <$> newIdent ident <*> return label
+  expr <- liftA2 A.Field (newIdent ident) (pure label)
   let arity = typeFuncArity exprTp
   contextTp <- identType ident <&> getLabelType label
   maybe (return expr ) (\contextTp -> addInstancesArgs arity expr contextTp exprTp) contextTp
@@ -318,7 +315,8 @@ convertClass (ClassFnF name body) =
       else A.Function ["x"] [A.Return (A.Ident "x")]
 
 -- newScope (x,y) = if onull x then y else (A.Call (A.Parens (A.Function [] $ x ++ [A.Return y])) [])
-newScope (x,y) = if onull x then y else A.Scope x y
+newScope ([], y) = y
+newScope (x, y) = A.Scope x y
 
 functionBody expr@(Ann (RecordF l) (tp,ctx)) newOutType = localPut ctx $ do
   (body, ret) <- convertAstList l
@@ -346,7 +344,7 @@ convertAstList list = do
   let funcLabels = parts & filter (snd >>> A.isFunction) & map fst & catMaybes & map fst
   let labelsWithIdents = asts >>= A.containsIdents labels
   let labelsInScope = if notNull labelsWithIdents || hasStmts then labelsWithIdents ++ funcLabels else []
-  let returnObject = parts & filter (fst >>> isJust) & map (\(Just (x, _), y) -> if elem x labelsInScope then (x, A.Ident x) else (x, y)) & A.Object
+  let returnObject = parts & filter (fst >>> isJust) & map (\(Just (x, _), y) -> if x `elem` labelsInScope then (x, A.Ident x) else (x, y)) & A.Object
   return (parts & filter (fst >>> maybe True (fst >>> (`elem` labelsInScope))) & map partToAst, returnObject)
 
 type RecordParts = (Maybe (String, T.IsFfi), A.Ast)

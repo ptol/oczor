@@ -40,8 +40,6 @@ field ast name = ast <> dot <> ident name
 
 nested l = nest 2 (empty <$> vcat l)
 
-bracesNest l = if onull l then braces empty else nest 2 (lbrace <$> vcat l) <$> rbrace
-
 end = text "end"
 
 func params body = hcat [text "function", parens $ cat $ punctuate comma (params <&> text) ] <> nested body <$> end

@@ -30,9 +30,7 @@ unify arg param = do
     (_,_) | Just argIdent <- getTypeIdent arg, Just paramIdent <- getTypeIdent param,
       argIdent == paramIdent && isFfiTypeIdent argIdent context && isFfiTypeIdent paramIdent context -> return emptySubst
 
-    (TypeUnion argList, TypeUnion _) -> do
-      ys <- traverse (\x -> unify x param) argList
-      return $ ys & composeSubstList
+    (TypeUnion argList, TypeUnion _) -> composeSubstList <$> traverse (`unify` param) argList
 
     (arg, TypeUnion paramList) -> do
       ys <- catMaybes <$> mapM (orNothing . unify arg) paramList
@@ -219,7 +217,7 @@ getType name = do
     if isFfi then return $ typeError (TextError $ unwords ["type", show name, "is ffi"])
     else if state ^. openTypes & member name then return $ typeError (TextError $ unwords ["type synonym", show name, "is already used"])
     else
-        return ((,) <$> updateContext state tp <*> return tp)
+        return (liftA2(,) (updateContext state tp) (return tp))
     where
       updateContext :: UnifyState -> TypeExpr -> Infer UnifyState
       updateContext state x =
