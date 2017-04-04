@@ -44,22 +44,22 @@ typeApplyParam = do
   args <- some typeArg
   return $ TypeApply name args
 
-typeUnionItem = 
-  L.parens typeRecord <|>
-  typeConstraints <|>
-  try typeApplyParam <|>
-  typeLabel <|>
-  typeVar <|>
-  typeIdent
+typeUnionItem = choice
+  [L.parens typeRecord,
+  typeConstraints,
+  try typeApplyParam,
+  typeLabel,
+  typeVar,
+  typeIdent]
 
 typeItem = typeUnion <|> typeUnionItem
 
-typeArg =
-  L.parens typeRecord <|>
-  typeConstraints <|>
-  typeLabel <|>
-  typeVar <|>
-  typeIdent
+typeArg = choice
+  [L.parens typeRecord,
+  typeConstraints,
+  typeLabel,
+  typeVar,
+  typeIdent]
 
 typeIdent :: Parser TypeExpr
 typeIdent = TypeIdent <$> L.identType
