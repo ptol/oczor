@@ -49,7 +49,7 @@ pshow = PP.ppShow
 
 unionMaps = unions . reverse
 
-unsafeUnconsLast l = (unsafeInit l, unsafeLast l)
+unsafeUnconsLast = unsafeInit &&& unsafeLast
 
 lookupEx key = headEx . lookup key
 

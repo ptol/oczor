@@ -30,7 +30,7 @@ preFile :: ModuleName -> String -> Compiler String
 preFile name langSrc = do
   comb <- use combine
   if comb then
-    maybe langSrc (joinLines . (: [langSrc])) <$> readPreMay name
+    maybe langSrc (\l -> joinLines [l, langSrc]) <$> readPreMay name
   else return langSrc
 
 compileModule :: ModuleName -> OcWithFfi -> Compiler ()

@@ -1,4 +1,4 @@
-module Oczor.CodeGen.Utl (module Oczor.CodeGen.Utl, module X, (<&>), cata, (&)) where
+module Oczor.CodeGen.Utl (module Oczor.CodeGen.Utl, module X, (<&>), cata, (&), bracesNest) where
 import Oczor.Converter.CodeGenAst as X
 import ClassyPrelude as X hiding ((<>), empty, (<$>), (</>), bool, group)
 import Text.PrettyPrint.Leijen as X
@@ -16,3 +16,6 @@ createLit charFunc null (t,f)  = \case
   LitNull -> text null
 
 jsArray = brackets . hcat . punctuate comma
+
+bracesNest [] = braces empty
+bracesNest l = nest 2 (lbrace <$> vcat l) <$> rbrace

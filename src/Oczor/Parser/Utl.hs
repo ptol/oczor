@@ -15,7 +15,7 @@ getAstPosition = toAstPosition <$> getPosition
 
 getPosFromError x = errorPos x & headEx & toAstPosition
 
-md x = newMD <$> getAstPosition <*> x
+md = liftA2 newMD getAstPosition
 
 opGroupsToTable :: OperatorGroups -> [[Operator Parser Expr]]
 opGroupsToTable ops = ops & map (map infoToOperator)

@@ -64,7 +64,8 @@ keywords = setFromList ["not", "log", "eq"]
 identKw = createIdent keywords
 ident name = let newName = convertName name in identKw newName
 
-parensNest l = if onull l then parens empty else nest 2 (lparen <$> vcat l) <$> rparen
+parensNest [] = parens empty
+parensNest l = nest 2 (lparen <$> vcat l) <$> rparen
 
 symbol s = text "'" <> ident s
 

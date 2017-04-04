@@ -29,7 +29,7 @@ stmtInclude = keywordList "include" includeBody where
 
 stmtImport = keywordList "import" importBody where
   importBody :: Parser Expr
-  importBody = Stmt <$> (StmtImport <$> moduleName <*> asName)
+  importBody = Stmt <$> liftA2 StmtImport moduleName asName
   asName = optional (try $ L.rword "as" *> L.ident)
 
 stmtOperator :: Parser Stmts
@@ -55,7 +55,7 @@ typeDef :: Parser Expr
 typeDef = do
   typeLbl <- typeLabel
   next <- optional (L.scn *> (try func <|> label))
-  maybe (return $ ExprType typeLbl) (flip applyWithType typeLbl) next
+  maybe (return $ ExprType typeLbl) (`applyWithType` typeLbl) next
 
 -- class
 
@@ -82,7 +82,7 @@ instanceFn = keywordList "instance" instanceBody where
     return $ InstanceFn tp name fn
 
 ffi :: Parser Expr
-ffi = Ffi <$> (try ( L.rword "ffi") *> L.ident <* L.rop ":") <*> typeRecord
+ffi = liftA2 Ffi (try ( L.rword "ffi") *> L.ident <* L.rop ":") typeRecord
 
 ffiType :: Parser Expr
 ffiType = do
