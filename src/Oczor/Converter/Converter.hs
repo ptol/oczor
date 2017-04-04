@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 module Oczor.Converter.Converter where
 import Oczor.Utl
@@ -89,12 +90,11 @@ addInstancesArgs arity expr contextTp exprTp =
     args <- instancesToArgs contextTp exprTp -- <&> trac "instances"
     return $ if null args then expr else curryApply args arity expr
 
-addInstancesParams :: InferExpr -> Converter A.Ast
+addInstancesParams :: InferExpr -> A.Ast -> Converter A.Ast
 -- addInstancesParams context expr | traceArgs ["addInstacesParams", show expr] = undefined
-addInstancesParams expr = do
+addInstancesParams expr targetExpr = do
   let clist =  collectAllConstraints expr -- & trac "constraints"
   let clistParam = clist & map (\(TypeVar p, cl) -> paramInstancesName p cl)
-  targetExpr <- convert expr
   return $ if onull clistParam then targetExpr else
     case targetExpr of
       A.Function x y -> A.Function (clistParam ++ x) y
@@ -227,59 +227,64 @@ convertModule ctx expr moduleName ffiCode =
 -- convert2 ctx expr | traceArgs ["convert context", pshow $ ctx ^. openModules] = undefined
 convert2 ctx expr = runReader (convert expr) ctx
 
+convertPhi :: ExprF A.Ast -> Converter A.Ast
+convertPhi = \case
+  UniqObjectF x -> return $ A.UniqObject x
+  ArrayF x -> return $ A.Array x
+  SetStmtF l r -> return $ A.Set l r
+  ExprTypeF {} -> return A.None
+  TypeDeclF {} -> return A.None
+  FfiTypeF {} -> return A.None
+  StmtF {} -> return A.None
+  IfF b t f -> return $ A.ConditionOperator b t f
+  x -> error $ unwords ["convert", show x]
+
 convert :: InferExpr -> Converter A.Ast
 convert annAst@(Ann ast (tp, ctx)) = localPut ctx $ go ast where
   -- go x | traceArgs $ ["convert", show x]  = undefined
+  go :: ExprF InferExpr -> Converter A.Ast
   go = \case
-     IdentF ident -> identAddInstancesArgs ident tp
-     UniqObjectF x -> return $ A.UniqObject x
-     FunctionF {} -> convertFunction ast (Just outtp) where TypeFunc _ outtp = tp
-     CasesF expr -> cases expr Nothing -- TODO add out type
-     LitF value -> checkExprTypeChange (inferLit value) tp (convertLit value)
-     RecordLabelF name expr -> (A.Object . (:[])) <$> convertRecordLabel ast
-     CallF {} -> convertCall annAst
-     UpdateF {} -> convertUpdate ast
-     SetStmtF l r -> (liftA2 A.Set `on` convert) l r
-     IfF b t f -> do
-       bAst <- convert b
-       tAst <- convert t
-       fAst <- convert f
-       return $ A.ConditionOperator bAst tAst fAst
-     RecordF list -> newScope <$> convertAstList list
-     ArrayF x -> A.Array <$> (x & traverse convert)
-     ClassFnF name _ -> return $ convertClass ast
-     LetF e1 e2 -> do
-       e1Ast <- evalStateT (convertRecordToVars e1) 1
-       e2Ast <- convert e2
-       return $ newScope (partsToAsts e1Ast, e2Ast)
-     InstanceFnF tpName name body ->
-      A.setField (instancesObject name) (instanceTypeName tpName) <$> addInstancesParams body
-     ExprTypeF {} -> return A.None
-     TypeDeclF {} -> return A.None
-     FfiF {}  -> return $ A.Object [convertFfiLabel ast]
-     FfiTypeF {} -> return A.None
-     StmtF {} -> return A.None
-     x -> error $ unwords ["convert", show x]
+    IdentF ident -> identAddInstancesArgs ident tp
+    UpdateF expr labels -> do
+      temp <- convert expr
+      temp2 <- traverse go labels
+      convertUpdate ast temp temp2
+        where go (UnAnn (RecordLabelF label value)) = A.setField (A.Ident "_clone") label <$> convert value
+    FunctionF params guard body -> do
+      y <- convert body
+      convertFunction ast (Just outtp) y where TypeFunc _ outtp = tp
+    CasesF expr -> cases expr Nothing -- TODO add out type
+    LitF value -> checkExprTypeChange (inferLit value) tp (convertLit value)
+    RecordLabelF name expr -> (A.Object . (:[])) <$> convertRecordLabel ast
+    CallF {} -> convertCall annAst
+    RecordF list -> newScope <$> convertAstList list
+    ClassFnF name _ -> return $ convertClass ast
+    LetF e1 e2 -> do
+      e1Ast <- evalStateT (convertRecordToVars e1) 1
+      e2Ast <- convert e2
+      return $ newScope (partsToAsts e1Ast, e2Ast)
+    InstanceFnF tpName name body ->
+      A.setField (instancesObject name) (instanceTypeName tpName) <$> (addInstancesParams body =<< convert body)
+    FfiF {}  -> return $ A.Object [convertFfiLabel ast]
+    _ -> convertPhi =<< traverse convert ast
 
-convertUpdate (UpdateF expr labels) = do
-  temp <- convert expr
+convertUpdate :: ExprF InferExpr -> A.Ast -> [A.Ast] -> Converter A.Ast
+convertUpdate (UpdateF expr labels) temp temp2 = do
   let obj = A.Ident "_obj"
   let objAndClone = [A.Var "_obj" temp, A.Var "_clone" (cloneObjectCall obj)]
-  temp2 <- labels & traverse go
   return $ newScope (objAndClone ++ temp2, A.Ident "_clone")
-  where
-    go (UnAnn (RecordLabelF label value)) = A.setField (A.Ident "_clone") label <$> convert value
 
 -- convertRecordLabel context x | traceArgs ["convertRecordLabel", show x] = undefined
-convertRecordLabel (RecordLabelF name expr) = do
+convertRecordLabel ast@(RecordLabelF name expr) = do
+  target <- convert expr
   context <- ask
   -- UNUSED let exprType = (\(S.Forall _ x) -> x) <$> T.getIdentType context name
-  (name,) <$> addInstancesParams expr
+  (name, ) <$> addInstancesParams expr target
 
 convertFfiLabel (FfiF name expr) = (name, A.Ident name)
 
-convertFunction (FunctionF params guard body) newOutType =
-  A.Function (convertFuncParams params) <$> functionBody body newOutType
+convertFunction (FunctionF params guard body) newOutType y =
+  A.Function (convertFuncParams params) <$> functionBody body newOutType y
 
 -- convertCallLabel CallF (UnAnn (LabelAccessF label)) expr -> convert expr <&> flip A.Field label
 
@@ -318,19 +323,19 @@ convertClass (ClassFnF name body) =
 newScope ([], y) = y
 newScope (x, y) = A.Scope x y
 
-functionBody expr@(Ann (RecordF l) (tp,ctx)) newOutType = localPut ctx $ do
+functionBody expr@(Ann (RecordF l) (tp,ctx)) newOutType _ = localPut ctx $ do
   (body, ret) <- convertAstList l
   -- UNUSED let r = convertExprWithNewTypeMaybe tp newOutType ret
   return $ body ++ [A.Return ret]
-functionBody expr@(Ann _ (tp,ctx)) newOutType = localPut ctx $ do
-  y <- convert expr
+functionBody expr@(Ann _ (tp,ctx)) newOutType y = localPut ctx $
   case y of
     (A.Scope body ret) -> return $ body ++ [A.Return $ convertExprWithNewTypeMaybe tp newOutType ret]
     _ -> return [A.Return $ convertExprWithNewTypeMaybe tp newOutType y]
 
 convertFuncParams :: InferExpr -> [String]
-convertFuncParams (UnAnn (RecordF list)) = list >>= convertFuncParams
-convertFuncParams (UnAnn (ParamIdentF x)) = [x]
+convertFuncParams = cataM $ \case
+  AnnF (RecordF list) _ -> list
+  AnnF (ParamIdentF x) _ -> [x]
 
 convertFuncArgs = \case
   UnAnn (RecordF list) ->  list &traverse convert
@@ -350,7 +355,7 @@ convertAstList list = do
 type RecordParts = (Maybe (String, T.IsFfi), A.Ast)
 
 partToAst (x,y) = maybe y (\(x,isFfi) -> if isFfi then A.None else A.Var x y) x
-partsToAsts parts = parts & map partToAst
+partsToAsts = map partToAst
 
 astToPart = \case
   A.Label x y -> (Just (x,False), y)
@@ -399,10 +404,11 @@ funcParamCond = \case
   UnAnn (RecordF list) -> list >>= funcParamCond
   _ -> []
 
-casesFuncs newOutType (UnAnn f@(FunctionF params guard _)) = do
+casesFuncs newOutType (UnAnn f@(FunctionF params guard body)) = do
   temp1 <- maybe (return []) (fmap (:[]) . convert) guard
+  y <- convert body
   let conds = funcParamCond params ++ temp1
-  func@(A.Function aparams body) <- convertFunction f newOutType
+  func@(A.Function aparams body) <- convertFunction f newOutType y
   return $ case conds of
     [] -> (func, Nothing)
     _ -> (A.Function aparams body, Just $ A.Function aparams [A.Return $ newBoolAnds conds])

@@ -1,7 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
-module Oczor.Utl (module Oczor.Utl, module Control.Arrow, module Control.Lens,  Fix(..), refix, cata, embed, project, para, (&)) where
+module Oczor.Utl (module Oczor.Utl, module Control.Arrow, module Control.Lens,  Fix(..), ana, refix, cata, embed, project, para, (&)) where
 import ClassyPrelude as C
 import Control.Arrow
 import Data.Function ((&), on)
