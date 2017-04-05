@@ -76,9 +76,7 @@ runCompiler :: CompState -> Compiler a -> IO (Either Error a)
 runCompiler st m = runExceptT $ evalStateT m st
 
 runCompilerPrint :: CompState -> Compiler a -> IO ()
-runCompilerPrint st m = do
-  r <- runCompiler st m
-  either printError (const $ putStrLn $ pack "compilation is completed") r
+runCompilerPrint st m = runCompiler st m >>= either printError (const $ putStrLn $ pack "compilation is completed")
 
 printError (tp, (row, col, file)) = do
   let text = file ++ ":" ++ show row ++ ":" ++ show col
