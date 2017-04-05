@@ -19,14 +19,14 @@ a = p >> i >> t >> c >> cc >> g
 
 af = a >> f
 
-mp = ("parser", \x -> (show +++ show) (removeMD <$> parseExpr x))
-mi = ("infer", either (Right . show) Right . map show . fmap lastType . inferTxt)
-my = ("pretty", either (Right . show) Right . map prettyShow . inferTxt)
-mt = ("inferast", \x -> (show +++ show) $ (removeContext . snd) <$> inferAllTxt x)
+mp = ("parser", (show +++ show) . fmap removeMD . parseExpr)
+mi = ("infer", Right . either show id . map show . fmap lastType . inferTxt)
+my = ("pretty", Right . either show id . map prettyShow . inferTxt)
+mt = ("inferast", (show +++ show) . fmap (removeContext . snd) . inferAllTxt)
 mc = ("converter", (show +++ show) . convertTxt2)
-mcc = ("converter-class", either (Right . show) (Right . show) . compileJsPartTxt . pack)
+mcc = ("converter-class", Right . either show show . compileJsPartTxt . pack)
 mr = ("rewriter", (show +++ (pshow . Rewriter.rewrite "js")) . convertTxt2)
-mg = ("codegen", either (Right . show) (Right . show) . compileJsPartTxt . pack)
+mg = ("codegen", Right . either show show . compileJsPartTxt . pack)
 
 p = checkDir mp
 refreshp = refreshFile mp
@@ -60,15 +60,14 @@ g = checkDir mg
 refreshg = refreshFile mg
 refreshgDir = refreshDir mg
 
-convertTxt2 x = do
-  (context, tast) <- inferAllTxt x
-  return $ convert2 context tast
+convertTxt2 = inferAllTxt >=> return . uncurry convert2
 
-convertTxt x = either (putStrLn . pack . show) (putStrLn . pack . pshow) (convertTxt2 x)
-inferAstTxt x = either (putStrLn . pack . show) (putStrLn . pack . pshow) (inferAstTxt2 x)
+convertTxt = putStrLn . pack . either show  pshow . convertTxt2
+inferAstTxt = putStrLn . pack . either show pshow . inferAstTxt2
 
 codegenTxt2 x = do
   (context, tast) <- inferAllTxt x
   return $ codeGen $ convert2 context tast
 
-codegenTxt x = either (putStrLn . pack . show) (putStrLn . pack . show) (codegenTxt2 x)
+codegenTxt, convertTxt, inferAstTxt :: String -> IO ()
+codegenTxt = putStrLn . pack . either show show . codegenTxt2
