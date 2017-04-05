@@ -1,4 +1,4 @@
-module Oczor.CodeGen.Utl (module Oczor.CodeGen.Utl, module X, (<&>), cata, (&), bracesNest) where
+module Oczor.CodeGen.Utl (module Oczor.CodeGen.Utl, module X, (<&>), cata, (&)) where
 import Oczor.Converter.CodeGenAst as X
 import ClassyPrelude as X hiding ((<>), empty, (<$>), (</>), bool, group)
 import Text.PrettyPrint.Leijen as X
