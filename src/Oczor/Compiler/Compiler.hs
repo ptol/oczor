@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 module Oczor.Compiler.Compiler(module Oczor.Compiler.Compiler, module X) where
 
 import ClassyPrelude as C

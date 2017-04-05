@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 module Oczor.Compiler.Utl where
 
 import Oczor.Infer.InferContext

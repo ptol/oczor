@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 module Oczor.Converter.Converter where
 import Oczor.Utl
 import Control.Monad.State
