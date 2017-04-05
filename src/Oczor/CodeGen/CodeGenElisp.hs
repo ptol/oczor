@@ -4,6 +4,7 @@ import qualified Prelude as P
 import Data.List.Split
 import Data.Functor.Foldable
 
+phi :: AstF Doc -> Doc
 phi = \case
   NoneF -> empty
   UniqObjectF name -> parens (text "lambda")
@@ -37,26 +38,19 @@ codeGen = code where
     Scope list y -> scope list y
     x -> phi $ fmap codeGen $ project x
 
-scope list r  = bodyCode
+scope list r  = bodyCode vars ffiVars
      where
-       body = list ++ [Return r]
-       (newBody, ffiVars) = fromMaybe (body, "") $ do
-         h <- headMay body
-         case h of {Code x -> Just (P.tail body, x); _ -> Nothing}
-       vars = newBody <&> getVarName & catMaybes <&> (\x -> p [ident x, nil])
-       bodyCode =
-         if onull vars && ffiVars == "" then progn (newBody <&> codeGen)
-         else cn "let*" $ parens (vcat (text ffiVars : vars)) : (newBody <&> codeGen)
+       (newBody, ffiVars) = case list ++ [Return r] of (Code x : t) -> (t, x); body -> (body, "")
+       vars = fmap (\x -> p [ident x, nil]) $ mapMaybe getVarName newBody
+       bodyCode [] "" = progn $ fmap codeGen newBody
+       bodyCode vars ffiVars = cn "let*" $ parens (vcat $ text ffiVars : vars) : fmap codeGen newBody
 
-func params body = p [text "lambda", p (params <&> ident), bodyCode ]
+func params body = p [text "lambda", p (fmap ident params), bodyCode vars ffiVars]
      where
-       (newBody, ffiVars) = fromMaybe (body, "") $ do
-         h <- headMay body
-         case h of {Code x -> Just (P.tail body, x); _ -> Nothing}
-       vars = newBody <&> getVarName & catMaybes <&> (\x -> p [ident x, nil])
-       bodyCode =
-         if onull vars && ffiVars == "" then progn (newBody <&> codeGen)
-         else c "let*" [parensNest (text ffiVars : vars ), progn (newBody <&> codeGen)]
+       (newBody, ffiVars) = case body of (Code x : t) -> (t, x); _ -> (body, "")
+       vars = fmap (\x -> p [ident x, nil]) (mapMaybe getVarName newBody)
+       bodyCode [] "" = progn (fmap codeGen newBody)
+       bodyCode vars ffiVars = c "let*" [parensNest $ text ffiVars : vars, progn $ fmap codeGen newBody]
 
 nil = text "nil"
 
