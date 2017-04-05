@@ -31,13 +31,12 @@ parseExpr :: String -> Either Error Expr
 parseExpr x = right fst $ parseAll parser x [] []
 
 parset :: String -> IO ()
-parset x = (putStrLn . pack) . either show (pshow . removeMD . fst) $ parseAll parser x [] []
+parset x = putStrLn . pack . either show (pshow . removeMD . fst) $ parseAll parser x [] []
 
-parseType = parsew (ExprType <$> (typeRecord <* eof))
+parseType = parsew $ ExprType <$> typeRecord <* eof
 
 parsew :: Parser Expr -> String -> Either Error Expr
 parsew p x = removeMD . fst <$> parseAll p x [] []
 
 getImports :: String -> Either Error [ModuleName]
-getImports x =
-  parsew ( many (stmtImport <* L.scn) <&> recordIfSome) x & map (\x -> recordToList x & map (\(Stmt (StmtImport x Nothing)) -> x))
+getImports = map (map (\(Stmt (StmtImport x Nothing)) -> x) . recordToList) . parsew (recordIfSome <$> many (stmtImport <* L.scn))

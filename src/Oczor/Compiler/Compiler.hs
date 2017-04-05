@@ -49,9 +49,9 @@ compileModule name (ffiCode, oc) = do
 
 changeErrorPosition :: ModuleName -> Error -> Compiler ()
 -- changeErrorPosition name | traceArgs ["changeErrorPosition", show name] = undefined
-changeErrorPosition name = \case
-  (x@(ModuleNotExists mn),(_,_,"")) -> throwError (x, (1,1,combinePath name ++ ocExt))
-  x -> throwError x
+changeErrorPosition name = throwError . \case
+  (x@(ModuleNotExists mn),(_,_,"")) -> (x, (1,1,combinePath name ++ ocExt))
+  x -> x
 
 compileModuleLoadImports :: ModuleName -> Compiler ()
 compileModuleLoadImports name = do
@@ -68,8 +68,7 @@ loadModule n = do
   if name `elem` compModules then filePathOc name >>= (\x -> throwError (CircularDependency compModules, (1,1,x))) 
   else do
     compilingModules %= (name :)
-    mdl <- use loadModules <&> lookup name
-    mdl & maybe (compileModuleLoadImports name) (const $ return ())
+    use loadModules >>= maybe (compileModuleLoadImports name) (const $ return ()) . lookup name
     compilingModules %= filter (/= name)
 
 runCompiler :: CompState -> Compiler a -> IO (Either Error a)

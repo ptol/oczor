@@ -26,3 +26,4 @@ warn "my-i" = (\x -> a <$> b x) ==> fmap a . b
 warn "my-j" = either (f . a) (f . b) ==> f . either a b
 warn "my-ja" = either (f . a) (f . b) c ==> f . either a b c
 warn "my-k" = (\x -> f x >>= y) ==> f >=> y
+warn "my-l" = (a . b) . c ==> a . b . c

@@ -76,8 +76,7 @@ exprRecord = recordCommaWith expr
 
 labelAccess = do
   MD p e <- try $ body <* char '.'
-  labels <- sepBy1 L.ident (char '.')
-  MD p <$> C.foldM newLabelAccess (unwrapMD e) labels
+  sepBy1 L.ident (char '.') >>= fmap (MD p) . C.foldM newLabelAccess (unwrapMD e)
   where
     newLabelAccess x label = Desugar.partialApply $ Call (LabelAccess label) x
     body = md $ ident <|> wildcard <|> L.parens expr
