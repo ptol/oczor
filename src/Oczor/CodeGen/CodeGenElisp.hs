@@ -38,6 +38,7 @@ codeGen = code where
     Scope list y -> scope list y
     x -> phi $ fmap codeGen $ project x
 
+scope :: [Ast] -> Ast -> Doc
 scope list r  = bodyCode vars ffiVars
      where
        (newBody, ffiVars) = case list ++ [Return r] of (Code x : t) -> (t, x); body -> (body, "")
@@ -45,11 +46,12 @@ scope list r  = bodyCode vars ffiVars
        bodyCode [] "" = progn $ fmap codeGen newBody
        bodyCode vars ffiVars = cn "let*" $ parens (vcat $ text ffiVars : vars) : fmap codeGen newBody
 
+func :: [String] -> [Ast] -> Doc
 func params body = p [text "lambda", p (fmap ident params), bodyCode vars ffiVars]
      where
        (newBody, ffiVars) = case body of (Code x : t) -> (t, x); _ -> (body, "")
-       vars = fmap (\x -> p [ident x, nil]) (mapMaybe getVarName newBody)
-       bodyCode [] "" = progn (fmap codeGen newBody)
+       vars = fmap (\x -> p [ident x, nil]) $ mapMaybe getVarName newBody
+       bodyCode [] "" = progn $ fmap codeGen newBody
        bodyCode vars ffiVars = c "let*" [parensNest $ text ffiVars : vars, progn $ fmap codeGen newBody]
 
 nil = text "nil"
