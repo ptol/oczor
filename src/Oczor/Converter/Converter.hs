@@ -105,9 +105,9 @@ instancesToArgs contextTp exprTp =
   -- if contextTp == exprTp then return []
   -- else 
   let classes = getTypeConstraints contextTp in
-  case onull classes of
-    True -> return []
-    False -> do
+  case classes of
+    [] -> return []
+    _ -> do
       context <- ask
       traverse go $ findInstances context contextTp exprTp
       where
@@ -403,9 +403,9 @@ casesFuncs newOutType (UnAnn f@(FunctionF params guard _)) = do
   temp1 <- maybe (return []) (fmap (:[]) . convert) guard
   let conds = funcParamCond params ++ temp1
   func@(A.Function aparams body) <- convertFunction f newOutType
-  return $ case onull conds of
-    True -> (func, Nothing)
-    False -> (A.Function aparams body, Just $ A.Function aparams [A.Return $ newBoolAnds conds])
+  return $ case conds of
+    [] -> (func, Nothing)
+    _ -> (A.Function aparams body, Just $ A.Function aparams [A.Return $ newBoolAnds conds])
 
 
 

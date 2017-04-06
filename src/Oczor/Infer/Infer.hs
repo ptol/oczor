@@ -13,7 +13,7 @@ import Oczor.Infer.Substitutable
 import Control.Monad.Trans.Maybe
 
 infer :: Expr -> Infer InferExpr
-infer ast = {-trac ("inferResult " ++ show ast) <$>-} do
+infer ast = {-trac ("inferResult " ++ show ast) <$>-}
   liftA2 changeContext ask r
 
   where
