@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 module Oczor.Compiler.Compiler(module Oczor.Compiler.Compiler, module X) where
 
 import ClassyPrelude as C
@@ -48,9 +49,9 @@ compileModule name (ffiCode, oc) = do
 
 changeErrorPosition :: ModuleName -> Error -> Compiler ()
 -- changeErrorPosition name | traceArgs ["changeErrorPosition", show name] = undefined
-changeErrorPosition name = \case
-  (x@(ModuleNotExists mn),(_,_,"")) -> throwError (x, (1,1,combinePath name ++ ocExt))
-  x -> throwError x
+changeErrorPosition name = throwError . \case
+  (x@(ModuleNotExists mn),(_,_,"")) -> (x, (1,1,combinePath name ++ ocExt))
+  x -> x
 
 compileModuleLoadImports :: ModuleName -> Compiler ()
 compileModuleLoadImports name = do
@@ -67,17 +68,14 @@ loadModule n = do
   if name `elem` compModules then filePathOc name >>= (\x -> throwError (CircularDependency compModules, (1,1,x))) 
   else do
     compilingModules %= (name :)
-    mdl <- use loadModules <&> lookup name
-    mdl & maybe (compileModuleLoadImports name) (const $ return ())
+    use loadModules >>= maybe (compileModuleLoadImports name) (const $ return ()) . lookup name
     compilingModules %= filter (/= name)
 
 runCompiler :: CompState -> Compiler a -> IO (Either Error a)
 runCompiler st m = runExceptT $ evalStateT m st
 
 runCompilerPrint :: CompState -> Compiler a -> IO ()
-runCompilerPrint st m = do
-  r <- runCompiler st m
-  either printError (const $ putStrLn $ pack "compilation is completed") r
+runCompilerPrint st m = runCompiler st m >>= either printError (const $ putStrLn $ pack "compilation is completed")
 
 printError (tp, (row, col, file)) = do
   let text = file ++ ":" ++ show row ++ ":" ++ show col

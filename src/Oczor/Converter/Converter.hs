@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 module Oczor.Converter.Converter where
 import Oczor.Utl
 import Control.Monad.State
@@ -131,8 +132,8 @@ convertExprWithNewTypeMaybe tp exprTp expr = maybe expr (\x -> convertExprWithTy
 -- isUnionSubtype context identTp t | traceArgs ["isUnionSubtype", show identTp, show t] = undefined
 isUnionSubtype context identTp t | (getTypeIdent t & isJust) && not (T.isFfiType t context) =
   case context & T.lookupType (getTypeIdent t & unsafeHead) & unsafeHead & fst of
-    (TypeUnion list) -> list & any (typeNormalizeEq identTp)
-    (TypePoly _ (TypeUnion list)) -> list & any (typeNormalizeEq identTp)
+    TypeUnion list -> list & any (typeNormalizeEq identTp)
+    TypePoly _ (TypeUnion list) -> list & any (typeNormalizeEq identTp)
     _ -> False
 isUnionSubtype _ _ _ = False
 

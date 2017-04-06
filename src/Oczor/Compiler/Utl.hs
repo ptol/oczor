@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 module Oczor.Compiler.Utl where
 
 import Oczor.Infer.InferContext
@@ -20,10 +21,8 @@ replace old new = intercalate new . splitOn old
 
 fileToModuleName = replace ".oc" "" >>> splitOn "."
 
-liftE :: _ -> Compiler _
-liftE = \case
-  Right x -> return x
-  Left x -> throwError x
+liftE :: Either Error t -> Compiler t
+liftE = lift . ExceptT . return
 
 io :: IO a -> Compiler a
 io = liftIO
@@ -40,13 +39,13 @@ compileJsPartTxt x = Js.codeGen . uncurry convert2 <$> inferAllTxt x
 inferTxt2 x = putStrLn . pack . either show prettyShow $ inferTxt x
 
 inferType :: Expr -> Either Error TypeExpr
-inferType y = attrType . snd <$> inferAllExpr baseTypeContext y
+inferType = fmap (attrType . snd) . inferAllExpr baseTypeContext
 
 inferTxt :: String -> Either Error TypeExpr
 inferTxt = Parser.parseExpr >=> fmap normalizeType . inferType
 
 inferAstTxt2 :: String -> Either Error InferExpr
-inferAstTxt2 x = Parser.parseExpr x >>= fmap snd . inferAllExpr emptyContext
+inferAstTxt2 = Parser.parseExpr >=> fmap snd . inferAllExpr emptyContext
   
 inferContext :: InferContext -> ModuleName -> String -> Either Error InferContext
 inferContext context fileName x = fst <$> inferAllTxtWith context fileName x

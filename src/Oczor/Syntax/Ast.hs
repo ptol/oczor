@@ -1,6 +1,4 @@
 {-# LANGUAGE PatternSynonyms       #-}
-{-# LANGUAGE ViewPatterns       #-}
-{-# LANGUAGE OverlappingInstances       #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE StandaloneDeriving #-}

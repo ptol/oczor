@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 module Oczor.Desugar.Desugar where
 
 import ClassyPrelude 
