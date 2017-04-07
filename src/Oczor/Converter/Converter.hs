@@ -30,7 +30,7 @@ identWithNamespace isModule = \case
 initObjectIfNull :: A.Ast -> A.Ast
 initObjectIfNull x = A.If (A.Equal x (A.Lit A.LitNull)) [A.Set x A.emptyObject] []
 
-initModuleIfNull moduleName = L.init moduleName & L.inits & L.tail <&> identWithNamespace True <&> initObjectIfNull
+initModuleIfNull moduleName = initObjectIfNull . identWithNamespace True <$> (L.tail . L.inits . L.init $ moduleName)
 
 typeNormalizeEq = (==) `on` normalizeType
 
@@ -40,7 +40,7 @@ curryApply args arity func =
   else A.Call func args
   where
     hasParams = arity > 0
-    params = if hasParams then [1..arity] & map (show >>> ("p" ++)) else []
+    params = if hasParams then map (show >>> ("p" ++)) [1..arity] else []
 
 instancesObject = A.Field $ A.Field rootModule "instances"
 
@@ -105,14 +105,14 @@ instancesToArgs contextTp exprTp =
   -- if contextTp == exprTp then return []
   -- else 
   let classes = getTypeConstraints contextTp in
-  if onull classes then return []
-  else do
-    context <- ask
-    let instances = findInstances context contextTp exprTp
-    instances &traverse go
-    where
-      go (cls, TypeVar x) = return $ A.Ident $ paramInstancesName x cls
-      go (cls, tp) = instanceIdent cls tp tp
+  case classes of
+    [] -> return []
+    _ -> do
+      context <- ask
+      traverse go $ findInstances context contextTp exprTp
+      where
+        go (cls, TypeVar x) = return $ A.Ident $ paramInstancesName x cls
+        go (cls, tp) = instanceIdent cls tp tp
 
 isLazy = getTypeIdent >>> maybe False (== "Lazy")
 
@@ -173,8 +173,7 @@ identAddInstancesArgs ident exprTp = do
   ctx <- ask
   -- instancesArgs <- getIdentInstancesArgs ident exprTp
   identTp <- identType ident -- <&> trac (unwords ["ident tp", ident, show exprTp] )
-  expr <- newIdent ident
-  expr2 <- checkExprTypeChange identTp exprTp expr
+  expr2 <- newIdent ident >>= checkExprTypeChange identTp exprTp
   -- if exprTp == identTp then return expr2
   -- else addInstancesArgs (typeFuncArity identTp) expr2 identTp exprTp
   addInstancesArgs (typeFuncArity identTp) expr2 identTp exprTp
@@ -404,8 +403,9 @@ casesFuncs newOutType (UnAnn f@(FunctionF params guard _)) = do
   temp1 <- maybe (return []) (fmap (:[]) . convert) guard
   let conds = funcParamCond params ++ temp1
   func@(A.Function aparams body) <- convertFunction f newOutType
-  if onull conds then return (func, Nothing)
-  else return (A.Function aparams body, Just $ A.Function aparams [A.Return $ newBoolAnds conds])
+  return $ case conds of
+    [] -> (func, Nothing)
+    _ -> (A.Function aparams body, Just $ A.Function aparams [A.Return $ newBoolAnds conds])
 
 
 
