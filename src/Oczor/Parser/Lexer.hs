@@ -4,7 +4,6 @@ import Text.Megaparsec
 import qualified Text.Megaparsec.Lexer as L
 import ClassyPrelude hiding (try)
 import Oczor.Parser.ParserState
-import Oczor.Utl
 
 lineComment :: Parser ()
 lineComment = L.skipLineComment "--"

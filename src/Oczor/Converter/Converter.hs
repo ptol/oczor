@@ -273,7 +273,7 @@ convertUpdate (UpdateF expr labels) = do
 -- convertRecordLabel context x | traceArgs ["convertRecordLabel", show x] = undefined
 convertRecordLabel (RecordLabelF name expr) = do
   context <- ask
-  let exprType = (\(S.Forall _ x) -> x) <$> T.getIdentType context name
+  -- UNUSED let exprType = (\(S.Forall _ x) -> x) <$> T.getIdentType context name
   (name,) <$> addInstancesParams expr
 
 convertFfiLabel (FfiF name expr) = (name, A.Ident name)
@@ -320,7 +320,7 @@ newScope (x, y) = A.Scope x y
 
 functionBody expr@(Ann (RecordF l) (tp,ctx)) newOutType = localPut ctx $ do
   (body, ret) <- convertAstList l
-  let r = convertExprWithNewTypeMaybe tp newOutType ret
+  -- UNUSED let r = convertExprWithNewTypeMaybe tp newOutType ret
   return $ body ++ [A.Return ret]
 functionBody expr@(Ann _ (tp,ctx)) newOutType = localPut ctx $ do
   y <- convert expr

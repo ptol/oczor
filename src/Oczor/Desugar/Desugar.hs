@@ -9,8 +9,6 @@ import Oczor.Parser.ParserState
 import Oczor.Utl
 import qualified Control.Monad.Writer.Strict as W
 
-import Data.Functor.Foldable
-
 paramToBody newParam ast = case removeMD ast of
   Lit _ -> (Just . Call (Ident "eq") $ Record [Ident newParam, ast], Nothing)
   Ident x -> (Just . Call (Ident "eq") $ Record [Ident newParam, ast], Nothing)

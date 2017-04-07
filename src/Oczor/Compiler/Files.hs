@@ -1,7 +1,6 @@
 module Oczor.Compiler.Files where
 
 import ClassyPrelude as C
-import Control.Monad.State
 import Control.Monad.Except
 import Oczor.Syntax.Syntax
 import qualified System.FilePath as Fp

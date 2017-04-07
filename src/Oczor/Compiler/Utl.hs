@@ -56,6 +56,6 @@ inferAllTxt :: String -> Either Error (InferContext, InferExpr)
 inferAllTxt = inferAllExpr baseTypeContext <=< Parser.parseExpr
 
 inferAllTxt2 x = do
-  let Right (c, ast) = Parser.parseExpr x >>= inferAllExpr emptyContext
+  let Right (_, ast) = Parser.parseExpr x >>= inferAllExpr emptyContext
   putStrLn $ pack (unlines ["ast", show ast])
   return ""

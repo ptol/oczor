@@ -1,7 +1,7 @@
 module Oczor.Infer.InferAst where
 
 import ClassyPrelude
-import Data.Functor.Foldable hiding (Foldable)
+import Data.Functor.Foldable
 import Oczor.Syntax.Syntax
 import Oczor.Infer.Substitutable 
 import Oczor.Infer.InferContext

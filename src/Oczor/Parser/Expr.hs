@@ -5,7 +5,6 @@ import qualified Oczor.Parser.Lexer as L
 import ClassyPrelude as C hiding (try)
 import Oczor.Syntax.Syntax
 import Text.Megaparsec.Expr as Ex
-import Control.Monad.State
 import qualified Oczor.Desugar.Desugar as Desugar
 import Oczor.Parser.ParserState
 import Oczor.Parser.Utl
