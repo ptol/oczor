@@ -28,7 +28,7 @@ rootModuleName moduleName = moduleName ++ [lastEx moduleName]
 
 getIdentNs ident mdl = mdl ^. identsNs & lookup ident & fromMaybe (mdl ^. moduleName)
 
-mergeModules newMdl mdl = 
+mergeModules newMdl mdl =
   mdl
     & idents %~ (\x -> unionMaps [x, newMdl ^. idents])
     & typeIdents %~ (\x -> unionMaps [x, newMdl ^. typeIdents])

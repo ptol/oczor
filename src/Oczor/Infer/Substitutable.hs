@@ -46,8 +46,8 @@ normalizeTypeRow t@(TypeRowF x y) =
     TypeVar {} -> TypeRow x (ordNub y)
     _ -> x
 
-normalizeTypeConstraints x@(TypeConstraints clist t) = 
-  if onull newClist then t else TypeConstraints newClist t 
+normalizeTypeConstraints x@(TypeConstraints clist t) =
+  if onull newClist then t else TypeConstraints newClist t
   where
   vars = ftv t & setToList <&> TypeVar
   newClist = clist & filter (\(var,_) -> oelem var vars)

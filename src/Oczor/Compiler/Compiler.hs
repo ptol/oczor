@@ -65,7 +65,7 @@ loadModule :: ModuleName -> Compiler ()
 loadModule n = do
   name <- fixModuleNameIfDir n
   compModules <- use compilingModules
-  if name `elem` compModules then filePathOc name >>= (\x -> throwError (CircularDependency compModules, (1,1,x))) 
+  if name `elem` compModules then filePathOc name >>= (\x -> throwError (CircularDependency compModules, (1,1,x)))
   else do
     compilingModules %= (name :)
     use loadModules >>= maybe (compileModuleLoadImports name) (const $ return ()) . lookup name

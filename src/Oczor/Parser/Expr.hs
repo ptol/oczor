@@ -36,13 +36,12 @@ stmtSet :: Parser Expr
 stmtSet = liftA2 SetStmt (try $ l <* L.rop ":=") record
   where
     l = labelAccess <|> ident
-  
+
 recordItem = stmtSet <|> try destruct <|> expr
 
 record :: Parser Expr
 record = recordIndentWith $ recordCommaWith recordItem
 
-  
 recordWith :: Parser Expr ->  Parser Expr
 recordWith = recordIndentWith . recordCommaWith
 

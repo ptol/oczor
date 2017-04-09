@@ -22,7 +22,7 @@ parser = topLevelRecord <* eof
 
 parseAll :: Parser Expr -> String -> ModuleName -> OperatorGroups -> Either Error (Expr, OperatorGroups)
 parseAll parser txt file opGroups =
-  bimap 
+  bimap
     ((ParserError . parseErrorPretty) &&& getPosFromError)
     (exprListToRecord `bimap` (^. ops)) $
     parse (runStateT parser (emptyState & addOperators opGroups)) (moduleNameToIdent file) txt

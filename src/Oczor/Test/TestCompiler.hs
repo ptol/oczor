@@ -21,7 +21,7 @@ std = ["prelude", "foldable", "maybes", "eithers", "lists"] <&> ("std." ++)
 files = ["testModule", "testing"] ++ std ++ tests
 
 files2 = do {mdl <- tests2; lang <- ["lua", "rb", "el"]; return (lang, mdl)}
-  
+
 state lng comb = initState
   & outputDir .~ output
   & srcDirs .~ [root, libs]
@@ -30,7 +30,7 @@ state lng comb = initState
 
 compileModulesJs :: [ModuleName] -> IO (Either Error (Map ModuleName String))
 compileModulesJs names = runCompiler (state "js" False) $ do
-  names & traverse_ loadModule 
+  names & traverse_ loadModule
   use modulesLangSrc
 
 

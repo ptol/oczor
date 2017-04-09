@@ -103,7 +103,7 @@ addInstancesParams expr targetExpr = do
 -- instancesToArgs context contextTp exprTp | traceArgs ["instancesToArgs", show contextTp, show exprTp] = undefined
 instancesToArgs contextTp exprTp =
   -- if contextTp == exprTp then return []
-  -- else 
+  -- else
   let classes = getTypeConstraints contextTp in
   case classes of
     [] -> return []
@@ -155,7 +155,7 @@ paramInstancesName ident cls = sysPrefix ++ ident ++ cls
 
 -- getIdentInstancesArgs ident exprTp |traceArgs ["getIdentInstancesArgs", show ident, show exprTp] = undefined
 getIdentInstancesArgs ident exprTp = do
-  identTp <- identType ident -- <&> trac (unwords ["ident tp", ident, show exprTp] ) 
+  identTp <- identType ident -- <&> trac (unwords ["ident tp", ident, show exprTp] )
   -- if identTp == exprTp then return []
   -- else instancesToArgs identTp exprTp
   foo <- view T.params

@@ -71,7 +71,6 @@ typeLabelWith :: Parser String -> Parser TypeExpr
 typeLabelWith x = liftA2 TypeLabel
   (try (x <* L.rop ":" <* notFollowedBy (L.rop "=")))
   (typeFunc <|> typeUnionItem)
- 
 
 typeLabel :: Parser TypeExpr
 typeLabel = typeLabelWith L.ident

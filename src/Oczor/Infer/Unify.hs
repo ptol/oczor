@@ -38,7 +38,7 @@ unify arg param = do
       maybe (typeErrorLift $ UnificationFail arg param) return r
 
     (arg, param) | Just tupleType <- getTupleType arg, Just typeList <- getTypeList param -> unifyList tupleType typeList
-    (arg, param) | Just tupleType <- getTupleType param, Just typeList <- getTypeList arg -> unifyList typeList tupleType 
+    (arg, param) | Just tupleType <- getTupleType param, Just typeList <- getTypeList arg -> unifyList typeList tupleType
 
     (TypeRecord argList, param) | length argList == 1, Just h <- headMay argList -> unify h param
     (arg, TypeRecord paramList)| length paramList == 1, Just h <- headMay paramList -> unify arg h
@@ -146,7 +146,7 @@ bindWithConstraints var x@(TypeVar vx) = do
   fv <- lift freshVar
   let allConst = combineTypeVarConstraints state var vx
   let newTypeVar = newTypeConstraints fv allConst
-  return $ Subst $ mapFromList [(var, newTypeVar), (vx, newTypeVar)] 
+  return $ Subst $ mapFromList [(var, newTypeVar), (vx, newTypeVar)]
 bindWithConstraints var x = do
   state <- ask
   let varConstraints = getConstraints var state
@@ -212,7 +212,7 @@ getType :: String -> Unify (UnifyState, TypeExpr)
 getType name = do
   state <- ask
   ctx <- lift ask
-  lift $ fromMaybe (typeError $ UnboundType name) $ do 
+  lift $ fromMaybe (typeError $ UnboundType name) $ do
     (tp, isFfi) <- ctx & lookupType name
     if isFfi then return $ typeError (TextError $ unwords ["type", show name, "is ffi"])
     else if state ^. openTypes & member name then return $ typeError (TextError $ unwords ["type synonym", show name, "is already used"])

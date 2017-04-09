@@ -25,7 +25,7 @@ strip x = stripL x . stripR x where
 
 parseTestTexts txt = (strip '\n' $ unsafeIndex l2 0, strip '\n' $ unsafeIndex l2 1)
   where
-    l = splitOn "\n-" txt 
+    l = splitOn "\n-" txt
     len = length l
     l2 = case len of
       1 -> l ++ ["???"]
@@ -75,5 +75,5 @@ refreshFile (d,f) testsName = do
 
 refreshDir m@(d,f) = do
   let dir = root ++ d
-  files <- getTestFiles dir 
+  files <- getTestFiles dir
   traverse (refreshFile m) (files <&> Fp.dropExtension)

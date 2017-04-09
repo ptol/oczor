@@ -20,4 +20,4 @@ instance Pretty ErrorType where
     UnboundClass x -> hsep [text "unbound class", text x]
     TypeUnionWithUnion x -> hsep [text "union type with union", text x]
     UnificationMismatch x y -> hsep [text "unification mismatch", commaSep (x <&> pretty), text "and", commaSep (x <&> pretty)]
-    
+

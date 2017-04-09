@@ -2,7 +2,7 @@
 module Oczor.Infer.InferContext (module Oczor.Infer.InferContext, module Oczor.Infer.Module) where
 
 import Oczor.Syntax.Syntax
-import ClassyPrelude 
+import ClassyPrelude
 import Oczor.Utl
 import Oczor.Infer.Substitutable
 import Oczor.Infer.Module
@@ -42,7 +42,7 @@ addOpenModule name newMdl ctx =
 includeModule name newMdl ctx =
     ctx
       & cmodule %~ mergeModules newMdl
-      -- & cmodule %~ (identsNs %~ (\x -> unionMaps [x, (newMdl ^. idents & keys) & map (\x -> (x, newMdl & getIdentNs x)) & mapFromList])) 
+      -- & cmodule %~ (identsNs %~ (\x -> unionMaps [x, (newMdl ^. idents & keys) & map (\x -> (x, newMdl & getIdentNs x)) & mapFromList]))
 
 
 lookupModule name ctx = let mdls = ctx ^. modules in (mdls & lookup name) <|> (mdls & lookup (rootModuleName name))

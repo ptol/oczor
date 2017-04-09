@@ -3,7 +3,7 @@ module Oczor.CodeGen.Utl (module Oczor.CodeGen.Utl, module X, (<&>), cata, (&)) 
 import Oczor.Converter.CodeGenAst as X
 import ClassyPrelude as X hiding ((<>), empty, (<$>), (</>), bool, group)
 import Text.PrettyPrint.Leijen as X
-import Oczor.Utl 
+import Oczor.Utl
 
 deriving instance Show (AstF Doc)
 

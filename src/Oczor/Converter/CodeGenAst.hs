@@ -51,7 +51,7 @@ makeBaseFunctor ''Ast
 
 scopeToFunc (ScopeF [] y) = y
 scopeToFunc (ScopeF x y) = CallF (Parens (Function [] (embed <$> x <> [ReturnF $ embed y]))) []
-  
+
 -- pattern Scope x <- Function _ x
 
 getVarName (Var x _) = Just x

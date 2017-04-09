@@ -27,7 +27,7 @@ fixModuleNameIfDir moduleName = do
 findFilePathInDirs fileName = do
   dirs <- use srcDirs
   cd <- io getCurrentDirectory
-  let paths =  fileName : (dirs <&> (++ fileName)) 
+  let paths =  fileName : (dirs <&> (++ fileName))
   headMay <$> io (C.filterM doesFileExist paths)
 
 filePathOc :: ModuleName -> Compiler FilePath
@@ -45,7 +45,7 @@ ocPathToPrePath ocPath = Fp.replaceExtension ocPath <$> (use lang <&> ("pre." ++
 filePathLangOut :: ModuleName -> Compiler FilePath
 filePathLangOut x = langOutputFilePath <$> use outputDir <*> use lang <*> use combine <*> pure x
 
-langOutputFilePath outputDir lang combine x = 
+langOutputFilePath outputDir lang combine x =
   Fp.combine outputDir $ combinePath x ++ bool ".module" "" combine ++ "." ++ lang
 
 readFileMay file = do

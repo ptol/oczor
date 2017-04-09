@@ -31,7 +31,7 @@ addSubst s = inferSubst %= composeSubst s
 
 applySubst :: Substitutable a => a -> Infer a
 applySubst t = do
-  subst <- use inferSubst 
+  subst <- use inferSubst
   return $ apply subst t
 
 letters :: [String]
@@ -44,7 +44,6 @@ runInfer :: InferContext -> Infer (InferContext, InferExpr) -> Either Error (Inf
 runInfer context m = evalStateT (runReaderT m context) initInfer & runExcept
 -- runInfer context m = (runReader m context) initInfer & runExcept <&> fst
 
-  
 -- runInfer :: InferContext -> Infer (InferContext, InferExpr) -> _
 -- runInfer context m = evalStateT (runReaderT m context) initInfer & runExcept
 

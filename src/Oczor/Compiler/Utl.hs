@@ -46,7 +46,7 @@ inferTxt = Parser.parseExpr >=> fmap normalizeType . inferType
 
 inferAstTxt2 :: String -> Either Error InferExpr
 inferAstTxt2 = Parser.parseExpr >=> fmap snd . inferAllExpr emptyContext
-  
+
 inferContext :: InferContext -> ModuleName -> String -> Either Error InferContext
 inferContext context fileName x = fst <$> inferAllTxtWith context fileName x
 

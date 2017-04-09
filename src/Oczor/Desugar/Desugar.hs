@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 module Oczor.Desugar.Desugar where
 
-import ClassyPrelude 
+import ClassyPrelude
 import Oczor.Syntax.Syntax
 
 import Control.Monad.State
@@ -105,7 +105,7 @@ typeDecl name param body = listIfSome $ (types >>= generateEmptyType) ++ [td] wh
   td = TypeDecl name $ if onull param then r else TypePoly param r
 
 partialApply ast = case ast of
-  Call expr arg -> convert arg (Call expr) 
+  Call expr arg -> convert arg (Call expr)
   Array arg -> convert (ExprList arg) (\(ExprList list) -> Array list)
   where
     convert :: Expr -> _

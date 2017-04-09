@@ -26,7 +26,7 @@ codeGen = x
     OperatorF name param -> (hsep $ case param of {[x] -> [text name, x]; [x,y] -> [x,text name, y]} )
     ArrayF list -> jsArray list
     ConditionOperatorF astb astl astr -> parens $ hsep [astb, text "?", astl, text ":", astr]
-    BoolAndsF list -> parens $ hcat $ punctuate (text " && ") list 
+    BoolAndsF list -> parens $ hcat $ punctuate (text " && ") list
     StmtListF list -> vcat list
     ParensF x -> parens x
     LabelF x y -> stmt [text "var", text x, equals, y]

@@ -35,4 +35,4 @@ getPrec = \case
 
 
 moduleIdents mdl = mdl ^. idents & mapToList <&> (\(ident, Forall _ tp) -> hsep [text ident, char ':', pretty tp]) & vcat
-  
+
