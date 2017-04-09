@@ -22,9 +22,9 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-}
     -- ast | traceArgs (["infer", show ast]) -> undefined
     MD pos x -> local (position .~ Just pos) $ infer x
 
-    WithType expr tp -> do
+    WithType {} -> do
+      WithTypeF ast @ (Ann x _) tp <- traverse infer $ project ast
       renamedTP <- renameVarsInType tp
-      WithTypeF ast @ (Ann x _) _ <- traverse infer $ project ast
       unifyWithSubst (attrType ast) renamedTP
       annType x <$> applySubst renamedTP -- TODO think WithType
 

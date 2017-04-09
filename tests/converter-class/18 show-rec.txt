@@ -10,9 +10,9 @@ showFoo = case
   var show = function(x,p1){
     return x(p1);
   };
-  var showFoo = function(_dshow,_a1){
+  var showFoo = function(_fshow,_a1){
     return function(x){
-      return showFoo(_dshow,x);
+      return showFoo(_fshow,x);
     }(_a1);
   };
   return {
