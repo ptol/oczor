@@ -1,5 +1,5 @@
 name:                oczor
-version:             0.0.0.1
+version:             0.0.1
 synopsis:            Oczor compiler
 description:         Please see README.md
 homepage:            https://github.com/ptol/oczor#readme
@@ -55,6 +55,7 @@ library
     Oczor.Test.TestCompiler
     Oczor.Test.Tests
     Oczor.Utl
+    Oczor.Version
   build-depends:
     base == 4.*,
     hspec == 2.*,

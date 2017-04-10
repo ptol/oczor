@@ -1,42 +1,47 @@
 module Oczor.Compiler.CommandLine where
-import ClassyPrelude
-import Options.Applicative
-import Oczor.Compiler.Compiler
-import Oczor.Compiler.State
-import Oczor.Utl hiding (argument)
-
-version = "0.0.1"
+import           ClassyPrelude
+import           Oczor.Compiler.Compiler
+import qualified Oczor.Compiler.State    as State
+import           Oczor.Utl               hiding (argument)
+import           Oczor.Version
+import           Options.Applicative
 
 data Options = Options
-  { lng :: String
-  , output :: String
-  , showMdl :: Bool
-  , srcDirList :: [String]
-  , moduleName :: String}
+  { browse     :: Bool
+  , lang       :: String
+  , moduleName :: String
+  , outputDir  :: String
+  , srcDirs    :: [String]
+  }
 
-options :: Parser Options
-options = Options
-  <$> strOption ( long "lang" <> short 'l' <> value "js" <> showDefault <> metavar "LANGUAGE" <> help "target language (js, lua, rb, el)")
-  <*> strOption ( long "output" <> short 'o' <> value "output" <> showDefault <> metavar "DIRECTORY" <> help "output directory" )
-  <*> switch ( long "browse" <> short 'b' <> help "display the names defined by module" )
-  <*> many (strOption ( long "src" <> short 's'  <> metavar "DIRECTORIES..." <> help "source file directories" ))
+optionsParser :: Parser Options
+optionsParser = Options
+  <$> switch browseParser
+  <*> strOption languageParser
   <*> argument str (metavar "FILE")
-
-optionsToState (Options lng output showMdl srcDirList moduleName) = initState
-  & outputDir .~ output
-  & srcDirs .~ srcDirList
-  & showModule .~ showMdl
-  & combine .~ True
-  & lang .~ lng
-
-runWith :: Options -> IO ()
-runWith x@Options {} = runCompilerPrint (optionsToState x) $ compileAndWrite (fileToModuleName (moduleName x))
-
-desc = unwords ["Oczor compiler", version]
-run :: IO ()
-run = execParser opts >>= runWith
+  <*> strOption outputDirParser
+  <*> many (strOption sourceDirsParser)
   where
-    opts = info (helper <*> options)
-      ( fullDesc
-     <> progDesc desc
-     <> header desc )
+    languageParser = long "lang" <> short 'l' <> value "js" <> showDefault <> metavar "LANGUAGE" <> help "target language (js, lua, rb, el)"
+    outputDirParser = long "output" <> short 'o' <> value "output" <> showDefault <> metavar "DIRECTORY" <> help "output directory"
+    browseParser = long "browse" <> short 'b' <> help "display the names defined by module"
+    sourceDirsParser = long "src" <> short 's' <> metavar "DIRECTORIES..." <> help "source file directories"
+
+optionsToState options = State.initState
+  & State.showModule .~ browse options
+  & State.lang .~ lang options
+  & State.outputDir .~ outputDir options
+  & State.srcDirs .~ srcDirs options
+  & State.combine .~ True
+
+runWith options = runCompilerPrint state compiler
+  where
+    state = optionsToState options
+    compiler = compileAndWrite . fileToModuleName . moduleName $ options
+
+run :: IO ()
+run = execParser (info options description) >>= runWith
+  where
+    options = helper <*> optionsParser
+    description = fullDesc <> progDesc desc <> header desc
+    desc = unwords ["Oczor compiler", version]
