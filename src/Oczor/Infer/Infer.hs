@@ -38,17 +38,14 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-}
     Function {} -> do
         (Function param guard body) <- renameVarsInExpr ast
         (newContext, inType, newParam) <- addFuctionParamToContext param
-        newGuard <- fromMaybeT Nothing $ do
-          g <- MaybeT (return guard)
-          ast <- lift $ localPut newContext (infer g)
-          lift $ localPut newContext (unifyWithSubst (attrType ast) typeBool)
-          return (Just ast)
+        newGuard <- for guard $ \g -> do
+             a <- localPut newContext (infer g)
+             localPut newContext (unifyWithSubst (attrType a) typeBool)
+             return a
         newAst <- applyContext2 newContext $ infer body
         inTypeApp <- applySubst inType
         let fTp = TypeFunc inTypeApp (attrType newAst)
         return (annType (FunctionF newParam newGuard newAst) fTp)
-        where
-          fromMaybeT x = fmap (fromMaybe x) . runMaybeT
 
     SetStmt l r -> do
       (ctxL, inferLExpr) <- inferRecord l
