@@ -55,6 +55,8 @@ library
     Oczor.Test.TestCompiler
     Oczor.Test.Tests
     Oczor.Utl
+    Paths_oczor
+
   build-depends:
     base == 4.*,
     hspec == 2.*,

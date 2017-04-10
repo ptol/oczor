@@ -1,11 +1,11 @@
 module Oczor.Compiler.CommandLine where
 import ClassyPrelude
+import Data.Version (showVersion)
 import Options.Applicative
 import Oczor.Compiler.Compiler
 import Oczor.Compiler.State
 import Oczor.Utl hiding (argument)
-
-version = "0.0.1"
+import Paths_oczor (version)
 
 data Options = Options
   { lng :: String
@@ -32,7 +32,8 @@ optionsToState (Options lng output showMdl srcDirList moduleName) = initState
 runWith :: Options -> IO ()
 runWith x@Options {} = runCompilerPrint (optionsToState x) $ compileAndWrite (fileToModuleName (moduleName x))
 
-desc = unwords ["Oczor compiler", version]
+desc = unwords ["Oczor compiler", showVersion version]
+
 run :: IO ()
 run = execParser opts >>= runWith
   where
