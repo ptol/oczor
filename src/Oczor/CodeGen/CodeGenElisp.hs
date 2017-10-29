@@ -1,6 +1,5 @@
 module Oczor.CodeGen.CodeGenElisp (codeGen) where
 import Oczor.CodeGen.Utl
-import qualified Prelude as P
 import Data.List.Split
 import Data.Functor.Foldable
 

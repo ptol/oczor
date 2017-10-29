@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Oczor.Infer.State where
+module Oczor.Infer.State (Infer(..), freshVar, addSubst, applySubst, emptySubst, letters, renameVarsInType, instantiate, runInfer, fresh) where
 
 import Oczor.Syntax.Syntax
 import Oczor.Utl
@@ -61,17 +61,11 @@ instantiate (Forall as t) = renameVars as t
 
 renameVars :: [String] -> TypeExpr -> Infer TypeExpr
 renameVars vars tp = do
-  s <- mapM (\x -> (x,) <$> freshVar) vars
-  return $ renameTypeVars (mapFromList s) tp
+  m <- freshMapping vars
+  return $ renameTypeVars m tp
 
-renameVarsInExpr :: Expr -> Infer Expr
-renameVarsInExpr x = flip cataM x $ \case
-      ExprTypeF tp -> ExprType <$> renameVars vars tp
-      x -> return $ embed x
-    where
-    vars = flip cata x $ \case
-        ExprTypeF tp -> setToList $ ftv tp
-        x -> ffold x
+freshMapping :: [String] -> Infer (Map String String)
+freshMapping vars = mapFromList <$> mapM (\x -> (x,) <$> freshVar) vars
 
 renameVarsInType :: TypeExpr -> Infer TypeExpr
 -- renameVarsInType tp | traceArgs ["renameVarsInType", show tp]= undefined

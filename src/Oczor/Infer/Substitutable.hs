@@ -73,6 +73,5 @@ instance Substitutable Scheme where
 
 instance Substitutable a => Substitutable [a] where
   apply = map . apply
-  ftv   = foldr (union . ftv) mempty
-
+  ftv   = foldMap ftv
 

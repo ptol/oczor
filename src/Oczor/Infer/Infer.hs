@@ -35,8 +35,7 @@ infer ast = {-trac ("inferResult " ++ show ast) <$>-}
       (_, newY) <- applyContext2 newContext (inferRecord y)
       return (annType (LetF newX newY) (attrType newY))
 
-    Function {} -> do
-        (Function param guard body) <- renameVarsInExpr ast
+    Function param guard body -> do
         (newContext, inType, newParam) <- addFuctionParamToContext param
         newGuard <- for guard $ \g -> do
              a <- localPut newContext (infer g)
